@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.account.RoleMapper">
+
+    <resultMap id="RoleMap" type="Role">
+        <id property="sysIdRole" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="moTa" column="mo_ta"/>
+    </resultMap>
+
+</mapper>
