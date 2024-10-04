@@ -23,4 +23,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorException, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    // Authentication Exception
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorException> handleAuthenticationException(AuthenticationException ex) {
+        ErrorException errorException = new ErrorException(ex.getMessage());
+        return new ResponseEntity<>(errorException, HttpStatus.UNAUTHORIZED);
+    }
+
 }
