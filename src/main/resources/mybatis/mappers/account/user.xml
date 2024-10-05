@@ -28,4 +28,9 @@
         where u.username = #{username};
     </select>
 
+    <!-- check exits-->
+    <select id="checkUserExits" resultType="boolean" parameterType="integer">
+        SELECT EXISTS(SELECT 1 FROM user WHERE sys_id_user = #{sysIdUser});
+    </select>
+
 </mapper>
