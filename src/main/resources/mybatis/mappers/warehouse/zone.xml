@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.wms_be.mapper.warehouse.ZoneMapper">
+
+    <resultMap id="ZoneMap" type="Zone" autoMapping="true">
+        <id property="sysIdKhuVuc" column="sys_id_khu_vuc"/>
+        <result property="maKhuVuc" column="ma_khu_vuc"/>
+        <result property="tenKhuVuc" column="ten_khu_vuc"/>
+        <result property="moTa" column="mo_ta"/>
+        <result property="maKho" column="ma_kho"/>
+    </resultMap>
+
+    <!-- Lấy tất cả các Zone -->
+    <select id="getAllZones" resultMap="ZoneMap">
+        SELECT sys_id_khu_vuc, ma_khu_vuc, ten_khu_vuc, mo_ta, ma_kho
+        FROM khu_vuc
+    </select>
+
+    <!-- Thêm mới Zone -->
+    <insert id="insertZone" parameterType="Zone" useGeneratedKeys="true" keyProperty="sysIdKhuVuc">
+        INSERT INTO khu_vuc (ma_khu_vuc, ten_khu_vuc, mo_ta, ma_kho)
+        VALUES (#{maKhuVuc}, #{tenKhuVuc}, #{moTa}, #{maKho});
+    </insert>
+
+    <!-- Cập nhật Zone -->
+    <update id="updateZone">
+        UPDATE khu_vuc
+        SET ten_khu_vuc = #{tenKhuVuc},
+            mo_ta       = #{moTa},
+            ma_kho      = #{maKho}
+        WHERE ma_khu_vuc = #{maKhuVuc};
+    </update>
+
+    <!-- Xóa Zone -->
+    <delete id="deleteZone">
+        DELETE
+        FROM khu_vuc
+        WHERE ma_khu_vuc = #{maKhuVuc};
+    </delete>
+
+    <!-- Kiểm tra Zone có tồn tại không bằng mã khu vực -->
+    <select id="checkZoneExists" resultType="boolean">
+        SELECT COUNT(1)
+        FROM khu_vuc
+        WHERE ma_khu_vuc = #{maKhuVuc};
+    </select>
+
+    <!-- Lấy Zone bằng mã khu vực -->
+    <select id="getZoneByMaKhuVuc" resultMap="ZoneMap" parameterType="string">
+        SELECT sys_id_khu_vuc, ma_khu_vuc, ten_khu_vuc, mo_ta, ma_kho
+        FROM khu_vuc
+        WHERE ma_khu_vuc = #{maKhuVuc};
+    </select>
+
+</mapper>
