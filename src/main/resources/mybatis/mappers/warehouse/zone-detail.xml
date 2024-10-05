@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.wms_be.mapper.warehouse.ZoneDetailMapper">
+
+    <!-- Kết quả ánh xạ cho ZoneDetail -->
+    <resultMap id="ZoneDetailMap" type="ZoneDetail" autoMapping="true">
+        <id property="sysIdChiTietKhuVuc" column="sys_id_chi_tiet_khu_vuc"/>
+        <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
+        <result property="tenChiTietKhuVuc" column="ten_chi_tiet_khu_vuc"/>
+        <result property="moTa" column="mo_ta"/>
+        <result property="theTichLuuTru" column="the_tich_luu_tru"/>
+        <result property="theTichKhaDung" column="the_tich_kha_dung"/>
+        <result property="maKhuVuc" column="ma_khu_vuc"/>
+    </resultMap>
+
+    <!-- Lấy tất cả các chi tiết khu vực -->
+    <select id="getAllZoneDetails" resultMap="ZoneDetailMap">
+        SELECT sys_id_chi_tiet_khu_vuc,
+               ma_chi_tiet_khu_vuc,
+               ten_chi_tiet_khu_vuc,
+               mo_ta,
+               the_tich_luu_tru,
+               the_tich_kha_dung,
+               ma_khu_vuc
+        FROM chi_tiet_khu_vuc
+    </select>
+
+    <!-- Thêm chi tiết khu vực mới -->
+    <insert id="insertZoneDetail" parameterType="ZoneDetail" useGeneratedKeys="true" keyProperty="sysIdChiTietKhuVuc">
+        INSERT INTO chi_tiet_khu_vuc (ma_chi_tiet_khu_vuc,
+                                      ten_chi_tiet_khu_vuc,
+                                      mo_ta,
+                                      the_tich_luu_tru,
+                                      the_tich_kha_dung,
+                                      ma_khu_vuc)
+        VALUES (#{maChiTietKhuVuc},
+                #{tenChiTietKhuVuc},
+                #{moTa},
+                #{theTichLuuTru},
+                #{theTichKhaDung},
+                #{maKhuVuc});
+    </insert>
+
+    <!-- Cập nhật chi tiết khu vực -->
+    <update id="updateZoneDetail">
+        UPDATE chi_tiet_khu_vuc
+        SET ten_chi_tiet_khu_vuc = #{tenChiTietKhuVuc},
+            mo_ta                = #{moTa},
+            the_tich_luu_tru     = #{theTichLuuTru},
+            the_tich_kha_dung    = #{theTichKhaDung},
+            ma_khu_vuc           = #{maKhuVuc}
+        WHERE ma_chi_tiet_khu_vuc = #{maChiTietKhuVuc};
+    </update>
+
+    <!-- Xóa chi tiết khu vực -->
+    <delete id="deleteZoneDetail">
+        DELETE FROM chi_tiet_khu_vuc
+        WHERE ma_chi_tiet_khu_vuc = #{maChiTietKhuVuc};
+    </delete>
+
+    <!-- Kiểm tra xem chi tiết khu vực có tồn tại hay không -->
+    <select id="checkZoneDetailExists" resultType="boolean">
+        SELECT COUNT(1)
+        FROM chi_tiet_khu_vuc
+        WHERE ma_chi_tiet_khu_vuc = #{maChiTietKhuVuc};
+    </select>
+
+    <!-- Lấy chi tiết khu vực theo mã chi tiết khu vực -->
+    <select id="getZoneDetailByMaChiTietKhuVuc" resultMap="ZoneDetailMap" parameterType="string">
+        SELECT sys_id_chi_tiet_khu_vuc,
+               ma_chi_tiet_khu_vuc,
+               ten_chi_tiet_khu_vuc,
+               mo_ta, the_tich_luu_tru,
+               the_tich_kha_dung,
+               ma_khu_vuc
+        FROM chi_tiet_khu_vuc
+        WHERE ma_chi_tiet_khu_vuc = #{maChiTietKhuVuc};
+    </select>
+
+</mapper>
