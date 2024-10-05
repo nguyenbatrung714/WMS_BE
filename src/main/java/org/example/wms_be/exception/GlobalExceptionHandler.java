@@ -30,4 +30,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorException, HttpStatus.UNAUTHORIZED);
     }
 
+    // Bad SQL Exception
+    @ExceptionHandler(BadSqlGrammarException.class)
+    public ResponseEntity<ErrorException> handleBadSqlGrammarException(BadSqlGrammarException ex) {
+        ErrorException errorException = new ErrorException(ex.getMessage());
+        return new ResponseEntity<>(errorException, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // Resource Not Found Exception
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorException> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        ErrorException errorException = new ErrorException(ex.getMessage());
+        return new ResponseEntity<>(errorException, HttpStatus.NOT_FOUND);
+    }
+
 }
