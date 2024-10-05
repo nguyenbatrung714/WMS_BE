@@ -5,7 +5,7 @@ import org.example.wms_be.entity.account.User;
 
 @Mapper
 public interface UserMapper {
-
     User findUserByUsername(String username);
 
+    boolean checkUserExits(Integer username);
 }
