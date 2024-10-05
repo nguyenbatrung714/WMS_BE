@@ -6,7 +6,7 @@
 <mapper namespace="org.example.wms_be.mapper.account.UserMapper">
 
     <resultMap id="UserMap" type="User" autoMapping="true">
-        <id property="sysIdUser" column="sys_user_id"/>
+        <id property="sysIdUser" column="sys_id_user"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
         <result property="email" column="email"/>
@@ -23,8 +23,8 @@
     <select id="findUserByUsername" parameterType="String" resultMap="UserMap">
         select *
         from user u
-                 left join user_roles ur on u.user_id = ur.user_id
-                 left join role r on ur.role_id = r.role_id
+                 left join users_roles ur on u.sys_id_user = ur.sys_id_user
+                 left join role r on ur.sys_id_role = r.sys_id_role
         where u.username = #{username};
     </select>
 
