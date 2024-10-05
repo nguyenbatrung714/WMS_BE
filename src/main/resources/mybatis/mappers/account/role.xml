@@ -5,7 +5,7 @@
 <mapper namespace="org.example.wms_be.mapper.account.RoleMapper">
 
     <resultMap id="RoleMap" type="Role">
-        <id property="sysIdRole" column="role_id"/>
+        <id property="sysIdRole" column="sys_id_role"/>
         <result property="roleName" column="role_name"/>
         <result property="moTa" column="mo_ta"/>
     </resultMap>
