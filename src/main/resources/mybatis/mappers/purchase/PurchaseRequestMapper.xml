@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.purchase.PurchaseRequestMapper">
+    <resultMap id="PurchaseRequestMap" type="org.example.wms_be.entity.purchase.PurchaseRequest" autoMapping="true">
+        <id property="sysIdYeuCauMuaHang" column="sys_id_pr"/>
+        <result property="maPR" column="ma_pr"/>
+        <result property="ngayYeuCau" column="ngay_yeu_cau"/>
+        <result property="nguoiYeuCau" column="sys_id_user"/>
+        <result property="trangThai" column="trang_thai"/>
+    </resultMap>
+    <select id="getAllPurchaseRequest" resultMap="PurchaseRequestMap">
+        SELECT sys_id_pr, ma_pr, ngay_yeu_cau, trang_thai, sys_id_user
+        FROM purchase_request;
+    </select>
+</mapper>

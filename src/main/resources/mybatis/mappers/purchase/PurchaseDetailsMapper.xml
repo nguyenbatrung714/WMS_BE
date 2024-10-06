@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.purchase.PurchaseDetailsMapper">
+    <resultMap id="PurchaseDetailsMap" type="org.example.wms_be.entity.purchase.PurchaseDetails" autoMapping="true">
+        <id property="sysIdChiTietDonHang" column="sys_id_chi_tiet_don_hang"/>
+        <result property="maInBound" column="sys_id_inbound"/>
+        <result property="maPR" column="ma_pr"/>
+        <result property="maPO" column="ma_po"/>
+        <result property="maKhachHang" column="sys_id_khang_hang"/>
+        <result property="maSanPham" column="sys_id_san_pham"/>
+        <result property="soLuong" column="so_luong"/>
+        <result property="gia" column="gia"/>
+        <result property="tongChiPhi" column="tong_chi_phi"/>
+        <result property="ngayNhap" column="ngay_nhap"/>
+    </resultMap>
+    <select id="getAllPurchaseDetails" resultMap="PurchaseDetailsMap">
+        SELECT sys_id_chi_tiet_don_hang, sys_id_inbound, ma_pr, ma_po, sys_id_khang_hang, sys_id_san_pham, so_luong, gia, tong_chi_phi, ngay_nhap
+        FROM chi_tiet_don_hang;
+    </select>
+    <select id="getPurchaseRequestById" resultMap="PurchaseDetailsMap">
+        SELECT sys_id_chi_tiet_don_hang,
+               sys_id_inbound,
+               ma_pr,
+               ma_po,
+               sys_id_khang_hang,
+               sys_id_san_pham,
+               so_luong,
+               gia,
+               tong_chi_phi,
+               ngay_nhap
+        FROM chi_tiet_don_hang
+        WHERE ma_pr = #{maPR};
+    </select>
+</mapper>
