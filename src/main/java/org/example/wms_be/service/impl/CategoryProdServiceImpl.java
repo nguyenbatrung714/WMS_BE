@@ -3,6 +3,7 @@ package org.example.wms_be.service.impl;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.wms_be.converter.CategoryProdConverter;
 import org.example.wms_be.converter.WarehouseConverter;
 import org.example.wms_be.data.dto.CategoryProdDto;
@@ -19,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CategoryProdServiceImpl implements CategoryProdService {
     private static final Logger logger = LoggerFactory.getLogger(CategoryProdServiceImpl.class);
     private final CategoryProdMapper categoryProdMapper;
