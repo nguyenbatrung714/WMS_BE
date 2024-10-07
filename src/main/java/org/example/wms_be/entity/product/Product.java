@@ -8,7 +8,7 @@ import lombok.Setter;
 public class Product {
     private Integer sysIdSanPham;
     private String tenSanPham;
-    private Float soLuongHienCo;
+    private Double soLuongHienCo;
     private Integer sysIdDanhMuc;
     private String moTa;
     private String hinhAnh;
