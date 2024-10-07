@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.product.CategoryProdMapper">
+    <resultMap id="categoryProdMap" type="org.example.wms_be.entity.product.CategoryProd">
+        <id property="sysIdDanhMuc" column="sys_id_danh_muc"/>
+        <result property="tenDanhMuc" column="ten_danh_muc"/>
+        <result property="moTa" column="mo_ta"/>
+        <result property="maKho" column="ma_kho"/>
+
+    </resultMap>
+    <insert id="insertCategoryProd" useGeneratedKeys="true" keyProperty="sysIdDanhMuc">
+        INSERT INTO danh_muc(ten_danh_muc, mo_ta, ma_kho)
+        VALUES (#{tenDanhMuc}, #{moTa}, #{maKho})
+    </insert>
+
+    <update id="updateCategoryProd">
+        UPDATE danh_muc
+        SET ten_danh_muc = #{tenDanhMuc},
+            mo_ta        = #{moTa},
+            ma_kho       = #{maKho}
+        WHERE sys_id_danh_muc = #{sysIdDanhMuc}
+    </update>
+
+    <delete id="deleteCategoryProd">
+        DELETE
+        FROM danh_muc
+        WHERE sys_id_danh_muc = #{sysIdDanhMuc}
+    </delete>
+
+    <select id="getAllCategoryProd" resultMap="categoryProdMap">
+        SELECT sys_id_danh_muc,
+               ten_danh_muc,
+               mo_ta,
+               ma_kho
+        FROM danh_muc
+    </select>
+
+    <select id="checkCategoryProdExists" resultType="boolean" parameterType="integer">
+        SELECT EXISTS (SELECT 1
+                       FROM danh_muc
+                       WHERE sys_id_danh_muc = #{sysIdDanhMuc});
+    </select>
+
+    <select id="getCategoryProdByMaDanhMuc" resultMap="categoryProdMap" parameterType="integer">
+        SELECT sys_id_danh_muc,
+               ten_danh_muc,
+               mo_ta,
+               ma_kho
+        FROM danh_muc
+        WHERE sys_id_danh_muc = #{sysIdDanhMuc}
+    </select>
+
+</mapper>
