@@ -40,8 +40,8 @@ public class CategoryProdApi {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CategoryProdDto>> saveZone(@RequestBody CategoryProdDto categoryProdDto,
-                                                                 HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<CategoryProdDto>> saveCategoryProd(@RequestBody CategoryProdDto categoryProdDto,
+                                                         HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,

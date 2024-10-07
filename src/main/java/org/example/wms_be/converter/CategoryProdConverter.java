@@ -7,5 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CategoryProdConverter {
     CategoryProdDto toCategoryProdDto (CategoryProd categoryProd);
+
     CategoryProd toCategoryProd (CategoryProdDto categoryProdDto);
 }
