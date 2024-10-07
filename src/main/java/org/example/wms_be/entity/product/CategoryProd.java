@@ -1,4 +1,4 @@
-package org.example.wms_be.entity.categoryProd;
+package org.example.wms_be.entity.product;
 
 import lombok.Getter;
 import lombok.Setter;

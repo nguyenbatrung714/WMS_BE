@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/categoryProd")
+@RequestMapping("/api/v1/category-products")
 public class CategoryProdApi {
     private final CategoryProdService categoryProdService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageInfo<CategoryProdDto>>> getAllCategoryProd(@RequestParam(defaultValue = "0") int page,
-                                                                              @RequestParam(defaultValue = "10") int size,
-                                                                              HttpServletRequest request) {
+                                                                                     @RequestParam(defaultValue = "10") int size,
+                                                                                     HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
@@ -27,9 +27,10 @@ public class CategoryProdApi {
                 categoryProdService.getAllCategoryProd(page, size)
         ), HttpStatus.OK);
     }
+
     @GetMapping("/{sysIdDanhMuc}")
     public ResponseEntity<ApiResponse<CategoryProdDto>> findCategoryProdById(@PathVariable Integer sysIdDanhMuc,
-                                                             HttpServletRequest request) {
+                                                                             HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
@@ -37,9 +38,10 @@ public class CategoryProdApi {
                 categoryProdService.getCategoryProdById(sysIdDanhMuc)
         ), HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<ApiResponse<CategoryProdDto>> saveZone(@RequestBody CategoryProdDto categoryProdDto,
-                                                         HttpServletRequest request) {
+                                                                 HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
@@ -47,9 +49,10 @@ public class CategoryProdApi {
                 categoryProdService.saveCategoryProd(categoryProdDto)
         ), HttpStatus.CREATED);
     }
+
     @DeleteMapping("/{maDanhMuc}")
     public ResponseEntity<ApiResponse<Void>> removeCategoryProd(@PathVariable Integer maDanhMuc,
-                                                        HttpServletRequest request) {
+                                                                HttpServletRequest request) {
         categoryProdService.deleteCategoryProd(maDanhMuc);
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),

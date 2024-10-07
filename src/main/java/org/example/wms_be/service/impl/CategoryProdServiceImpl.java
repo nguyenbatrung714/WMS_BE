@@ -4,14 +4,11 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import lombok.AllArgsConstructor;
 import org.example.wms_be.converter.CategoryProdConverter;
-import org.example.wms_be.converter.WarehouseConverter;
 import org.example.wms_be.data.dto.CategoryProdDto;
-import org.example.wms_be.entity.categoryProd.CategoryProd;
-import org.example.wms_be.entity.warehouse.Zone;
+import org.example.wms_be.entity.product.CategoryProd;
 import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.exception.ResourceNotFoundException;
-import org.example.wms_be.mapper.account.UserMapper;
-import org.example.wms_be.mapper.categoryProd.CategoryProdMapper;
+import org.example.wms_be.mapper.product.CategoryProdMapper;
 import org.example.wms_be.mapper.warehouse.WarehouseMapper;
 import org.example.wms_be.service.CategoryProdService;
 import org.slf4j.Logger;
@@ -25,6 +22,7 @@ public class CategoryProdServiceImpl implements CategoryProdService {
     private final CategoryProdMapper categoryProdMapper;
     private final CategoryProdConverter categoryProdConverter;
     private final WarehouseMapper warehouseMapper;
+
     @Override
     public PageInfo<CategoryProdDto> getAllCategoryProd(int page, int size) {
         try {
@@ -56,7 +54,6 @@ public class CategoryProdServiceImpl implements CategoryProdService {
                 categoryProdMapper.insertCategoryProd(categoryProd);
             }
         } catch (Exception e) {
-            logger.error("Insert or update category failed: {}", e.getMessage());
             throw new BadSqlGrammarException("Save category failed");
         }
 
@@ -66,7 +63,7 @@ public class CategoryProdServiceImpl implements CategoryProdService {
     @Override
     public CategoryProdDto getCategoryProdById(Integer sysIdDanhMuc) {
         if (!categoryProdMapper.checkCategoryProdExists(sysIdDanhMuc)) {
-            throw new ResourceNotFoundException("CategoryProd", "maDanhMuc", sysIdDanhMuc.toString());
+            throw new ResourceNotFoundException("Category product", "maDanhMuc", sysIdDanhMuc +"");
         }
 
         try {
@@ -81,14 +78,13 @@ public class CategoryProdServiceImpl implements CategoryProdService {
     @Override
     public Void deleteCategoryProd(Integer maDanhMuc) {
         if (!categoryProdMapper.checkCategoryProdExists(maDanhMuc)) {
-            throw new ResourceNotFoundException("Zone", "maKhuVuc", maDanhMuc.toString());
+            throw new ResourceNotFoundException("Category product", "maKhuVuc", maDanhMuc.toString());
         }
 
         try {
             categoryProdMapper.deleteCategoryProd(maDanhMuc);
             return null;
         } catch (Exception e) {
-            logger.error("Delete zone failed: {}", e.getMessage());
             throw new BadSqlGrammarException("Delete categoryProd failed");
         }
     }

@@ -1,8 +1,7 @@
-package org.example.wms_be.mapper.categoryProd;
+package org.example.wms_be.mapper.product;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.example.wms_be.entity.categoryProd.CategoryProd;
-import org.example.wms_be.entity.warehouse.ZoneDetail;
+import org.example.wms_be.entity.product.CategoryProd;
 
 import java.util.List;
 
