@@ -1,7 +1,9 @@
 package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.wms_be.converter.PurchaseDetailsConverter;
 import org.example.wms_be.converter.PurchaseRequestConverter;
+import org.example.wms_be.data.dto.PurchaseDetailsDto;
 import org.example.wms_be.data.dto.PurchaseRequestDto;
 import org.example.wms_be.entity.purchase.PurchaseDetails;
 import org.example.wms_be.entity.purchase.PurchaseRequest;
@@ -11,19 +13,24 @@ import org.example.wms_be.service.PurchaseRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 
 
 @Service
 @RequiredArgsConstructor
 public class PurchaseRequestImpl implements PurchaseRequestService {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseRequestImpl.class);
- private final PurchaseRequestMapper purchaseRequestMapper;
- private final PurchaseDetailsMapper purchaseDetailsMapper;
- private final PurchaseRequestConverter purchaseRequestConverter;
+    private final PurchaseRequestMapper purchaseRequestMapper;
+    private final PurchaseDetailsMapper purchaseDetailsMapper;
+    private final PurchaseRequestConverter purchaseRequestConverter;
+    private final PurchaseDetailsConverter purchaseDetailsConverter;
+
     @Override
     public List<PurchaseRequestDto> getAllPurchaseRequest() {
         try {
@@ -51,4 +58,52 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    @Transactional
+    public void savePurchaseRequestWithDetails(PurchaseRequestDto purchaseRequestDto) {
+        // Định dạng cho ngày yêu cầu và ngày nhập
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // Chuyển đổi DTO thành Entity
+        PurchaseRequest purchaseRequest = purchaseRequestConverter.toPurchaseRequest(purchaseRequestDto);
+        // Chuyển đổi ngày yêu cầu
+        try {
+            if (purchaseRequestDto.getNgayYeuCau() != null && !purchaseRequestDto.getNgayYeuCau().isEmpty()) {
+                LocalDateTime ngayYeuCau = LocalDateTime.parse(purchaseRequestDto.getNgayYeuCau(), inputFormatter);
+                purchaseRequest.setNgayYeuCau(ngayYeuCau.format(outputFormatter)); // Định dạng lại trước khi lưu
+            }
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Ngày không hợp lệ: " + purchaseRequestDto.getNgayYeuCau(), e);
+        }
+        // Lặp qua từng chi tiết yêu cầu mua hàng
+        for (PurchaseDetailsDto detailDto : purchaseRequestDto.getChiTietDonHang()) {
+            // Chuyển đổi DTO thành Entity
+            PurchaseDetails detail = purchaseDetailsConverter.toPurchaseDetails(detailDto);
+            // Lưu chi tiết yêu cầu mua hàng
+            if (purchaseDetailsMapper.existById(detail.getSysIdChiTietDonHang())){
+                purchaseDetailsMapper.updatePurchaseDetails(detail);
+            }else {
+                detail.setMaPR(purchaseRequest.getMaPR());
+                purchaseDetailsMapper.insertPurchaseDetails(detail);
+            }
+            if (purchaseRequestMapper.existById(purchaseRequestDto.getSysIdYeuCauMuaHang())){
+                purchaseRequestMapper.updatePurchaseRequest(purchaseRequest);
+            }else {
+                purchaseRequestMapper.insertPurchaseRequest(purchaseRequest);
+            }
+            // Chuyển đổi ngày nhập
+            try {
+                if (detailDto.getNgayNhap() != null && !detailDto.getNgayNhap().isEmpty()) {
+                    LocalDateTime ngayNhap = LocalDateTime.parse(detailDto.getNgayNhap(), inputFormatter);
+                    detail.setNgayNhap(ngayNhap.format(outputFormatter)); // Định dạng lại trước khi lưu
+                }
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Ngày không hợp lệ: " + detailDto.getNgayNhap(), e);
+            }
+        }
+        // Trả về đối tượng PurchaseRequest đã lưu
+        logger.info("Saved PurchaseRequest: {}", purchaseRequest);
+    }
 }
+

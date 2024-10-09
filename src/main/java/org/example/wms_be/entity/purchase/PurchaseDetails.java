@@ -10,8 +10,8 @@ public class PurchaseDetails {
     private String  maInBound;
     private String  maPR;
     private String  maPO;
-    private String  maKhachHang;
-    private String  maSanPham;
+    private Integer  maKhachHang;
+    private Integer  maSanPham;
     private Double  soLuong;
     private Double  gia;
     private Double  tongChiPhi;

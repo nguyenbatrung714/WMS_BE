@@ -6,4 +6,7 @@ import java.util.List;
 @Mapper
 public interface PurchaseRequestMapper {
     List<PurchaseRequest> getAllPurchaseRequest();
+    int insertPurchaseRequest(PurchaseRequest purchaseRequest);
+    boolean existById(Integer sysIdYeuCauMuaHang);
+    int updatePurchaseRequest(PurchaseRequest purchaseRequest);
 }

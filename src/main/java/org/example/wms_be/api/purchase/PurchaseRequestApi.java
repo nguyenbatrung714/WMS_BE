@@ -6,10 +6,8 @@ import org.example.wms_be.data.mgt.ApiResponse;
 import org.example.wms_be.service.PurchaseRequestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -28,6 +26,21 @@ public class PurchaseRequestApi {
                 HttpStatus.OK.value(),
                 "lấy danh sách thành công",
                 purchaseRequests
+        );
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+    @PostMapping("/save")
+    public ResponseEntity<ApiResponse<PurchaseRequestDto>> savePurchaseRequest(
+            @RequestBody PurchaseRequestDto purchaseRequestDto,
+            HttpServletRequest request) {
+        // Lưu yêu cầu mua hàng
+        purchaseRequestService.savePurchaseRequestWithDetails(purchaseRequestDto);
+        // Tạo ApiResponse để trả về dữ liệu
+        ApiResponse<PurchaseRequestDto> response = new ApiResponse<>(
+                request.getRequestURI(),
+                HttpStatus.CREATED.value(),
+                "Lưu yêu cầu mua hàng thành công",
+                purchaseRequestDto
         );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
