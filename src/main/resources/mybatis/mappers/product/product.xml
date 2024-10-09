@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.product.ProductMapper">
+
+    <resultMap id="productMap" type="org.example.wms_be.entity.product.Product">
+        <id property="sysIdSanPham" column="sys_id_san_pham"/>
+        <result property="tenSanPham" column="ten_san_pham"/>
+        <result property="soLuongHienCo" column="so_luong_hien_co"/>
+        <result property="moTa" column="mo_ta"/>
+        <result property="hinhAnh" column="hinh_anh"/>
+        <result property="sysIdDanhMuc" column="sys_id_danh_muc"/>
+    </resultMap>
+
+    <insert id="insertProduct" useGeneratedKeys="true" keyProperty="sysIdSanPham">
+        INSERT INTO san_pham(ten_san_pham,
+                             so_luong_hien_co,
+                             mo_ta,
+                             hinh_anh,
+                             sys_id_danh_muc)
+        VALUES (#{tenSanPham},
+                #{soLuongHienCo},
+                #{moTa},
+                #{hinhAnh},
+                #{sysIdDanhMuc})
+    </insert>
+
+    <update id="updateProduct">
+        UPDATE san_pham
+        SET ten_san_pham     = #{tenSanPham},
+            so_luong_hien_co = #{soLuongHienCo},
+            mo_ta            = #{moTa},
+            hinh_anh         = #{hinhAnh},
+            sys_id_danh_muc  = #{sysIdDanhMuc}
+        WHERE sys_id_san_pham = #{sysIdSanPham}
+    </update>
+
+    <delete id="deleteProduct">
+        DELETE
+        FROM san_pham
+        WHERE sys_id_san_pham = #{sysIdSanPham}
+    </delete>
+
+    <select id="getAllProduct" resultMap="productMap">
+        SELECT sys_id_san_pham,
+               ten_san_pham,
+               so_luong_hien_co,
+               sys_id_danh_muc,
+               mo_ta,
+               hinh_anh
+        FROM san_pham
+    </select>
+
+    <select id="checkProductExists" resultType="boolean" parameterType="integer">
+        SELECT EXISTS (SELECT 1
+                       FROM san_pham
+                       WHERE sys_id_san_pham = #{sysIdSanPham});
+    </select>
+
+    <select id="getProductByMaSanPham" resultMap="productMap">
+        SELECT sys_id_san_pham,
+               ten_san_pham,
+               so_luong_hien_co,
+               sys_id_danh_muc,
+               mo_ta,
+               hinh_anh
+        FROM san_pham
+        WHERE sys_id_san_pham = #{sysIdSanPham}
+    </select>
+
+</mapper>
