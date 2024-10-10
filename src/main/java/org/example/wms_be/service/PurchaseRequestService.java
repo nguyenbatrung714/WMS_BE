@@ -1,6 +1,5 @@
 package org.example.wms_be.service;
 
-import org.example.wms_be.data.dto.PurchaseDetailsDto;
 import org.example.wms_be.data.dto.PurchaseRequestDto;
 
 import java.util.List;

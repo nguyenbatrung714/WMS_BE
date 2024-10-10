@@ -11,14 +11,14 @@
         <result property="trangThai" column="trang_thai"/>
     </resultMap>
     <insert id="insertPurchaseRequest">
-        INSERT INTO purchase_request(ma_pr, ngay_yeu_cau, sys_id_user, trang_thai)
-        VALUES (#{maPR}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{nguoiYeuCau}, #{trangThai});
+        INSERT INTO purchase_request(ma_pr, ngay_yeu_cau, sys_id_user)
+        VALUES (#{maPR}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{nguoiYeuCau});
     </insert>
     <update id="updatePurchaseRequest">
         UPDATE purchase_request
-        SET  ngay_yeu_cau = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
-             sys_id_user = #{nguoiYeuCau},
-             trang_thai = #{trangThai}
+        SET ngay_yeu_cau = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
+            sys_id_user  = #{nguoiYeuCau},
+            trang_thai   = #{trangThai}
         WHERE sys_id_pr = #{sysIdYeuCauMuaHang};
     </update>
     <select id="getAllPurchaseRequest" resultMap="PurchaseRequestMap">
@@ -26,8 +26,9 @@
         FROM purchase_request;
     </select>
     <select id="existById" resultType="java.lang.Boolean">
-        SELECT EXISTS(SELECT 1 FROM
-                                   purchase_request WHERE sys_id_pr = #{sysIdYeuCauMuaHang});
+        SELECT EXISTS(SELECT 1
+                      FROM purchase_request
+                      WHERE sys_id_pr = #{sysIdYeuCauMuaHang});
     </select>
 
 </mapper>

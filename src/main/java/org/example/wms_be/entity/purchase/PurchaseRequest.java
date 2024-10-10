@@ -1,5 +1,6 @@
 package org.example.wms_be.entity.purchase;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,6 @@ public class PurchaseRequest {
     private String maPR;
     private String ngayYeuCau;
     private Integer nguoiYeuCau;
-    private Boolean trangThai;
-    List<PurchaseDetails> chiTietDonHang;
+    private String trangThai;
+    List<PurchaseRequestDetails> chiTietDonHang;
 }
