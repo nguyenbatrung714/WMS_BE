@@ -118,6 +118,11 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
     private void sendNotificationEmail(PurchaseRequestDto purchaseRequestDto, PurchaseRequest purchaseRequest) {
         String emailToSend = purchaseRequestDto.getEmail();
         if (emailToSend != null && !emailToSend.isEmpty()) {
+            boolean emailExists = userMapper.checkMailExits(emailToSend);
+            if (!emailExists) {
+                logger.info("Địa chỉ email không tồn tại: {}", emailToSend);
+                return;
+            }
             String userRequesting = PrConst.DEFAULT_USER_REQUESTING;
             String role = PrConst.DEFAULT_ROLE;
             String fullName = PrConst.DEFAULT_FULL_NAME;

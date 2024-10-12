@@ -9,18 +9,19 @@
         <result property="maInBound" column="sys_id_inbound"/>
         <result property="maPR" column="ma_pr"/>
         <result property="maPO" column="ma_po"/>
-        <result property="maKhachHang" column="sys_id_khang_hang"/>
-        <result property="maSanPham" column="sys_id_san_pham"/>
+        <result property="sysIdKhachHang" column="sys_id_khang_hang"/>
+        <result property="sysIdSanPham" column="sys_id_san_pham"/>
         <result property="soLuong" column="so_luong"/>
         <result property="gia" column="gia"/>
         <result property="tongChiPhi" column="tong_chi_phi"/>
         <result property="ngayNhap" column="ngay_nhap"/>
         <result property="tenSanPham" column="ten_san_pham"/>
+        <result property="tenKhachHang" column="ten_khach_hang"/>
     </resultMap>
     <insert id="insertPurchaseDetails">
         INSERT INTO chi_tiet_don_hang(sys_id_inbound, ma_pr, ma_po, sys_id_khang_hang, sys_id_san_pham, so_luong, gia,
                                       tong_chi_phi, ngay_nhap)
-        VALUES (#{maInBound}, #{maPR}, #{maPO}, #{maKhachHang}, #{maSanPham}, #{soLuong}, #{gia}, #{tongChiPhi},
+        VALUES (#{maInBound}, #{maPR}, #{maPO}, #{sysIdKhachHang}, #{sysIdSanPham}, #{soLuong}, #{gia}, #{tongChiPhi},
                 #{ngayNhap});
     </insert>
     <update id="updatePurchaseDetails">
@@ -29,8 +30,8 @@
             --             sys_id_inbound    = #{maInBound},
             --             ma_pr             = #{maPR},
             --             ma_po             = #{maPO},
-            sys_id_khang_hang = #{maKhachHang},
-            sys_id_san_pham   = #{maSanPham},
+            sys_id_khang_hang = #{sysIdKhachHang},
+            sys_id_san_pham   = #{sysIdSanPham},
             so_luong          = #{soLuong},
             gia               = #{gia},
             tong_chi_phi      = #{tongChiPhi},
@@ -55,8 +56,7 @@
                ct.sys_id_inbound,
                ct.ma_pr,
                ct.ma_po,
-               ct.sys_id_khang_hang,
-               ct.sys_id_san_pham,
+               ten_khach_hang,
                sp.ten_san_pham,
                ct.so_luong,
                ct.gia,
@@ -64,6 +64,7 @@
                ct.ngay_nhap
         FROM chi_tiet_don_hang ct
                  JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
+                 JOIN khach_hang kh ON ct.sys_id_khang_hang = kh.sys_id_khach_hang
         WHERE ct.ma_pr = #{maPR};
 
     </select>

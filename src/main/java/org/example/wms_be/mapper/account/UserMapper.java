@@ -14,4 +14,5 @@ public interface UserMapper {
 
     Map<String, String> getEmailByRoles(String email);
     String getFullNameByRoles(Integer roleId);
+    boolean checkMailExits(String email);
 }
