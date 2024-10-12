@@ -1,27 +1,29 @@
 package org.example.wms_be.service.impl;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.example.wms_be.constant.PrConst;
 import org.example.wms_be.converter.PurchaseDetailsConverter;
 import org.example.wms_be.converter.PurchaseRequestConverter;
 import org.example.wms_be.data.dto.PurchaseRequestDetailsDto;
 import org.example.wms_be.data.dto.PurchaseRequestDto;
 import org.example.wms_be.entity.purchase.PurchaseRequestDetails;
 import org.example.wms_be.entity.purchase.PurchaseRequest;
+import org.example.wms_be.mapper.account.UserMapper;
 import org.example.wms_be.mapper.purchase.PurchaseDetailsMapper;
 import org.example.wms_be.mapper.purchase.PurchaseRequestMapper;
 import org.example.wms_be.service.PurchaseRequestService;
+import org.example.wms_be.utils.EmailService;
+import org.example.wms_be.utils.TplEmailPR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Service
@@ -32,6 +34,8 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
     private final PurchaseDetailsMapper purchaseDetailsMapper;
     private final PurchaseRequestConverter purchaseRequestConverter;
     private final PurchaseDetailsConverter purchaseDetailsConverter;
+    private final UserMapper userMapper;
+    private final EmailService emailService;
 
     @Override
     public List<PurchaseRequestDto> getAllPurchaseRequest() {
@@ -58,9 +62,10 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
             return Collections.emptyList();
         }
     }
+
     @Override
     @Transactional
-    public void savePurchaseRequestWithDetails(PurchaseRequestDto purchaseRequestDto) {
+    public void savePurchaseRequestWithDetails(PurchaseRequestDto purchaseRequestDto) throws MessagingException {
         // Định dạng cho ngày yêu cầu
         DateTimeFormatter inputFormatterNgayYeuCau = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         DateTimeFormatter outputFormatterNgayYeuCau = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -105,8 +110,56 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
                 purchaseDetailsMapper.insertPurchaseDetails(detail);
             }
         }
-        // Trả về đối tượng PurchaseRequest đã lưu
+        // Gửi email
+        sendNotificationEmail(purchaseRequestDto, purchaseRequest);
         logger.info("Saved PurchaseRequest: {}", purchaseRequest);
     }
+
+    private void sendNotificationEmail(PurchaseRequestDto purchaseRequestDto, PurchaseRequest purchaseRequest) {
+        String emailToSend = purchaseRequestDto.getEmail();
+        if (emailToSend != null && !emailToSend.isEmpty()) {
+            String userRequesting = PrConst.DEFAULT_USER_REQUESTING;
+            String role = PrConst.DEFAULT_ROLE;
+            String fullName = PrConst.DEFAULT_FULL_NAME;
+            try {
+                // Lấy thông tin người dùng từ userMapper
+                Map<String, String> userInfo = userMapper.getEmailByRoles(emailToSend);
+                logger.info("Thông tin nhận được từ getEmailByRoles: {}", userInfo);
+                if (userInfo != null) {
+                    // Lấy thông tin từ map
+                    fullName = userInfo.getOrDefault("fullName", PrConst.DEFAULT_FULL_NAME);
+                    role = userInfo.getOrDefault("role", PrConst.DEFAULT_ROLE);
+                }
+            } catch (Exception e) {
+                logger.error("Lỗi khi lấy thông tin người dùng: ", e);
+            }
+            try {
+                userRequesting = userMapper.getFullNameByRoles(purchaseRequestDto.getNguoiYeuCau());
+            } catch (Exception e) {
+                logger.error("Lỗi khi lấy tên người yêu cầu: ", e);
+            }
+            // Tạo tiêu đề email
+            String title = TplEmailPR.buildEmailTitle(purchaseRequest.getMaPR());
+            // Tạo thông tin yêu cầu mua hàng
+            String requestInfoTable = TplEmailPR.buildRequestInfo(userRequesting, fullName, role);
+            // Lấy chi tiết đơn hàng va tao bang
+            List<PurchaseRequestDetails> chiTietDonHangList = purchaseDetailsMapper.getPurchaseRequestById(purchaseRequest.getMaPR());
+            String orderDetailsTable = TplEmailPR.buildOrderDetailsTable(chiTietDonHangList);
+
+            // Tạo nội dung email
+            String body = TplEmailPR.buildEmailBody(title, requestInfoTable, orderDetailsTable);
+            String subject = "Thông báo phê duyệt yêu cầu mua hàng";
+            try {
+                emailService.sendEmail(emailToSend, subject, body);
+                logger.info("Đã gửi email đến: {}", emailToSend);
+            } catch (Exception e) {
+                logger.error("Lỗi khi gửi email đến {}: {}", emailToSend, e.getMessage(), e);
+            }
+        } else {
+            logger.info("Không có địa chỉ email được cung cấp để gửi thông báo.");
+        }
+    }
 }
+
+
 

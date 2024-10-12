@@ -15,6 +15,7 @@
         <result property="gia" column="gia"/>
         <result property="tongChiPhi" column="tong_chi_phi"/>
         <result property="ngayNhap" column="ngay_nhap"/>
+        <result property="tenSanPham" column="ten_san_pham"/>
     </resultMap>
     <insert id="insertPurchaseDetails">
         INSERT INTO chi_tiet_don_hang(sys_id_inbound, ma_pr, ma_po, sys_id_khang_hang, sys_id_san_pham, so_luong, gia,
@@ -50,18 +51,21 @@
         FROM chi_tiet_don_hang;
     </select>
     <select id="getPurchaseRequestById" resultMap="PurchaseDetailsMap">
-        SELECT sys_id_chi_tiet_don_hang,
-               sys_id_inbound,
-               ma_pr,
-               ma_po,
-               sys_id_khang_hang,
-               sys_id_san_pham,
-               so_luong,
-               gia,
-               tong_chi_phi,
-               ngay_nhap
-        FROM chi_tiet_don_hang
-        WHERE ma_pr = #{maPR};
+        SELECT ct.sys_id_chi_tiet_don_hang,
+               ct.sys_id_inbound,
+               ct.ma_pr,
+               ct.ma_po,
+               ct.sys_id_khang_hang,
+               ct.sys_id_san_pham,
+               sp.ten_san_pham,
+               ct.so_luong,
+               ct.gia,
+               ct.tong_chi_phi,
+               ct.ngay_nhap
+        FROM chi_tiet_don_hang ct
+                 JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
+        WHERE ct.ma_pr = #{maPR};
+
     </select>
     <select id="existById" resultType="java.lang.Boolean">
         SELECT EXISTS(SELECT 1

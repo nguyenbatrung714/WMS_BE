@@ -17,4 +17,5 @@ public class PurchaseRequestDetailsDto {
     private Double  gia;
     private Double  tongChiPhi;
     private String  ngayNhap;
+    private String  tenSanPham;
 }
