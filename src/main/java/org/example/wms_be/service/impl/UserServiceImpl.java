@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
         try {
             PageMethod.startPage(page + 1, size);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Error when starting page for CategoryProd");
+            throw new IllegalArgumentException("Error when starting page for User");
         }
 
         return new PageInfo<>(

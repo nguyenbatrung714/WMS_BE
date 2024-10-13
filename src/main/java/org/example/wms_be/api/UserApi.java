@@ -25,7 +25,7 @@ public class UserApi {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
-                "List of CategoryProd",
+                "List of User",
                 userService.getAllUser(page, size)
         ), HttpStatus.OK);
     }
