@@ -15,5 +15,6 @@ public class PurchaseRequestDto {
     private String  ngayYeuCau;
     private Integer nguoiYeuCau;
     private String trangThai;
+    private String email;
     List<PurchaseRequestDetailsDto> chiTietDonHang;
 }

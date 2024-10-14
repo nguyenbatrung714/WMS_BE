@@ -1,4 +1,5 @@
 package org.example.wms_be.api.purchase;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.data.dto.PurchaseRequestDto;
@@ -30,7 +31,7 @@ public class PurchaseRequestApi {
     @PostMapping("/save")
     public ResponseEntity<ApiResponse<PurchaseRequestDto>> savePurchaseRequest(
             @RequestBody PurchaseRequestDto purchaseRequestDto,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws MessagingException {
         // Lưu yêu cầu mua hàng
         purchaseRequestService.savePurchaseRequestWithDetails(purchaseRequestDto);
         // Tạo ApiResponse để trả về dữ liệu
