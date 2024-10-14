@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.wms_be.mapper.purchase.PurchaseDetailsMapper">
+    
     <resultMap id="PurchaseDetailsMap" type="org.example.wms_be.entity.purchase.PurchaseRequestDetails"
                autoMapping="true">
         <id property="sysIdChiTietDonHang" column="sys_id_chi_tiet_don_hang"/>
@@ -16,12 +17,19 @@
         <result property="tongChiPhi" column="tong_chi_phi"/>
         <result property="ngayNhap" column="ngay_nhap"/>
     </resultMap>
-    <insert id="insertPurchaseDetails">
+
+<!--    <resultMap id="UpdateStatusMap" type="PurchaseRequestDetails">-->
+<!--        <result property="maPO" column="ma_po"/>-->
+<!--        <result property="maPR" column="ma_pr"/>        -->
+<!--    </resultMap>-->
+    
+    <insert id="insertPurchaseDetails" useGeneratedKeys="true" keyProperty="sysIdChiTietDonHang">
         INSERT INTO chi_tiet_don_hang(sys_id_inbound, ma_pr, ma_po, sys_id_khang_hang, sys_id_san_pham, so_luong, gia,
                                       tong_chi_phi, ngay_nhap)
         VALUES (#{maInBound}, #{maPR}, #{maPO}, #{maKhachHang}, #{maSanPham}, #{soLuong}, #{gia}, #{tongChiPhi},
                 #{ngayNhap});
     </insert>
+    
     <update id="updatePurchaseDetails">
         UPDATE chi_tiet_don_hang
         SET
@@ -36,6 +44,7 @@
             ngay_nhap         = #{ngayNhap}
                     WHERE sys_id_chi_tiet_don_hang = #{sysIdChiTietDonHang};
     </update>
+    
     <select id="getAllPurchaseDetails" resultMap="PurchaseDetailsMap">
         SELECT sys_id_chi_tiet_don_hang,
                sys_id_inbound,
@@ -49,6 +58,7 @@
                ngay_nhap
         FROM chi_tiet_don_hang;
     </select>
+    
     <select id="getPurchaseRequestById" resultMap="PurchaseDetailsMap">
         SELECT sys_id_chi_tiet_don_hang,
                sys_id_inbound,
@@ -63,9 +73,46 @@
         FROM chi_tiet_don_hang
         WHERE ma_pr = #{maPR};
     </select>
+    
     <select id="existById" resultType="java.lang.Boolean">
         SELECT EXISTS(SELECT 1
                       FROM chi_tiet_don_hang
                       WHERE sys_id_chi_tiet_don_hang = #{sysIdChiTietDonHang});
     </select>
+    
+    <select id="getPRDetailByMaPR" parameterType="string" resultMap="PurchaseDetailsMap">
+        select sys_id_chi_tiet_don_hang,
+               ma_pr,
+               ma_po,
+               sys_id_khang_hang,
+               sys_id_san_pham,
+               so_luong,
+               gia,
+               tong_chi_phi,
+               ngay_nhap
+        from chi_tiet_don_hang
+        where ma_pr = #{maPR}
+    </select>
+
+    <update id="updateDetailsFromPR">
+        update chi_tiet_don_hang
+        set ma_po = #{maPO}
+        where ma_pr = #{maPR}
+    </update>
+
+    <select id="getPurchaseRequestByMaPO" resultMap="PurchaseDetailsMap">
+        SELECT sys_id_chi_tiet_don_hang,
+               sys_id_inbound,
+               ma_pr,
+               ma_po,
+               sys_id_khang_hang,
+               sys_id_san_pham,
+               so_luong,
+               gia,
+               tong_chi_phi,
+               ngay_nhap
+        FROM chi_tiet_don_hang
+        WHERE ma_po = #{maPO};
+    </select>
+
 </mapper>
