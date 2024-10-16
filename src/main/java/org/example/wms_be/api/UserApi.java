@@ -3,9 +3,7 @@ package org.example.wms_be.api;
 import com.github.pagehelper.PageInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.wms_be.data.dto.CategoryProdDto;
-import org.example.wms_be.data.dto.UserDto;
-import org.example.wms_be.data.dto.WarehouseDto;
+import org.example.wms_be.data.dto.*;
 import org.example.wms_be.data.mgt.ApiResponse;
 import org.example.wms_be.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -30,8 +28,8 @@ public class UserApi {
         ), HttpStatus.OK);
     }
     @PostMapping("/update-info")
-    public ResponseEntity<ApiResponse<UserDto>> updateInfo(@RequestBody UserDto userDto,
-                                                              HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<UserInfoDto>> updateInfo(@RequestBody UserInfoDto userDto,
+                                                               HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
@@ -40,8 +38,8 @@ public class UserApi {
         ), HttpStatus.CREATED);
     }
     @PostMapping("/update-password")
-    public ResponseEntity<ApiResponse<UserDto>> updatePassword(
-                                                               @RequestBody UserDto userDto,
+    public ResponseEntity<ApiResponse<UserPasswordDto>> updatePassword(
+                                                               @RequestBody UserPasswordDto userDto,
                                                                HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
