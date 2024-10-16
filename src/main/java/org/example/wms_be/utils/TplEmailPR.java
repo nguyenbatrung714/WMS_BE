@@ -63,4 +63,22 @@ public class TplEmailPR {
                         "</body></html>",
                 title, requestInfo, orderDetailsTable);
     }
+
+    // Tạo tiêu đề phản hồi
+    public static String buildSimpleResponseTitle(String purchaseOrderId) {
+        return String.format(
+                "<h2>Phản hồi yêu cầu mua hàng số: %s</h2>",
+                purchaseOrderId);
+    }
+
+    // Tạo nội dung phản hồi trang thái
+    public static String buildtrangThaiResponseBody(String title, String trangThai) {
+        return String.format(
+                "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
+                        "%s" + // tiêu đề
+                        "<p> Phê duyệt: <strong>%s</strong></p>" +
+                        "<p>Vui lòng kiểm tra lại hệ thống để biết thêm chi tiết.</p>" +
+                        "</body></html>",
+                title, trangThai);
+    }
 }
