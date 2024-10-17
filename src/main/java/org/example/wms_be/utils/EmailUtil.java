@@ -30,7 +30,6 @@ public class EmailUtil {
         helper.setText(body != null ? body : "", true);  // true để chỉ định nội dung là HTML
         mailSender.send(message);
     }
-    // Phương thức để lấy địa chỉ email gửi mặc định
 
 
 }

@@ -45,7 +45,7 @@
         FROM user u
                  JOIN users_roles ur ON u.sys_id_user = ur.sys_id_user
                  JOIN role r ON ur.sys_id_role = r.sys_id_role
-        WHERE r.sys_id_role = #{sysIdRole};
+        WHERE u.sys_id_user = #{sysIdUser}
     </select>
     <select id="checkMailExits" resultType="boolean" parameterType="String">
     SELECT EXISTS(SELECT 1

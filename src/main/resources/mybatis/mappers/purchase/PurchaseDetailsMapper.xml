@@ -35,16 +35,14 @@
     <update id="updatePurchaseDetails">
         UPDATE chi_tiet_don_hang
         SET
-            --             sys_id_inbound    = #{maInBound},
-            --             ma_pr             = #{maPR},
-            --             ma_po             = #{maPO},
+            ma_pr             = #{maPR},
             sys_id_khang_hang = #{sysIdKhachHang},
-            sys_id_san_pham   = #{sysIdSanPham},
-            so_luong          = #{soLuong},
-            gia               = #{gia},
-            tong_chi_phi      = #{tongChiPhi},
-            ngay_nhap         = #{ngayNhap}
-                    WHERE sys_id_chi_tiet_don_hang = #{sysIdChiTietDonHang};
+            sys_id_san_pham = #{sysIdSanPham},
+            so_luong = #{soLuong},
+            gia = #{gia},
+            tong_chi_phi = #{tongChiPhi},
+            ngay_nhap = #{ngayNhap}
+        WHERE sys_id_chi_tiet_don_hang = #{sysIdChiTietDonHang}
     </update>
     
     <select id="getAllPurchaseDetails" resultMap="PurchaseDetailsMap">

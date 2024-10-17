@@ -11,6 +11,11 @@ public class TplEmailPR {
                 "<h2>Số yêu cầu mua hàng mã: %s đang chờ xử lý.</h2>",
                 purchaseRequestId);
     }
+    public static String buildEmailTitleUpdate(String purchaseRequestId) {
+        return String.format(
+                "<h2>Số yêu cầu mua hàng mã: %s vừa được điều chỉnh (Đang chờ duyệt).</h2>",
+                purchaseRequestId);
+    }
 
     // Tạo  thông tin yêu cầu mua hàng
     public static String buildRequestInfo(String userRequesting, String fullName, String role) {
@@ -28,7 +33,7 @@ public class TplEmailPR {
     public static String buildOrderDetailsTable(List<PurchaseRequestDetails> details) {
         StringBuilder sb = new StringBuilder();
         sb.append("<table border='1' cellspacing='0' cellpadding='5' style='color: black;'>");
-        sb.append("<caption style='font-weight: bold; font-size: 1.5em; margin-bottom: 10px;'>Thông Tin Chi Tiết Đơn Hàng</caption>")
+        sb.append("<caption style='font-weight: bold; font-size: 1.5em; margin-bottom: 10px;'>Thông Tin Chi Tiết yêu cầu</caption>")
                 .append("<tr>")
                 .append("<th>Tên Sản Phẩm</th>")
                 .append("<th>Số Lượng(Kg)</th>")
@@ -63,22 +68,26 @@ public class TplEmailPR {
                         "</body></html>",
                 title, requestInfo, orderDetailsTable);
     }
-
-    // Tạo tiêu đề phản hồi
-    public static String buildSimpleResponseTitle(String purchaseOrderId) {
-        return String.format(
-                "<h2>Phản hồi yêu cầu mua hàng số: %s</h2>",
-                purchaseOrderId);
-    }
-
-    // Tạo nội dung phản hồi trang thái
-    public static String buildtrangThaiResponseBody(String title, String trangThai) {
+    // Tạo body email cho trường hợp cập nhật
+    public static String buildEmailBodyForUpdate(String title, String updatedInfo, String orderDetailsTable) {
         return String.format(
                 "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
                         "%s" + // tiêu đề
-                        "<p> Phê duyệt: <strong>%s</strong></p>" +
+                        "<p><strong>Thông báo cập nhật:</strong></p>" +
+                        "%s" + // thông tin yêu cầu mua hàng đã cập nhật
                         "<p>Vui lòng kiểm tra lại hệ thống để biết thêm chi tiết.</p>" +
+                        "%s" + // chi tiết đơn hàng đã cập nhật
                         "</body></html>",
-                title, trangThai);
+                title, updatedInfo, orderDetailsTable);
     }
+
+    // Tạo thông tin cập nhật đơn hàng
+    public static String buildUpdateInfo(String userRequesting) {
+        return String.format(
+                "<div style='margin-bottom: 15px; color: black;'>" +
+                        "<p><strong>Người thực hiện cập nhật:</strong> %s</p>" +
+                        "</div>",
+                userRequesting);
+    }
+
 }
