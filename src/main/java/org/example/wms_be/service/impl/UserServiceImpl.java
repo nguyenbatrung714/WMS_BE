@@ -58,20 +58,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserPasswordDto updatePassword(UserPasswordDto userDto) {
         try {
-            // Kiểm tra mật khẩu mới và mật khẩu xác nhận
-            if (!userDto.getPassword().equals(userDto.getConfirmPassword())) {
-                throw new IllegalArgumentException("Password and confirm password do not match");
-            }
             User user = userMapper.findUserByUsername(userDto.getUsername());
-            if (user != null) {
+            if (user == null){
+                throw new IllegalArgumentException("User not find with username"+ userDto.getUsername());
+
+            }
+            if(!passwordEncoder.matches(userDto.getPasswordOld(),user.getPassword())){
+                throw new IllegalArgumentException("Old password is incorrect");
+            }
                 // Encrypt password
                 String encryptedPassword = passwordEncoder.encode(userDto.getPassword());
                 user.setPassword(encryptedPassword);
                 userMapper.updateMatKhau(user);
                 return userConverter.toUserPasswordDto(user);
-            } else {
-                throw new IllegalArgumentException("User not found with id: " + userDto);
-            }
+
         } catch (Exception e) {
             logger.error("Failed to update password: {}", e.getMessage());
             throw new IllegalArgumentException("Error updating password");
