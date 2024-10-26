@@ -11,7 +11,6 @@ import java.util.Set;
 public class UserDto {
     private Integer sysIdUser;
     private String username;
-    private String password;
     private String email;
     private String fullName;
     private String soDienThoai;
