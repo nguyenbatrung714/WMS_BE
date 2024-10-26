@@ -32,6 +32,7 @@ public class FilterChainConfig {
 //                                .requestMatchers("api/v1/customers/**").permitAll()
 //                                .requestMatchers("api/v1/warehouse-types/**").permitAll()
 //                                .requestMatchers("api/v1/warehouse-zones/**").permitAll()
+
 //                                .anyRequest().authenticated()
                                 .anyRequest().permitAll()
                 )

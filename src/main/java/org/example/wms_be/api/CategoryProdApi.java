@@ -14,6 +14,8 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/category-products")
+@CrossOrigin
+
 public class CategoryProdApi {
     private final CategoryProdService categoryProdService;
 

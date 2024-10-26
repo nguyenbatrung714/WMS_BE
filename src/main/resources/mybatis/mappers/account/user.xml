@@ -5,7 +5,7 @@
 
 <mapper namespace="org.example.wms_be.mapper.account.UserMapper">
 
-    <resultMap id="UserMap" type="User" autoMapping="true">
+    <resultMap id="UserMap" type="org.example.wms_be.entity.account.User" autoMapping="true">
         <id property="sysIdUser" column="sys_id_user"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
@@ -19,6 +19,16 @@
             <result property="moTa" column="mo_ta"/>
         </collection>
     </resultMap>
+    <update id="updateInfo">
+        UPDATE user
+        SET full_name = #{fullName}, email = #{email}, so_dien_thoai = #{soDienThoai}
+        WHERE username = #{username};
+    </update>
+    <update id="updateMatKhau">
+        UPDATE user
+        SET password=#{password}
+        WHERE username = #{username};
+    </update>
 
     <select id="findUserByUsername" parameterType="String" resultMap="UserMap">
         select *
@@ -32,6 +42,18 @@
     <select id="checkUserExits" resultType="boolean" parameterType="integer">
         SELECT EXISTS(SELECT 1 FROM user WHERE sys_id_user = #{sysIdUser});
     </select>
+    <select id="checkUserExitsByUserName">
+        SELECT EXISTS(SELECT 1 FROM user WHERE username = #{username})
+    </select>
+    <select id="findAll" resultMap="UserMap">
+        select *
+        from user u
+                 left join users_roles ur on u.sys_id_user = ur.sys_id_user
+                 left join role r on ur.sys_id_role = r.sys_id_role
+    </select>
+    <select id="findUserById" resultType="org.example.wms_be.entity.account.User">
+    </select>
+
     <select id="getEmailByRoles" parameterType="String" resultType="HashMap">
         SELECT u.full_name AS fullName,
                r.mo_ta AS role
