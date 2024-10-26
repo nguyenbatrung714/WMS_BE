@@ -1,10 +1,11 @@
 package org.example.wms_be.service;
 
-import com.github.pagehelper.PageInfo;
 import org.example.wms_be.data.dto.CategoryProdDto;
 
+import java.util.List;
+
 public interface CategoryProdService {
-    PageInfo<CategoryProdDto> getAllCategoryProd(int page, int size);
+    List<CategoryProdDto> getAllCategoryProd();
 
     CategoryProdDto saveCategoryProd(CategoryProdDto categoryProdDto);
 

@@ -1,7 +1,5 @@
 package org.example.wms_be.service.impl;
 
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.converter.WarehouseConverter;
 import org.example.wms_be.data.dto.WarehouseDto;
@@ -15,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 
 @Service
@@ -26,18 +25,11 @@ public class WarehouseServiceImpl implements WarehouseService {
     private final UserMapper userMapper;
 
     @Override
-    public PageInfo<WarehouseDto> getAllWarehouses(int page, int size) {
-        try {
-            PageMethod.startPage(page + 1, size);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error when starting page");
-        }
-
-        return new PageInfo<>(
-                warehouseMapper.getAllWarehouses()
-                        .stream()
-                        .map(warehouseConverter::toWarehouseDto)
-                        .toList());
+    public List<WarehouseDto> getAllWarehouses() {
+        return warehouseMapper.getAllWarehouses()
+                .stream()
+                .map(warehouseConverter::toWarehouseDto)
+                .toList();
     }
 
     @Override

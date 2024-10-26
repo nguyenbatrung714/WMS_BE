@@ -1,6 +1,5 @@
 package org.example.wms_be.api;
 
-import com.github.pagehelper.PageInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.data.dto.ZoneDetailDto;
@@ -10,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
@@ -18,14 +19,12 @@ public class ZoneDetailApi {
     private final ZoneDetailService zoneDetailService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageInfo<ZoneDetailDto>>> getAllZoneDetails(@RequestParam(defaultValue = "0") int page,
-                                                                                  @RequestParam(defaultValue = "10") int size,
-                                                                                  HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<List<ZoneDetailDto>>> getAllZoneDetails(HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
                 "List of zone-details",
-                zoneDetailService.getAllZoneDetails(page, size)
+                zoneDetailService.getAllZoneDetails()
         ), HttpStatus.OK);
     }
 

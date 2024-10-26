@@ -1,7 +1,5 @@
 package org.example.wms_be.service.impl;
 
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.amazons3.service.S3Service;
 import org.example.wms_be.converter.ProductConverter;
@@ -21,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,19 +30,13 @@ public class ProductServiceImpl implements ProductService {
     private final S3Service s3Service;
 
     @Override
-    public PageInfo<ProductResp> getAllProduct(int page, int size) {
-        try {
-            PageMethod.startPage(page + 1, size);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error when starting page: " + e.getMessage());
-        }
-
-        return new PageInfo<>(productMapper.getAllProduct().stream().map(
+    public List<ProductResp> getAllProduct() {
+        return productMapper.getAllProduct().stream().map(
                 product -> {
                     product.setHinhAnh(generateImageUrl(product.getHinhAnh()));
                     return productConverter.toProductResp(product);
                 }
-        ).toList());
+        ).toList();
     }
 
     @Override
