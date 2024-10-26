@@ -6,4 +6,6 @@ import org.example.wms_be.entity.purchase.PurchaseOrder;
 @Mapper
 public interface PurchaseOrderMapper {
     int insertPurchaseOrder(PurchaseOrder purchaseOrder);
+
+    PurchaseOrder selectPurchaseOrderByMaPO(String maPO);
 }

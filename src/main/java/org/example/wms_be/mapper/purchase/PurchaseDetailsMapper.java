@@ -20,4 +20,8 @@ public interface PurchaseDetailsMapper {
     List<PurchaseRequestDetails> getPRDetailByMaPR(String maPR); // Get detail by maPR
 
     int updateDetailsFromPR(String maPR, String maPO); // update status from PR to PO (Từ đơn hàng yêu cầu mua hàng đến đơn hàng mua hàng)
+
+    List<PurchaseRequestDetails> getPRDetailByMaPO(String maPO); // Get detail by maPO
+
+    int updateDetailsFromPO(String maPO, String maInbound); // update status from PO to PR (Từ đơn hàng mua hàng đến đơn hàng yêu cầu mua h)
 }

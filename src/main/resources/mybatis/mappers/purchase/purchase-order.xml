@@ -17,4 +17,10 @@
         insert into purchase_oder(ma_po, ma_pr, ngay_tao, trang_thai, sys_id_user)
         values (#{maPO}, #{maPR}, #{ngayTao}, #{trangThai}, #{sysIdUser});
     </insert>
+
+    <select id="selectPurchaseOrderByMaPO" resultMap="PurchaseOrderMap">
+        SELECT sys_id_po, ma_po, ma_pr, ngay_tao, trang_thai, sys_id_user
+        FROM purchase_oder
+        WHERE ma_po = #{maPO};
+    </select>
 </mapper>
