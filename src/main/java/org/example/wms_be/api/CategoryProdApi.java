@@ -1,6 +1,5 @@
 package org.example.wms_be.api;
 
-import com.github.pagehelper.PageInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.example.wms_be.data.dto.CategoryProdDto;
@@ -9,6 +8,8 @@ import org.example.wms_be.service.CategoryProdService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -19,14 +20,12 @@ public class CategoryProdApi {
     private final CategoryProdService categoryProdService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageInfo<CategoryProdDto>>> getAllCategoryProd(@RequestParam(defaultValue = "0") int page,
-                                                                                     @RequestParam(defaultValue = "10") int size,
-                                                                                     HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<List<CategoryProdDto>>> getAllCategoryProd(HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
                 "List of CategoryProd",
-                categoryProdService.getAllCategoryProd(page, size)
+                categoryProdService.getAllCategoryProd()
         ), HttpStatus.OK);
     }
 

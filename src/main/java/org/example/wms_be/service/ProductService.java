@@ -1,12 +1,12 @@
 package org.example.wms_be.service;
 
-import com.github.pagehelper.PageInfo;
-import org.example.wms_be.data.dto.ProductDto;
 import org.example.wms_be.data.request.ProductReq;
 import org.example.wms_be.data.response.ProductResp;
 
+import java.util.List;
+
 public interface ProductService {
-    PageInfo<ProductResp> getAllProduct(int page, int size);
+    List<ProductResp> getAllProduct();
 
     ProductResp saveProduct(ProductReq productReq);
 

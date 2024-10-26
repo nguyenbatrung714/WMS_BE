@@ -1,6 +1,5 @@
 package org.example.wms_be.api;
 
-import com.github.pagehelper.PageInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.example.wms_be.data.mgt.ApiResponse;
@@ -11,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/products")
 @AllArgsConstructor
@@ -19,14 +20,12 @@ public class ProductApi {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageInfo<ProductResp>>> getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                                                             @RequestParam(defaultValue = "10") int size,
-                                                                             HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<List<ProductResp>>> getAllProducts(HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
                 "List of Product",
-                productService.getAllProduct(page, size)
+                productService.getAllProduct()
         ), HttpStatus.OK);
 
     }
