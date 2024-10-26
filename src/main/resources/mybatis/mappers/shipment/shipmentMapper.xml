@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.ShipmentMapper">
+    <resultMap id="shipmentMap" type="org.example.wms_be.entity.Shipment">
+        <id property="sysIdLoHang" column="sys_id_lo_hang"/>
+        <result property="maLo" column="ma_lo"/>
+        <result property="sysIdSanPham" column="sys_id_san_pham"/>
+        <result property="soLuong" column="so_luong"/>
+        <result property="ngaySanXuat" column="ngay_san_xuat"/>
+        <result property="hanSuDung" column="han_su_dung"/>
+        <result property="dungTich" column="dung_tich"/>
+        <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
+
+    </resultMap>
+    <insert id="insertShipment">
+        INSERT INTO lo_hang(ma_lo,sys_id_san_pham,so_luong,ngay_san_xuat,han_su_dung,dung_tich,ma_chi_tiet_khu_vuc)
+        VALUES(#{maLo},#{sysIdSanPham},#{soLuong},#{ngaySanXuat},#{hanSuDung},#{dungTich},#{maChiTietKhuVuc})
+    </insert>
+    <update id="updateShipment">
+        UPDATE lo_hang
+        SET sys_id_san_pham=#{sysIdSanPham},
+            so_luong=#{soLuong},
+            ngay_san_xuat=#{ngaySanXuat},
+            han_su_dung=#{hanSuDung},
+            dung_tich=#{dungTich},
+            ma_chi_tiet_khu_vuc=#{maChiTietKhuVuc}
+        WHERE ma_lo=#{maLo}
+    </update>
+    <delete id="deleteShipment">
+        DELETE FROM lo_hang
+        WHERE ma_lo=#{maLo}
+    </delete>
+    <select id="getAllShipment" resultMap="shipmentMap">
+        select sys_id_lo_hang,
+               ma_lo,
+               sys_id_san_pham,
+               so_luong,
+               ngay_san_xuat,
+               han_su_dung,
+               dung_tich,
+               ma_chi_tiet_khu_vuc
+        from lo_hang
+    </select>
+    <select id="checkShipmentExists" resultType="boolean">
+            SELECT EXISTS(
+                select 1 from lo_hang
+                WHERE ma_lo=#{maLo}
+            )
+    </select>
+    <select id="getShipmentByMaLo" parameterType="String" resultMap="shipmentMap">
+        select sys_id_lo_hang,
+               ma_lo,
+               sys_id_san_pham,
+               so_luong,
+               ngay_san_xuat,
+               han_su_dung,
+               dung_tich,
+               ma_chi_tiet_khu_vuc
+        from lo_hang
+        WHERE ma_lo=#{maLo}
+    </select>
+</mapper>

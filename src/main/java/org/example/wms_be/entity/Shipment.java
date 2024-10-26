@@ -1,0 +1,19 @@
+package org.example.wms_be.entity;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.sql.Date;
+
+@Getter
+@Setter
+public class Shipment {
+    private Integer sysIdLoHang;
+    private String maLo;
+    private Integer sysIdSanPham;
+    private Float soLuong;
+    private Date ngaySanXuat;
+    private Date hanSuDung;
+    private Float dungTich;
+    private String maChiTietKhuVuc;
+}
