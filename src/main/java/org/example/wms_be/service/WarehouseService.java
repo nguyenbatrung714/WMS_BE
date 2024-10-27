@@ -1,10 +1,11 @@
 package org.example.wms_be.service;
 
-import com.github.pagehelper.PageInfo;
 import org.example.wms_be.data.dto.WarehouseDto;
 
+import java.util.List;
+
 public interface WarehouseService {
-    PageInfo<WarehouseDto> getAllWarehouses(int page, int size);
+    List<WarehouseDto> getAllWarehouses();
 
     WarehouseDto saveWarehouse(WarehouseDto warehouseDto);
 

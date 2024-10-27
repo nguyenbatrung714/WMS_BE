@@ -1,11 +1,8 @@
 package org.example.wms_be.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.converter.ZoneDetailConverter;
 import org.example.wms_be.data.dto.ZoneDetailDto;
-import org.example.wms_be.entity.warehouse.Warehouse;
 import org.example.wms_be.entity.warehouse.ZoneDetail;
 import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.exception.ResourceNotFoundException;
@@ -27,19 +24,11 @@ public class ZoneDetailServiceImpl implements ZoneDetailService {
     private final ZoneDetailConverter zoneDetailConverter;
 
     @Override
-    public PageInfo<ZoneDetailDto> getAllZoneDetails(int page, int size) {
-        try {
-            PageHelper.startPage(page + 1, size);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error when starting page", e);
-        }
-
-        List<ZoneDetailDto> zoneDetails = zoneDetailMapper.getAllZoneDetails()
+    public List<ZoneDetailDto> getAllZoneDetails() {
+        return zoneDetailMapper.getAllZoneDetails()
                 .stream()
                 .map(zoneDetailConverter::toZoneDetailDto)
                 .toList();
-
-        return new PageInfo<>(zoneDetails);
     }
 
     @Override
