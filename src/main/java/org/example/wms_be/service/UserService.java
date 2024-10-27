@@ -11,4 +11,5 @@ public interface UserService {
     UserInfoDto updateUserInfo(UserInfoDto userDto);
     UserPasswordDto updatePassword(UserPasswordDto userDto);
     UserDto findUserById(Integer sysIdUser);
+    UserDto findUserByUsername(String username);
 }
