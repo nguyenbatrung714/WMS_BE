@@ -75,4 +75,13 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserById(Integer sysIdUser) {
         return null;
     }
+
+    @Override
+    public UserDto findUserByUsername(String username) {
+        User user = userMapper.findUserByUsername(username);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found with username " + username);
+        }
+        return userConverter.toUserDto(user);
+    }
 }
