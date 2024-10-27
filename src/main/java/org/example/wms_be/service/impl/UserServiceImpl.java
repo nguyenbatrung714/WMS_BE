@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
         } catch (Exception e) {
             logger.error("Failed to update password: {}", e.getMessage());
-            throw new IllegalArgumentException("Error updating password");
+            throw e;
         }
     }
 
