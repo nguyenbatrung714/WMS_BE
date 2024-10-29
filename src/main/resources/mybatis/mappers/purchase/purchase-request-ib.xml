@@ -9,6 +9,7 @@
         <result property="ngayYeuCau" column="ngay_yeu_cau"/>
         <result property="nguoiYeuCau" column="sys_id_user"/>
         <result property="trangThai" column="trang_thai"/>
+        <result property="fullName" column="full_name"/>
     </resultMap>
     <insert id="insertPurchaseRequest">
         INSERT INTO purchase_request(ma_pr, ngay_yeu_cau, sys_id_user)
@@ -22,8 +23,14 @@
         WHERE sys_id_pr = #{sysIdYeuCauMuaHang};
     </update>
     <select id="getAllPurchaseRequest" resultMap="PurchaseRequestMap">
-        SELECT sys_id_pr, ma_pr, ngay_yeu_cau, trang_thai, sys_id_user
-        FROM purchase_request;
+        SELECT pr.sys_id_pr,
+               pr.ma_pr,
+               pr.ngay_yeu_cau,
+               pr.trang_thai,
+               pr.sys_id_user,
+               u.full_name
+        FROM purchase_request pr
+                 JOIN user u ON pr.sys_id_user = u.sys_id_user
     </select>
     <select id="existById" resultType="java.lang.Boolean">
         SELECT EXISTS(SELECT 1

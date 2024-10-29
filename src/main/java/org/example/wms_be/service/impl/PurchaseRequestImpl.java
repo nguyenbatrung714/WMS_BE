@@ -13,12 +13,13 @@ import org.example.wms_be.mapper.account.UserMapper;
 import org.example.wms_be.mapper.purchase.PurchaseDetailsMapper;
 import org.example.wms_be.mapper.purchase.PurchaseRequestMapper;
 import org.example.wms_be.service.PurchaseRequestService;
-import org.example.wms_be.utils.EmailService;
+import org.example.wms_be.utils.EmailUtil;
 import org.example.wms_be.utils.TplEmailPR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +36,7 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
     private final PurchaseRequestConverter purchaseRequestConverter;
     private final PurchaseDetailsConverter purchaseDetailsConverter;
     private final UserMapper userMapper;
-    private final EmailService emailService;
+    private final EmailUtil emailUtil;
 
     @Override
     public List<PurchaseRequestDto> getAllPurchaseRequest() {
@@ -72,8 +73,10 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
         // Định dạng cho ngày nhập
         DateTimeFormatter inputFormatterNgayNhap = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter outputFormatterNgayNhap = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
         // Chuyển đổi DTO thành Entity
         PurchaseRequest purchaseRequest = purchaseRequestConverter.toPurchaseRequest(purchaseRequestDto);
+
         // Chuyển đổi ngày yêu cầu
         try {
             if (purchaseRequestDto.getNgayYeuCau() != null && !purchaseRequestDto.getNgayYeuCau().isEmpty()) {
@@ -83,12 +86,15 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Ngày không hợp lệ: " + purchaseRequestDto.getNgayYeuCau(), e);
         }
-        // Lưu yêu cầu mua hàng
+
+        // Lưu yêu cầu mua hàng và gửi email
         if (purchaseRequestMapper.existById(purchaseRequestDto.getSysIdYeuCauMuaHang())) {
             purchaseRequestMapper.updatePurchaseRequest(purchaseRequest);
         } else {
             purchaseRequestMapper.insertPurchaseRequest(purchaseRequest);
+
         }
+
         // Lặp qua từng chi tiết yêu cầu mua hàng
         for (PurchaseRequestDetailsDto detailDto : purchaseRequestDto.getChiTietDonHang()) {
             // Chuyển đổi DTO thành Entity
@@ -105,63 +111,75 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
             // Lưu chi tiết yêu cầu mua hàng
             if (purchaseDetailsMapper.existById(detail.getSysIdChiTietDonHang())) {
                 purchaseDetailsMapper.updatePurchaseDetails(detail);
+                sendNotificationEmailForUpdate(purchaseRequest);
             } else {
                 detail.setMaPR(purchaseRequest.getMaPR());
                 purchaseDetailsMapper.insertPurchaseDetails(detail);
+                sendNotificationEmailForInsert(purchaseRequestDto, purchaseRequest);
             }
         }
-        // Gửi email
-        sendNotificationEmail(purchaseRequestDto, purchaseRequest);
         logger.info("Saved PurchaseRequest: {}", purchaseRequest);
     }
 
-    private void sendNotificationEmail(PurchaseRequestDto purchaseRequestDto, PurchaseRequest purchaseRequest) {
-        String emailToSend = purchaseRequestDto.getEmail();
-        if (emailToSend != null && !emailToSend.isEmpty()) {
-            boolean emailExists = userMapper.checkMailExits(emailToSend);
-            if (!emailExists) {
-                logger.info("Địa chỉ email không tồn tại: {}", emailToSend);
-                return;
+    private void sendNotificationEmailForInsert(PurchaseRequestDto purchaseRequestDto, PurchaseRequest purchaseRequest) {
+        // Gửi email đến địa chỉ mặc định của PO
+        String emailToSend = PrConst.DEFAULT_PO_EMAIL;
+        sendNotificationEmail(emailToSend, purchaseRequestDto, purchaseRequest, false);
+    }
+
+    private void sendNotificationEmailForUpdate(PurchaseRequest purchaseRequest) {
+        // Gửi email đến địa chỉ mặc định của PO
+        String emailToSend = PrConst.DEFAULT_PO_EMAIL;
+        PurchaseRequestDto purchaseRequestDto = purchaseRequestConverter.toPurchaseRequestDto(purchaseRequest);
+        sendNotificationEmail(emailToSend, purchaseRequestDto, purchaseRequest, true);
+    }
+
+    private void sendNotificationEmail(String emailToSend, PurchaseRequestDto purchaseRequestDto, PurchaseRequest purchaseRequest, boolean isUpdate) {
+        if (emailToSend == null || emailToSend.isEmpty()) {
+            logger.info("Không có địa chỉ email được cung cấp để gửi thông báo.");
+            return;
+        }
+
+        if (!userMapper.checkMailExits(emailToSend)) {
+            logger.info("Địa chỉ email không tồn tại: {}", emailToSend);
+            return;
+        }
+
+        String userRequesting = PrConst.DEFAULT_USER_REQUESTING;
+        String role = PrConst.DEFAULT_ROLE;
+        String fullName = PrConst.DEFAULT_FULL_NAME;
+
+        try {
+            Map<String, String> userInfo = userMapper.getEmailByRoles(emailToSend);
+            logger.info("Thông tin nhận được từ getEmailByRoles: {}", userInfo);
+            if (userInfo != null) {
+                fullName = userInfo.getOrDefault("fullName", PrConst.DEFAULT_FULL_NAME);
+                role = userInfo.getOrDefault("role", PrConst.DEFAULT_ROLE);
             }
-            String userRequesting = PrConst.DEFAULT_USER_REQUESTING;
-            String role = PrConst.DEFAULT_ROLE;
-            String fullName = PrConst.DEFAULT_FULL_NAME;
-            try {
-                // Lấy thông tin người dùng từ userMapper
-                Map<String, String> userInfo = userMapper.getEmailByRoles(emailToSend);
-                logger.info("Thông tin nhận được từ getEmailByRoles: {}", userInfo);
-                if (userInfo != null) {
-                    // Lấy thông tin từ map
-                    fullName = userInfo.getOrDefault("fullName", PrConst.DEFAULT_FULL_NAME);
-                    role = userInfo.getOrDefault("role", PrConst.DEFAULT_ROLE);
-                }
-            } catch (Exception e) {
-                logger.error("Lỗi khi lấy thông tin người dùng: ", e);
-            }
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy thông tin người dùng: ", e);
+        }
+
+        if (purchaseRequestDto != null) {
             try {
                 userRequesting = userMapper.getFullNameByRoles(purchaseRequestDto.getNguoiYeuCau());
             } catch (Exception e) {
                 logger.error("Lỗi khi lấy tên người yêu cầu: ", e);
             }
-            // Tạo tiêu đề email
-            String title = TplEmailPR.buildEmailTitle(purchaseRequest.getMaPR());
-            // Tạo thông tin yêu cầu mua hàng
-            String requestInfoTable = TplEmailPR.buildRequestInfo(userRequesting, fullName, role);
-            // Lấy chi tiết đơn hàng va tao bang
-            List<PurchaseRequestDetails> chiTietDonHangList = purchaseDetailsMapper.getPurchaseRequestById(purchaseRequest.getMaPR());
-            String orderDetailsTable = TplEmailPR.buildOrderDetailsTable(chiTietDonHangList);
+        }
 
-            // Tạo nội dung email
-            String body = TplEmailPR.buildEmailBody(title, requestInfoTable, orderDetailsTable);
-            String subject = "Thông báo phê duyệt yêu cầu mua hàng";
-            try {
-                emailService.sendEmail(emailToSend, subject, body);
-                logger.info("Đã gửi email đến: {}", emailToSend);
-            } catch (Exception e) {
-                logger.error("Lỗi khi gửi email đến {}: {}", emailToSend, e.getMessage(), e);
-            }
-        } else {
-            logger.info("Không có địa chỉ email được cung cấp để gửi thông báo.");
+        String title = isUpdate ? TplEmailPR.buildEmailTitleUpdate(purchaseRequest.getMaPR()) : TplEmailPR.buildEmailTitle(purchaseRequest.getMaPR());
+        String requestInfo = isUpdate ? TplEmailPR.buildUpdateInfo(userRequesting) : TplEmailPR.buildRequestInfo(userRequesting, fullName, role);
+        List<PurchaseRequestDetails> chiTietDonHangList = purchaseDetailsMapper.getPurchaseRequestById(purchaseRequest.getMaPR());
+        String orderDetailsTable = TplEmailPR.buildOrderDetailsTable(chiTietDonHangList);
+        String body = isUpdate ? TplEmailPR.buildEmailBodyForUpdate(title, requestInfo, orderDetailsTable) : TplEmailPR.buildEmailBody(title, requestInfo, orderDetailsTable);
+        String subject = isUpdate ? "Thông báo chỉnh sửa yêu cầu: từ phòng purchase request" : "Thông báo yêu cầu: phê duyệt yêu cầu mua hàng";
+
+        try {
+            emailUtil.sendEmail(emailToSend, subject, body);
+            logger.info("Đã gửi email đến: {}", emailToSend);
+        } catch (Exception e) {
+            logger.error("Lỗi khi gửi email đến {}: {}", emailToSend, e.getMessage());
         }
     }
 }

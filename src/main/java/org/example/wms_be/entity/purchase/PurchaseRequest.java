@@ -14,5 +14,6 @@ public class PurchaseRequest {
     private String ngayYeuCau;
     private Integer nguoiYeuCau;
     private String trangThai;
+    private String fullName;
     List<PurchaseRequestDetails> chiTietDonHang;
 }
