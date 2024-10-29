@@ -16,7 +16,7 @@
         <result property="tongChiPhi" column="tong_chi_phi"/>
         <result property="ngayXuatDuKien" column="ngay_xuat"/>
     </resultMap>
-    <resultMap id="PurchaseDetailsDtoMap" type="org.example.wms_be.data.response.PurchaseRequestDetailsResp"
+    <resultMap id="PurchaseDetailsDtoMap" type="org.example.wms_be.data.response.PurchaseRequestDetailsObResp"
                autoMapping="true">
         <id property="sysIdChiTietXuatHang" column="sys_id_chi_tiet_xuat_hang"/>
         <result property="maPR" column="ma_pr"/>

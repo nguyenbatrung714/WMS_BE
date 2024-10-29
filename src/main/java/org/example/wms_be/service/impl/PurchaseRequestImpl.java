@@ -2,7 +2,7 @@ package org.example.wms_be.service.impl;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.example.wms_be.constant.PrConst;
+import org.example.wms_be.constant.PurchaseRequestConst;
 import org.example.wms_be.converter.PurchaseDetailsConverter;
 import org.example.wms_be.converter.PurchaseRequestConverter;
 import org.example.wms_be.data.dto.PurchaseRequestDetailsDto;
@@ -123,13 +123,13 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
 
     private void sendNotificationEmailForInsert(PurchaseRequestDto purchaseRequestDto, PurchaseRequest purchaseRequest) {
         // Gửi email đến địa chỉ mặc định của PO
-        String emailToSend = PrConst.DEFAULT_PO_EMAIL;
+        String emailToSend = PurchaseRequestConst.DEFAULT_PO_EMAIL;
         sendNotificationEmail(emailToSend, purchaseRequestDto, purchaseRequest, false);
     }
 
     private void sendNotificationEmailForUpdate(PurchaseRequest purchaseRequest) {
         // Gửi email đến địa chỉ mặc định của PO
-        String emailToSend = PrConst.DEFAULT_PO_EMAIL;
+        String emailToSend = PurchaseRequestConst.DEFAULT_PO_EMAIL;
         PurchaseRequestDto purchaseRequestDto = purchaseRequestConverter.toPurchaseRequestDto(purchaseRequest);
         sendNotificationEmail(emailToSend, purchaseRequestDto, purchaseRequest, true);
     }
@@ -145,16 +145,16 @@ public class PurchaseRequestImpl implements PurchaseRequestService {
             return;
         }
 
-        String userRequesting = PrConst.DEFAULT_USER_REQUESTING;
-        String role = PrConst.DEFAULT_ROLE;
-        String fullName = PrConst.DEFAULT_FULL_NAME;
+        String userRequesting = PurchaseRequestConst.DEFAULT_USER_REQUESTING;
+        String role = PurchaseRequestConst.DEFAULT_ROLE;
+        String fullName = PurchaseRequestConst.DEFAULT_FULL_NAME;
 
         try {
             Map<String, String> userInfo = userMapper.getEmailByRoles(emailToSend);
             logger.info("Thông tin nhận được từ getEmailByRoles: {}", userInfo);
             if (userInfo != null) {
-                fullName = userInfo.getOrDefault("fullName", PrConst.DEFAULT_FULL_NAME);
-                role = userInfo.getOrDefault("role", PrConst.DEFAULT_ROLE);
+                fullName = userInfo.getOrDefault("fullName", PurchaseRequestConst.DEFAULT_FULL_NAME);
+                role = userInfo.getOrDefault("role", PurchaseRequestConst.DEFAULT_ROLE);
             }
         } catch (Exception e) {
             logger.error("Lỗi khi lấy thông tin người dùng: ", e);

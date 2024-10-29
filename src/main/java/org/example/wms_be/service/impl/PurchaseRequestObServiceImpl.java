@@ -1,12 +1,12 @@
 package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.wms_be.constant.PrConst;
+import org.example.wms_be.constant.PurchaseRequestConst;
 import org.example.wms_be.converter.PurchaseDetailsObConverter;
 import org.example.wms_be.converter.PurchaseRequestObConverter;
 import org.example.wms_be.data.request.PurchaseRequestDetailsObReq;
 import org.example.wms_be.data.request.PurchaseRequestObReq;
-import org.example.wms_be.data.response.PurchaseRequestDetailsResp;
+import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
 import org.example.wms_be.data.response.PurchaseRequestObResp;
 import org.example.wms_be.entity.purchase.PurchaseRequestDetailsOb;
 import org.example.wms_be.entity.purchase.PurchaseRequestOb;
@@ -47,7 +47,7 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
                     String ngayYeuCauFormatted = TimeConverter.formatNgayYeuCau(Timestamp.valueOf(pr.getNgayYeuCau()));
                     pr.setNgayYeuCau(ngayYeuCauFormatted);
                 }
-                List<PurchaseRequestDetailsResp> chiTietXuatHang = purchaseDetailsObMapper.layDanhSachXuatHangTheoMaPR(pr.getMaPR());
+                List<PurchaseRequestDetailsObResp> chiTietXuatHang = purchaseDetailsObMapper.layDanhSachXuatHangTheoMaPR(pr.getMaPR());
                 logger.info("Found {} details for PurchaseRequest: {}", chiTietXuatHang.size(), pr.getMaPR());
                 chiTietXuatHang.forEach(detail -> {
                     if (detail.getNgayXuatDuKien() != null) {
@@ -116,15 +116,15 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
             logger.error("Email to send is not exist");
             return;
         }
-        String nguoiTao = PrConst.DEFAULT_USER_REQUESTING;
-        String chucVu = PrConst.DEFAULT_ROLE;
-        String daiDienPo = PrConst.DEFAULT_FULL_NAME;
+        String nguoiTao = PurchaseRequestConst.DEFAULT_USER_REQUESTING;
+        String chucVu = PurchaseRequestConst.DEFAULT_ROLE;
+        String daiDienPo = PurchaseRequestConst.DEFAULT_FULL_NAME;
         try {
             Map<String, String> thongTinEmail = userMapper.getEmailByRoles(emailToSend);
             logger.info("Get info from getEmailByRoles: {}", thongTinEmail);
             if (thongTinEmail != null) {
-                daiDienPo = thongTinEmail.getOrDefault("fullName", PrConst.DEFAULT_FULL_NAME);
-                chucVu = thongTinEmail.getOrDefault("role", PrConst.DEFAULT_ROLE);
+                daiDienPo = thongTinEmail.getOrDefault("fullName", PurchaseRequestConst.DEFAULT_FULL_NAME);
+                chucVu = thongTinEmail.getOrDefault("role", PurchaseRequestConst.DEFAULT_ROLE);
             }
         } catch (Exception e) {
             logger.error("Error when get user info", e);
@@ -141,7 +141,7 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
                 .map(ob -> isUpdate ? TplEmailPrOb.emailTitleUpdate(ob.getMaPR()) : TplEmailPrOb.emailTitle(ob.getMaPR()))
                 .orElse("Default Title");
         String requestInfor = isUpdate ? TplEmailPrOb.updateInFor(nguoiTao) : TplEmailPrOb.requestInfor(nguoiTao, daiDienPo, chucVu);
-        List<PurchaseRequestDetailsResp> chiTietXuatHang = Optional
+        List<PurchaseRequestDetailsObResp> chiTietXuatHang = Optional
                 .ofNullable(purchaseRequestOb)
                 .map(ob -> purchaseDetailsObMapper.layDanhSachXuatHangTheoMaPR(ob.getMaPR()))
                 .orElseGet(ArrayList::new);
@@ -157,12 +157,12 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
     }
 
     private void sendMailForInsert(PurchaseRequestOb purchaseRequestOb) {
-        String emailToSend = PrConst.DEFAULT_PO_EMAIL;
+        String emailToSend = PurchaseRequestConst.DEFAULT_PO_EMAIL;
         sendEmail(emailToSend, purchaseRequestOb, false);
     }
 
     private void sendMailForUpdate(PurchaseRequestOb purchaseRequestOb) {
-        String emailToSend = PrConst.DEFAULT_PO_EMAIL;
+        String emailToSend = PurchaseRequestConst.DEFAULT_PO_EMAIL;
         sendEmail(emailToSend, purchaseRequestOb, true);
     }
 }
