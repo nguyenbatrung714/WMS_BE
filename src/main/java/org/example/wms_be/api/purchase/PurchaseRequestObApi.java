@@ -32,6 +32,19 @@ public class PurchaseRequestObApi {
         );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+    @GetMapping("by-ma-pr")
+    public ResponseEntity<ApiResponse<List<PurchaseRequestObResp>>> getPurchaseRequestsByMaPR(
+            @RequestParam String maPR,
+            HttpServletRequest request) {
+        List<PurchaseRequestObResp> purchaseRequests = purchaseRequestObService.getPurchaseRequestObByMaPR(maPR);
+        ApiResponse<List<PurchaseRequestObResp>> response = new ApiResponse<>(
+                request.getRequestURI(),
+                HttpStatus.OK.value(),
+                "lấy danh sách thành công",
+                purchaseRequests
+        );
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
     @PostMapping("/save")
     public ResponseEntity<ApiResponse<PurchaseRequestObReq>> savePurchaseRequest(

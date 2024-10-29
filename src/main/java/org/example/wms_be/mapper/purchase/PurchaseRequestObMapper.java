@@ -9,6 +9,7 @@ import java.util.List;
 @Mapper
 public interface PurchaseRequestObMapper {
     List<PurchaseRequestObResp> getAllPurchaseRequestOb();
+    List<PurchaseRequestObResp> getAllPurchaseRequestObByMaPR(String maPR);
     int insertPurchaseRequestOb (PurchaseRequestOb purchaseRequestOb);
     int updatePurchaseRequestOb (PurchaseRequestOb purchaseRequestOb);
     boolean existById(Integer sysIdYeuCauXuatHang);

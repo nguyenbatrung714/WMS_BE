@@ -41,27 +41,45 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
     public List<PurchaseRequestObResp> getAllPurchaseRequestOb() {
         try {
             List<PurchaseRequestObResp> purchaseRequestObResps = purchaseRequestObMapper.getAllPurchaseRequestOb();
-            purchaseRequestObResps.stream().filter(Objects::nonNull).filter(pr -> pr.getMaPR() != null).forEach(pr -> {
-                if (pr.getNgayYeuCau() != null) {
-                    // convert ngayYeuCau from yyyy-MM-dd HH:mm:ss to dd/MM/yyyy
-                    String ngayYeuCauFormatted = TimeConverter.formatNgayYeuCau(Timestamp.valueOf(pr.getNgayYeuCau()));
-                    pr.setNgayYeuCau(ngayYeuCauFormatted);
-                }
-                List<PurchaseRequestDetailsObResp> chiTietXuatHang = purchaseDetailsObMapper.layDanhSachXuatHangTheoMaPR(pr.getMaPR());
-                logger.info("Found {} details for PurchaseRequest: {}", chiTietXuatHang.size(), pr.getMaPR());
-                chiTietXuatHang.forEach(detail -> {
-                    if (detail.getNgayXuatDuKien() != null) {
-                        String ngayXuatDuKienFormatted = TimeConverter.formatNgayXuat(TimeConverter.parseDateOnly(detail.getNgayXuatDuKien()));
-                        detail.setNgayXuatDuKien(ngayXuatDuKienFormatted);
-                    }
-                });
-                pr.setChiTietXuatHang(chiTietXuatHang);
-            });
-            return purchaseRequestObResps;
+            return processPurchaseRequestList(purchaseRequestObResps);
         } catch (Exception e) {
             logger.error("Get all purchase requests failed", e);
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public List<PurchaseRequestObResp> getPurchaseRequestObByMaPR(String maPR) {
+        try {
+            List<PurchaseRequestObResp> purchaseRequestObResps = purchaseRequestObMapper.getAllPurchaseRequestObByMaPR(maPR);
+            return processPurchaseRequestList(purchaseRequestObResps);
+        } catch (Exception e) {
+            logger.error("Get purchase requests by MaPR failed", e);
+            return Collections.emptyList();
+        }
+    }
+
+    private List<PurchaseRequestObResp> processPurchaseRequestList(List<PurchaseRequestObResp> purchaseRequestObResps) {
+        purchaseRequestObResps.stream()
+                .filter(Objects::nonNull)
+                .filter(pr -> pr.getMaPR() != null)
+                .forEach(pr -> {
+                    if (pr.getNgayYeuCau() != null) {
+                        // convert ngayYeuCau from yyyy-MM-dd HH:mm:ss to dd/MM/yyyy
+                        String ngayYeuCauFormatted = TimeConverter.formatNgayYeuCau(Timestamp.valueOf(pr.getNgayYeuCau()));
+                        pr.setNgayYeuCau(ngayYeuCauFormatted);
+                    }
+                    List<PurchaseRequestDetailsObResp> chiTietXuatHang = purchaseDetailsObMapper.layDanhSachXuatHangTheoMaPR(pr.getMaPR());
+                    logger.info("Found {} details for PurchaseRequest: {}", chiTietXuatHang.size(), pr.getMaPR());
+                    chiTietXuatHang.forEach(detail -> {
+                        if (detail.getNgayXuatDuKien() != null) {
+                            String ngayXuatDuKienFormatted = TimeConverter.formatNgayXuat(TimeConverter.parseDateOnly(detail.getNgayXuatDuKien()));
+                            detail.setNgayXuatDuKien(ngayXuatDuKienFormatted);
+                        }
+                    });
+                    pr.setChiTietXuatHang(chiTietXuatHang);
+                });
+        return purchaseRequestObResps;
     }
 
     @Override

@@ -25,12 +25,10 @@
         INSERT INTO purchase_request (ma_pr,
                                       ngay_yeu_cau,
                                       sys_id_user,
-                                      trang_thai,
                                       loai_yeu_cau)
         VALUES (#{maPR},
                 DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
                 #{nguoiYeuCau},
-                #{trangThai},
                 #{loaiYeuCau});
     </insert>
     <update id="updatePurchaseRequestOb">
@@ -56,5 +54,16 @@
                       FROM purchase_request
                       WHERE sys_id_pr = #{sysIdYeuCauXuatHang}
                         AND loai_yeu_cau = 'XUAT');
+    </select>
+    <select id="getAllPurchaseRequestObByMaPR" resultMap="PurchaseRequestObDtoMap">
+        SELECT sys_id_pr,
+               ma_pr,
+               ngay_yeu_cau,
+               trang_thai,
+               user.full_name,
+               loai_yeu_cau
+        FROM purchase_request
+                 JOIN user ON purchase_request.sys_id_user = user.sys_id_user
+        WHERE loai_yeu_cau = 'XUAT' AND ma_pr = #{maPR};
     </select>
 </mapper>
