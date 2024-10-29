@@ -32,9 +32,9 @@ public class PurchaseRequestObApi {
         );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-    @GetMapping("by-ma-pr")
+    @GetMapping("/{maPR}")
     public ResponseEntity<ApiResponse<List<PurchaseRequestObResp>>> getPurchaseRequestsByMaPR(
-            @RequestParam String maPR,
+            @PathVariable("maPR") String maPR,
             HttpServletRequest request) {
         List<PurchaseRequestObResp> purchaseRequests = purchaseRequestObService.getPurchaseRequestObByMaPR(maPR);
         ApiResponse<List<PurchaseRequestObResp>> response = new ApiResponse<>(
