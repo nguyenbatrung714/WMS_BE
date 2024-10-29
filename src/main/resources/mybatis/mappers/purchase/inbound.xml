@@ -18,7 +18,7 @@
                             ngay_nhap,
                             trang_thai,
                             sys_id_user)
-        values (#{maInbound},
+        values (#{maInBound},
                 #{maPO},
                 #{ngayNhap},
                 #{trangThai},
