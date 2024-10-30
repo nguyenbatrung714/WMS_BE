@@ -1,4 +1,4 @@
-package org.example.wms_be.constant;
+package org.example.wms_be.data.mgt;
 
 import lombok.Getter;
 

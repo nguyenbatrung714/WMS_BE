@@ -21,15 +21,15 @@
         <result property="loaiYeuCau" column="loai_yeu_cau"/>
         <result property="nguoiYeuCau" column="full_name"/>
     </resultMap>
-    <insert id="insertPurchaseRequestOb">
+    <insert id="insertPurchaseRequestOb" useGeneratedKeys="true" keyProperty="sysIdYeuCauXuatHang">
         INSERT INTO purchase_request (
-                                      ngay_yeu_cau,
-                                      sys_id_user,
-                                      loai_yeu_cau)
+            ngay_yeu_cau,
+            sys_id_user,
+            loai_yeu_cau)
         VALUES (
-                DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
-                #{nguoiYeuCau},
-                #{loaiYeuCau});
+                   DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
+                   #{nguoiYeuCau},
+                   #{loaiYeuCau});
     </insert>
     <update id="updatePurchaseRequestOb">
         UPDATE purchase_request
@@ -66,4 +66,8 @@
                  JOIN user ON purchase_request.sys_id_user = user.sys_id_user
         WHERE loai_yeu_cau = 'XUAT' AND ma_pr = #{maPR};
     </select>
+    <select id="getMaPRById" resultType="java.lang.String">
+        SELECT ma_pr FROM purchase_request WHERE sys_id_pr = #{sysIdYeuCauXuatHang}
+    </select>
+
 </mapper>
