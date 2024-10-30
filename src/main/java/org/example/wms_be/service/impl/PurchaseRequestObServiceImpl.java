@@ -91,6 +91,7 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
             purchaseRequestObMapper.updatePurchaseRequestOb(purchaseRequestOb);
         } else {
             purchaseRequestObMapper.insertPurchaseRequestOb(purchaseRequestOb);
+        }
             // Lấy mã PR
             String maPR = purchaseRequestObMapper.getMaPRById(purchaseRequestOb.getSysIdYeuCauXuatHang());
             purchaseRequestOb.setMaPR(maPR);
@@ -117,7 +118,6 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
                     purchaseDetailsObMapper.insertPurchaseRequestDetailsOb(purchaseRequestDetailsOb);
                 }
             }
-        }
         // Gửi email
         if (purchaseRequestObReq.getSysIdYeuCauXuatHang() == null) {
             sendMailForInsert(purchaseRequestOb);
