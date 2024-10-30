@@ -29,6 +29,8 @@
         <result property="gia" column="gia"/>
         <result property="tongChiPhi" column="tong_chi_phi"/>
         <result property="ngayXuatDuKien" column="ngay_xuat_du_kien"/>
+        <result property="sysIdKhachHang" column="sys_id_khach_hang"/>
+        <result property="sysIdSanPham" column="sys_id_san_pham"/>
     </resultMap>
     <update id="updatePurchaseRequestDetailsOb">
         UPDATE chi_tiet_xuat_hang
@@ -45,7 +47,9 @@
                ct.sys_id_outbound,
                ct.ma_pr,
                ct.ma_po,
+               sys_id_khach_hang,
                ten_khach_hang,
+               sp.sys_id_san_pham,
                sp.ten_san_pham,
                ct.so_luong,
                ct.gia,

@@ -22,11 +22,11 @@
         <result property="nguoiYeuCau" column="full_name"/>
     </resultMap>
     <insert id="insertPurchaseRequestOb">
-        INSERT INTO purchase_request (ma_pr,
+        INSERT INTO purchase_request (
                                       ngay_yeu_cau,
                                       sys_id_user,
                                       loai_yeu_cau)
-        VALUES (#{maPR},
+        VALUES (
                 DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
                 #{nguoiYeuCau},
                 #{loaiYeuCau});

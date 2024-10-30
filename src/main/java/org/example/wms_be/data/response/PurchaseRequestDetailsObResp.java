@@ -19,4 +19,6 @@ public class PurchaseRequestDetailsObResp {
     private Double  gia;
     private Double  tongChiPhi;
     private String  ngayXuatDuKien;
+    private Integer sysIdKhachHang;
+    private Integer sysIdSanPham;
 }

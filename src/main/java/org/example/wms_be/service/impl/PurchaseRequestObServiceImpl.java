@@ -85,43 +85,40 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
     @Override
     @Transactional
     public void savePurchaseRequestOb(PurchaseRequestObReq purchaseRequestObReq) {
-        try {
-            // Convert sang entity
-            PurchaseRequestOb purchaseRequestOb = purchaseRequestObConverter.toPurchaseRequestObReq(purchaseRequestObReq);
-            if (purchaseRequestObMapper.existById(purchaseRequestObReq.getSysIdYeuCauXuatHang())) {
-                purchaseRequestObMapper.updatePurchaseRequestOb(purchaseRequestOb);
-            } else {
-                purchaseRequestObMapper.insertPurchaseRequestOb(purchaseRequestOb);
-            }
-            for (PurchaseRequestDetailsObReq purchaseRequestDetailsObReq : purchaseRequestObReq.getChiTietXuatHang()) {
-                // Chuyển đổi chi tiết yêu cầu
-                PurchaseRequestDetailsOb purchaseRequestDetailsOb = purchaseDetailsObConverter.toPurchaseRequestDeatilsOb(purchaseRequestDetailsObReq);
-                String ngayXuatDuKien = purchaseRequestDetailsOb.getNgayXuatDuKien();
-                if (ngayXuatDuKien != null && !ngayXuatDuKien.isEmpty()) {
-                    try {
-                        // convert ngayXuatDuKien from dd/MM/yyyy to yyyy-MM-dd
-                        String ngayXuatDuKienDbFormat = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayXuatDuKien));
-                        purchaseRequestDetailsOb.setNgayXuatDuKien(ngayXuatDuKienDbFormat);
-                        logger.info("NgayXuatDuKien: {} -> {}", ngayXuatDuKien, ngayXuatDuKienDbFormat);
-                    } catch (IllegalArgumentException e) {
-                        logger.error("Invalid date format: {}", ngayXuatDuKien);
-                    }
-                }
-                //  cập nhật hoặc thêm mới
-                if (purchaseDetailsObMapper.existById(purchaseRequestDetailsObReq.getSysIdChiTietXuatHang())) {
-                    purchaseDetailsObMapper.updatePurchaseRequestDetailsOb(purchaseRequestDetailsOb);
-                } else {
-                    purchaseRequestDetailsOb.setMaPR(purchaseRequestOb.getMaPR());
-                    purchaseDetailsObMapper.insertPurchaseRequestDetailsOb(purchaseRequestDetailsOb);
+
+        // Convert sang entity
+        PurchaseRequestOb purchaseRequestOb = purchaseRequestObConverter.toPurchaseRequestObReq(purchaseRequestObReq);
+        if (purchaseRequestObMapper.existById(purchaseRequestObReq.getSysIdYeuCauXuatHang())) {
+            purchaseRequestObMapper.updatePurchaseRequestOb(purchaseRequestOb);
+        } else {
+            purchaseRequestObMapper.insertPurchaseRequestOb(purchaseRequestOb);
+        }
+        for (PurchaseRequestDetailsObReq purchaseRequestDetailsObReq : purchaseRequestObReq.getChiTietXuatHang()) {
+            // Chuyển đổi chi tiết yêu cầu
+            PurchaseRequestDetailsOb purchaseRequestDetailsOb = purchaseDetailsObConverter.toPurchaseRequestDeatilsOb(purchaseRequestDetailsObReq);
+            String ngayXuatDuKien = purchaseRequestDetailsOb.getNgayXuatDuKien();
+            if (ngayXuatDuKien != null && !ngayXuatDuKien.isEmpty()) {
+                try {
+                    // convert ngayXuatDuKien from dd/MM/yyyy to yyyy-MM-dd
+                    String ngayXuatDuKienDbFormat = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayXuatDuKien));
+                    purchaseRequestDetailsOb.setNgayXuatDuKien(ngayXuatDuKienDbFormat);
+                    logger.info("NgayXuatDuKien: {} -> {}", ngayXuatDuKien, ngayXuatDuKienDbFormat);
+                } catch (IllegalArgumentException e) {
+                    logger.error("Invalid date format: {}", ngayXuatDuKien);
                 }
             }
-            if (purchaseRequestObReq.getSysIdYeuCauXuatHang() == null) {
-                sendMailForInsert(purchaseRequestOb);
+            //  cập nhật hoặc thêm mới
+            if (purchaseDetailsObMapper.existById(purchaseRequestDetailsObReq.getSysIdChiTietXuatHang())) {
+                purchaseDetailsObMapper.updatePurchaseRequestDetailsOb(purchaseRequestDetailsOb);
             } else {
-                sendMailForUpdate(purchaseRequestOb);
+                purchaseRequestDetailsOb.setMaPR(purchaseRequestOb.getMaPR());
+                purchaseDetailsObMapper.insertPurchaseRequestDetailsOb(purchaseRequestDetailsOb);
             }
-        } catch (Exception e) {
-            logger.error("Save purchase request failed", e);
+        }
+        if (purchaseRequestObReq.getSysIdYeuCauXuatHang() == null) {
+            sendMailForInsert(purchaseRequestOb);
+        } else {
+            sendMailForUpdate(purchaseRequestOb);
         }
     }
 
