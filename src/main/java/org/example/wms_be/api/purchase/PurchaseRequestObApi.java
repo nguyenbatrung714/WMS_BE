@@ -27,11 +27,11 @@ public class PurchaseRequestObApi {
             List<PurchaseRequestObResp> purchaseRequests = purchaseRequestObService.getAllPurchaseRequestOb();
             ApiResponse<List<PurchaseRequestObResp>> response = new ApiResponse<>(
                     request.getRequestURI(),
-                    HttpStatus.CREATED.value(),
+                    HttpStatus.OK.value(),
                     RespMessagePurchaseRequestOb.GET_SUCCESS.getMessage(),
                     purchaseRequests
             );
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Failed to get all purchase requests", e);
             ApiResponse<List<PurchaseRequestObResp>> response = new ApiResponse<>(
@@ -52,7 +52,7 @@ public class PurchaseRequestObApi {
             List<PurchaseRequestObResp> purchaseRequests = purchaseRequestObService.getPurchaseRequestObByMaPR(maPR);
             ApiResponse<List<PurchaseRequestObResp>> response = new ApiResponse<>(
                     request.getRequestURI(),
-                    HttpStatus.CREATED.value(),
+                    HttpStatus.OK.value(),
                     RespMessagePurchaseRequestOb.GET_SUCCESS_BY_ID.getMessage(),
                     purchaseRequests
             );
