@@ -13,4 +13,5 @@ public interface PurchaseRequestObMapper {
     int insertPurchaseRequestOb (PurchaseRequestOb purchaseRequestOb);
     int updatePurchaseRequestOb (PurchaseRequestOb purchaseRequestOb);
     boolean existById(Integer sysIdYeuCauXuatHang);
+    String getMaPRById(Integer sysIdYeuCauXuatHang);
 }

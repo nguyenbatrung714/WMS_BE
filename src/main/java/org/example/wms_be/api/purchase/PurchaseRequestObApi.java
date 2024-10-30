@@ -2,8 +2,8 @@ package org.example.wms_be.api.purchase;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.wms_be.constant.RespMessagePurchaseRequestOb;
 import org.example.wms_be.data.mgt.ApiResponse;
+import org.example.wms_be.data.mgt.RespMessagePurchaseRequestOb;
 import org.example.wms_be.data.request.PurchaseRequestObReq;
 import org.example.wms_be.data.response.PurchaseRequestObResp;
 import org.example.wms_be.service.PurchaseRequestObService;
@@ -27,7 +27,7 @@ public class PurchaseRequestObApi {
             List<PurchaseRequestObResp> purchaseRequests = purchaseRequestObService.getAllPurchaseRequestOb();
             ApiResponse<List<PurchaseRequestObResp>> response = new ApiResponse<>(
                     request.getRequestURI(),
-                    HttpStatus.OK.value(),
+                    HttpStatus.CREATED.value(),
                     RespMessagePurchaseRequestOb.GET_SUCCESS.getMessage(),
                     purchaseRequests
             );
@@ -52,7 +52,7 @@ public class PurchaseRequestObApi {
             List<PurchaseRequestObResp> purchaseRequests = purchaseRequestObService.getPurchaseRequestObByMaPR(maPR);
             ApiResponse<List<PurchaseRequestObResp>> response = new ApiResponse<>(
                     request.getRequestURI(),
-                    HttpStatus.OK.value(),
+                    HttpStatus.CREATED.value(),
                     RespMessagePurchaseRequestOb.GET_SUCCESS_BY_ID.getMessage(),
                     purchaseRequests
             );

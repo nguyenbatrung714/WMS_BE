@@ -85,36 +85,40 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
     @Override
     @Transactional
     public void savePurchaseRequestOb(PurchaseRequestObReq purchaseRequestObReq) {
-
-        // Convert sang entity
+        //convert sang entity
         PurchaseRequestOb purchaseRequestOb = purchaseRequestObConverter.toPurchaseRequestObReq(purchaseRequestObReq);
         if (purchaseRequestObMapper.existById(purchaseRequestObReq.getSysIdYeuCauXuatHang())) {
             purchaseRequestObMapper.updatePurchaseRequestOb(purchaseRequestOb);
         } else {
             purchaseRequestObMapper.insertPurchaseRequestOb(purchaseRequestOb);
-        }
-        for (PurchaseRequestDetailsObReq purchaseRequestDetailsObReq : purchaseRequestObReq.getChiTietXuatHang()) {
-            // Chuyển đổi chi tiết yêu cầu
-            PurchaseRequestDetailsOb purchaseRequestDetailsOb = purchaseDetailsObConverter.toPurchaseRequestDeatilsOb(purchaseRequestDetailsObReq);
-            String ngayXuatDuKien = purchaseRequestDetailsOb.getNgayXuatDuKien();
-            if (ngayXuatDuKien != null && !ngayXuatDuKien.isEmpty()) {
-                try {
-                    // convert ngayXuatDuKien from dd/MM/yyyy to yyyy-MM-dd
-                    String ngayXuatDuKienDbFormat = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayXuatDuKien));
-                    purchaseRequestDetailsOb.setNgayXuatDuKien(ngayXuatDuKienDbFormat);
-                    logger.info("NgayXuatDuKien: {} -> {}", ngayXuatDuKien, ngayXuatDuKienDbFormat);
-                } catch (IllegalArgumentException e) {
-                    logger.error("Invalid date format: {}", ngayXuatDuKien);
+            // Lấy mã PR
+            String maPR = purchaseRequestObMapper.getMaPRById(purchaseRequestOb.getSysIdYeuCauXuatHang());
+            purchaseRequestOb.setMaPR(maPR);
+            logger.info("Inserted new PurchaseRequestOb: {} with MaPR: {}", purchaseRequestOb, maPR);
+            // Lưu chi tiết xuất hàng
+            for (PurchaseRequestDetailsObReq purchaseRequestDetailsObReq : purchaseRequestObReq.getChiTietXuatHang()) {
+                // Convert sang entity
+                PurchaseRequestDetailsOb purchaseRequestDetailsOb = purchaseDetailsObConverter.toPurchaseRequestDeatilsOb(purchaseRequestDetailsObReq);
+                String ngayXuatDuKien = purchaseRequestDetailsOb.getNgayXuatDuKien();
+                if (ngayXuatDuKien != null && !ngayXuatDuKien.isEmpty()) {
+                    try {
+                        // Convert ngayXuatDuKien from dd/MM/yyyy to yyyy-MM-dd
+                        String ngayXuatDuKienDbFormat = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayXuatDuKien));
+                        purchaseRequestDetailsOb.setNgayXuatDuKien(ngayXuatDuKienDbFormat);
+                        logger.info("NgayXuatDuKien: {} -> {}", ngayXuatDuKien, ngayXuatDuKienDbFormat);
+                    } catch (IllegalArgumentException e) {
+                        logger.error("Invalid date format: {}", ngayXuatDuKien);
+                    }
+                }
+                if (purchaseDetailsObMapper.existById(purchaseRequestDetailsObReq.getSysIdChiTietXuatHang())) {
+                    purchaseDetailsObMapper.updatePurchaseRequestDetailsOb(purchaseRequestDetailsOb);
+                } else {
+                    purchaseRequestDetailsOb.setMaPR(purchaseRequestOb.getMaPR());
+                    purchaseDetailsObMapper.insertPurchaseRequestDetailsOb(purchaseRequestDetailsOb);
                 }
             }
-            //  cập nhật hoặc thêm mới
-            if (purchaseDetailsObMapper.existById(purchaseRequestDetailsObReq.getSysIdChiTietXuatHang())) {
-                purchaseDetailsObMapper.updatePurchaseRequestDetailsOb(purchaseRequestDetailsOb);
-            } else {
-                purchaseRequestDetailsOb.setMaPR(purchaseRequestOb.getMaPR());
-                purchaseDetailsObMapper.insertPurchaseRequestDetailsOb(purchaseRequestDetailsOb);
-            }
         }
+        // Gửi email
         if (purchaseRequestObReq.getSysIdYeuCauXuatHang() == null) {
             sendMailForInsert(purchaseRequestOb);
         } else {
