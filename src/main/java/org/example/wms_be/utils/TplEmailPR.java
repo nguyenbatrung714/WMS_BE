@@ -1,5 +1,6 @@
 package org.example.wms_be.utils;
-import org.example.wms_be.entity.purchase.PurchaseRequestDetails;
+import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
+
 import java.util.List;
 
 public class TplEmailPR {
@@ -28,7 +29,7 @@ public class TplEmailPR {
     }
 
     // Tạo bảng chi tiết đơn hàng
-    public static String buildOrderDetailsTable(List<PurchaseRequestDetails> details) {
+    public static String buildOrderDetailsTable(List<PurchaseDetailsIb> details) {
         StringBuilder sb = new StringBuilder();
         sb.append("<table border='1' cellspacing='0' cellpadding='5' style='color: black;'>");
         sb.append("<caption style='font-weight: bold; font-size: 1.5em; margin-bottom: 10px;'>Thông Tin Chi Tiết yêu cầu</caption>")
@@ -39,13 +40,13 @@ public class TplEmailPR {
                 .append("<th>Tổng Chi Phí(VND)</th>")
                 .append("<th>Ngày Nhập</th>")
                 .append("</tr>");
-        for (PurchaseRequestDetails detail : details) {
+        for (PurchaseDetailsIb detail : details) {
             sb.append("<tr>")
-                    .append("<td>").append(detail.getTenSanPham()).append("</td>")
+                    .append("<td>").append(detail.getSysIdSanPham()).append("</td>")
                     .append("<td>").append(detail.getSoLuong()).append("</td>")
                     .append("<td>").append(detail.getGia()).append("</td>")
                     .append("<td>").append(detail.getTongChiPhi()).append("</td>")
-                    .append("<td>").append(detail.getNgayNhap()).append("</td>")
+                    .append("<td>").append(detail.getNgayNhapDuKien()).append("</td>")
                     .append("</tr>");
         }
         sb.append("</table>");
