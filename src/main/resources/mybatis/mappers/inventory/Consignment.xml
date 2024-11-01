@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.inventory.ConsignmentMapper">
+    <resultMap id="ConsignmentMap" type="Consignment">
+        <id property="sysIdLoHang" column="sys_id_lo_hang"/>
+        <result property="maLo" column="ma_lo"/>
+        <result property="sysIdInbound" column="sys_id_inbound"/>
+        <result property="sysIdSanPham" column="sys_id_san_pham"/>
+        <result property="soLuong" column="so_luong"/>
+        <result property="ngaySanXuat" column="ngay_san_xuat"/>
+        <result property="hanSuDung" column="han_su_dung"/>
+        <result property="dungTich" column="dung_tich"/>
+        <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
+    </resultMap>
+
+
+</mapper>

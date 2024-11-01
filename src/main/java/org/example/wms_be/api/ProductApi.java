@@ -1,5 +1,6 @@
 package org.example.wms_be.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.example.wms_be.data.mgt.ApiResponse;
@@ -43,7 +44,7 @@ public class ProductApi {
 
     @PostMapping
     public ResponseEntity<ApiResponse<ProductResp>> saveProduct(@ModelAttribute ProductReq productReq,
-                                                               HttpServletRequest request) {
+                                                                HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,

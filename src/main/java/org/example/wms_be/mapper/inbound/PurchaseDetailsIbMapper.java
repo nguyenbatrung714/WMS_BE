@@ -21,4 +21,8 @@ public interface PurchaseDetailsIbMapper {
     List<PurchaseDetailsIb> getPRDetailsIbByMaPR(String maPR); // Get detail by maPR
 
     int updateDetailsIbFromPR(String maPR, String maPO); // update status from PR to PO (Từ đơn hàng yêu cầu mua hàng đến đơn hàng mua hàng)
+
+    List<PurchaseDetailsIb> getPurchaseDetailsIbByMaPO(String maPO);
+
+    int updateDetailsIbFromPO(String maPO, String maInBound);
 }

@@ -116,8 +116,8 @@
         where ma_pr = #{maPR}
     </update>
 
-    <select id="getPurchaseRequestIbByMaPO" resultMap="PurchaseDetailsIbMap">
-        SELECT sys_id_chi_tiet_don_hang,
+    <select id="getPurchaseDetailsIbByMaPO" resultMap="PurchaseDetailsIbMap">
+        SELECT sys_id_chi_tiet_nhap_hang,
                sys_id_inbound,
                ma_pr,
                ma_po,
@@ -131,4 +131,9 @@
         WHERE ma_po = #{maPO};
     </select>
 
+    <update id="updateDetailsIbFromPO">
+        update chi_tiet_nhap_hang
+        set sys_id_inbound = #{maInBound}
+        where ma_po = #{maPO}
+    </update>
 </mapper>

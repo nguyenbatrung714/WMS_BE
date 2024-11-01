@@ -19,4 +19,13 @@
         values (#{maPO}, #{maPR}, #{ngayTao}, #{trangThai}, #{loaiDon}, #{sysIdUser});
     </insert>
 
+    <select id="selectPurchaseOrderIbByMaPO" resultMap="PurchaseOrderIbMap">
+    </select>
+
+    <select id="purchaseOrderIbExistByMaPO" resultType="boolean">
+        select exists(select 1
+                      from purchase_order
+                      where ma_po = #{maPO})
+    </select>
+
 </mapper>
