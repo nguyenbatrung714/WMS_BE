@@ -6,4 +6,6 @@ import org.example.wms_be.entity.inbound.PurchaseOrderIb;
 @Mapper
 public interface PurchaseOrderIbMapper {
     int insertPurchaseOrderIb(PurchaseOrderIb purchaseOrderIb);
+
+    boolean purchaseOrderIbExistByMaPO(String maPO);
 }

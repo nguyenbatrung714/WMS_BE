@@ -8,7 +8,7 @@
         <id property="maInBound" column="sys_id_inbound"/>
         <result property="maPO" column="ma_po"/>
         <result property="ngayNhap" column="ngay_nhap" javaType="java.sql.Timestamp"/>
-        <result property="trangThai" column="trang_thai" javaType="org.example.wms_be.entity.purchase.TrangThai"/>
+        <result property="trangThai" column="trang_thai" javaType="org.example.wms_be.enums.TrangThai"/>
         <result property="sysIdUser" column="sys_id_user"/>
     </resultMap>
 

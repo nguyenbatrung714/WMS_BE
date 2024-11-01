@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         String imagePath = null;
-        if (productReq.getHinhAnh() != null) {
+        if (productReq.getHinhAnh() != null && !productReq.getHinhAnh().isEmpty()) {
             try {
                 imagePath = uploadImage(productReq.getHinhAnh());
             } catch (FileStorageException e) {
@@ -56,10 +57,15 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = productConverter.toProduct(productReq);
         product.setSysIdSanPham(productReq.getSysIdSanPham());
-        product.setHinhAnh(imagePath);
+
+        if (imagePath != null) {
+            product.setHinhAnh(imagePath);
+        }
 
         try {
             if (productMapper.checkProductExists(productReq.getSysIdSanPham())) {
+                String img = productMapper.getImgProductByMaSanPham(productReq.getSysIdSanPham());
+                product.setHinhAnh(img);
                 productMapper.updateProduct(product);
             } else {
                 productMapper.insertProduct(product);

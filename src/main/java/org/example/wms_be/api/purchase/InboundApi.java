@@ -17,7 +17,7 @@ public class InboundApi {
 
     private final InboundService inboundService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse<InboundReq>> createInbound(@RequestBody InboundReq inboundReq,
                                                                  HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(

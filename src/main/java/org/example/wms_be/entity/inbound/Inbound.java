@@ -1,7 +1,8 @@
-package org.example.wms_be.entity.purchase;
+package org.example.wms_be.entity.inbound;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.wms_be.enums.TrangThai;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -14,5 +15,5 @@ public class Inbound {
     private Timestamp ngayNhap;
     private TrangThai trangThai;
     private Integer sysIdUser;
-    List<PurchaseRequestDetails> chiTietDonHang;
+    List<PurchaseDetailsIb> chiTietNhapHang;
 }
