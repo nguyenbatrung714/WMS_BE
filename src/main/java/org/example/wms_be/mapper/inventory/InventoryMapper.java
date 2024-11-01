@@ -1,4 +1,4 @@
-package org.example.wms_be.mapper.warehouse;
+package org.example.wms_be.mapper.inventory;
 
 import org.apache.ibatis.annotations.Mapper;
 
