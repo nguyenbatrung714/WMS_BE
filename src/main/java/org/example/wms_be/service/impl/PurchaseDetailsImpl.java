@@ -1,9 +1,9 @@
 package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.wms_be.converter.PurchaseDetailsConverter;
-import org.example.wms_be.data.dto.PurchaseRequestDetailsDto;
-import org.example.wms_be.mapper.purchase.PurchaseDetailsMapper;
+import org.example.wms_be.converter.inbound.PurchaseDetailsIbConverter;
+import org.example.wms_be.data.request.PurchaseDetailsIbReq;
+import org.example.wms_be.mapper.inbound.PurchaseDetailsIbMapper;
 import org.example.wms_be.service.PurchaseDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,18 +16,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PurchaseDetailsImpl implements PurchaseDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseDetailsImpl.class);
-    private final PurchaseDetailsMapper purchaseDetailsMapper;
-    private final PurchaseDetailsConverter purchaseDetailsConverter;
+    private final PurchaseDetailsIbMapper purchaseDetailsIbMapper;
+    private final PurchaseDetailsIbConverter purchaseDetailsIbConverter;
 
     @Override
-    public List<PurchaseRequestDetailsDto> getAllPurchaseDetails() {
+    public List<PurchaseDetailsIbReq> getAllPurchaseDetails() {
         try {
             // lay tat ca doi tuong PurchaseDetails tu purchaseDetailsMapper tra ve 1 list
-            return purchaseDetailsMapper.getAllPurchaseDetails()
+            return purchaseDetailsIbMapper.getAllPurchaseDetails()
                     //purchasedetails -> Stream<PurchaseDetails> chuyen thanh 1 luong xu li tuan tu
                     .stream()
                     // chuyen doi tuong PurchaseDetails thanh PurchaseDetailsDto
-                    .map(purchaseDetailsConverter::toPurchaseDetailsDto)
+                    .map(purchaseDetailsIbConverter::toPurchaseDetailsIbReq)
                     // thu thap cac phan tu thanh 1 list
                     .toList();
         } catch (Exception e) {

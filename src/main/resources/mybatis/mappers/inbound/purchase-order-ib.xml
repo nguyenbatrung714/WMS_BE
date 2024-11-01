@@ -2,19 +2,21 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.wms_be.mapper.purchase.PurchaseOrderMapper">
+<mapper namespace="org.example.wms_be.mapper.inbound.PurchaseOrderIbMapper">
 
-    <resultMap id="PurchaseOrderMap" type="PurchaseOrder" autoMapping="true">
+    <resultMap id="PurchaseOrderIbMap" type="PurchaseOrderIb" autoMapping="true">
         <id property="sysIdPO" column="sys_id_po"/>
         <result property="maPO" column="ma_po"/>
         <result property="maPR" column="ma_pr"/>
         <result property="ngayTao" column="ngay_tao" javaType="java.sql.Timestamp"/>
         <result property="trangThai" column="trang_thai"/>
+        <result property="loaiDon" column="loai_don"/>
         <result property="sysIdUser" column="sys_id_user"/>
     </resultMap>
 
-    <insert id="insertPurchaseOrder" useGeneratedKeys="true" keyProperty="sysIdPO">
-        insert into purchase_oder(ma_po, ma_pr, ngay_tao, trang_thai, sys_id_user)
-        values (#{maPO}, #{maPR}, #{ngayTao}, #{trangThai}, #{sysIdUser});
+    <insert id="insertPurchaseOrderIb" useGeneratedKeys="true" keyProperty="sysIdPO">
+        insert into purchase_order(ma_po, ma_pr, ngay_tao, trang_thai, loai_don, sys_id_user)
+        values (#{maPO}, #{maPR}, #{ngayTao}, #{trangThai}, #{loaiDon}, #{sysIdUser});
     </insert>
+
 </mapper>
