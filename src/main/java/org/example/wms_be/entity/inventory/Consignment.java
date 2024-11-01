@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 public class Consignment {
     private Integer sysIdLoHang;
     private String maLo;
-    private String sysIdInbound;
     private Integer sysIdSanPham;
     private Double soLuong;
     private Timestamp ngaySanXuat;

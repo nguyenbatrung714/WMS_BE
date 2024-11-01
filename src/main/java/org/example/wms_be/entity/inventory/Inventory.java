@@ -3,6 +3,8 @@ package org.example.wms_be.entity.inventory;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 public class Inventory {
@@ -11,5 +13,5 @@ public class Inventory {
     private String maKho;
     private String maLo;
     private String soLuong;
-    private String ngayCapNhat;
+    private Timestamp ngayCapNhat;
 }
