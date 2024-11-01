@@ -69,4 +69,10 @@
         WHERE sys_id_san_pham = #{sysIdSanPham}
     </select>
 
+    <select id="getImgProductByMaSanPham" resultType="string">
+        SELECT hinh_anh
+        FROM san_pham
+        WHERE sys_id_san_pham = #{sysIdSanPham}
+    </select>
+
 </mapper>

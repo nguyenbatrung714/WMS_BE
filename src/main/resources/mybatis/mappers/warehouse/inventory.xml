@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.wms_be.mapper.warehouse.InventoryMapper">
+
+    <resultMap id="InventoryMap" type="Inventory" autoMapping="true">
+        <id property="sysIdTonKho" column="sys_id_ton_kho"/>
+        <result property="sysysIdSanPham" column="sys_id_san_pham"/>
+        <result property="maKho" column="ma_kho"/>
+        <result property="maLo" column="ma_lo"/>
+        <result property="soLuong" column="so_luong"/>
+        <result property="ngayCapNhat" column="ngay_cap_nhat"/>
+    </resultMap>
+
+    <insert id="createInventoy" useGeneratedKeys="true" keyProperty="sysIdTonKho">
+        insert into ton_kho(sys_id_ton_kho, sys_id_san_pham, ma_kho, ma_lo, so_luong, ngay_cap_nhat)
+        values (#{sysIdTonKho}, #{sysysIdSanPham}, #{maKho}, #{maLo}, #{soLuong}, #{ngayCapNhat})
+    </insert>
+
+</mapper>
