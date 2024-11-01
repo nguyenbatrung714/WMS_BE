@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PurchaseDetailsIbReq {
-    private Integer sysIdChiTietDonHang;
+    private Integer sysIdChiTietNhapHang;
     private String  maInBound;
     private String  maPR;
     private String  maPO;
@@ -16,7 +16,7 @@ public class PurchaseDetailsIbReq {
     private Double  soLuong;
     private Double  gia;
     private Double  tongChiPhi;
-    private String  ngayNhap;
+    private String  ngayNhapDuKien;
     private String  tenSanPham;
     private String  tenKhachHang;
 }

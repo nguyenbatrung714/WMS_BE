@@ -12,11 +12,11 @@ public interface PurchaseDetailsIbMapper {
 
     List<PurchaseRequestDetailsIbResp> getPurchaseRequestById(String maPR); // lấy chi tiết theo mã yêu cầu mua hàng
 
-    int insertPurchaseDetails(PurchaseDetailsIb purchaseDetails); // lưu chi tiết đơn hàng
+    int insertPurchaseDetails(PurchaseDetailsIb purchaseDetailsIb); // lưu chi tiết đơn hàng
 
-    boolean existById(Integer sysIdChiTietDonHang); // kiểm tra tồn tại theo id);
+    boolean existById(Integer sysIdChiTietNhapHang); // kiểm tra tồn tại theo id);
 
-    int updatePurchaseDetails(PurchaseDetailsIb purchaseDetails); // cập nhật chi tiết đơn hàng
+    int updatePurchaseDetails(PurchaseDetailsIb purchaseDetailsIb); // cập nhật chi tiết đơn hàng
 
     List<PurchaseDetailsIb> getPRDetailsIbByMaPR(String maPR); // Get detail by maPR
 

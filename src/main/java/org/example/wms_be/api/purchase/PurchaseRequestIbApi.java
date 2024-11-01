@@ -2,9 +2,9 @@ package org.example.wms_be.api.purchase;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.wms_be.data.dto.PurchaseRequestDto;
 import org.example.wms_be.data.mgt.ApiResponse;
 import org.example.wms_be.data.mgt.RespMessagePurchaseReuqestIb;
+import org.example.wms_be.data.request.PurchaseRequestIbReq;
 import org.example.wms_be.data.response.inbound.PurchaseRequestIbResp;
 import org.example.wms_be.service.PurchaseRequestIbService;
 import org.springframework.http.HttpStatus;
@@ -65,17 +65,17 @@ public class PurchaseRequestIbApi {
         }
     }
     @PostMapping("/save")
-    public ResponseEntity<ApiResponse<PurchaseRequestDto>> savePurchaseRequest(
-            @RequestBody PurchaseRequestDto purchaseRequestDto,
+    public ResponseEntity<ApiResponse<PurchaseRequestIbReq>> savePurchaseRequest(
+            @RequestBody PurchaseRequestIbReq purchaseRequestIbReq,
             HttpServletRequest request) throws MessagingException {
         // Lưu yêu cầu mua hàng
-        purchaseRequestIbService.savePurchaseRequestWithDetails(purchaseRequestDto);
+        purchaseRequestIbService.savePurchaseRequestWithDetails(purchaseRequestIbReq);
         // Tạo ApiResponse để trả về dữ liệu
-        ApiResponse<PurchaseRequestDto> response = new ApiResponse<>(
+        ApiResponse<PurchaseRequestIbReq> response = new ApiResponse<>(
                 request.getRequestURI(),
                 HttpStatus.CREATED.value(),
                 "Lưu yêu cầu mua hàng thành công",
-                purchaseRequestDto
+                purchaseRequestIbReq
         );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

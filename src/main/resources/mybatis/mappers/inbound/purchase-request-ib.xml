@@ -19,16 +19,22 @@
         <result property="trangThai" column="trang_thai"/>
         <result property="loaiYeuCau" column="loai_yeu_cau"/>
     </resultMap>
-    <insert id="insertPurchaseRequest">
-        INSERT INTO purchase_request(ma_pr, ngay_yeu_cau, sys_id_user)
-        VALUES (#{maPR}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{nguoiYeuCau});
+    <insert id="insertPurchaseRequestIb" useGeneratedKeys="true" keyProperty="sysIdYeuCauNhapHang">
+        INSERT INTO purchase_request(ma_pr,
+                                     ngay_yeu_cau,
+                                     sys_id_user,
+                                     loai_yeu_cau)
+        VALUES (#{maPR},
+                DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
+                #{nguoiYeuCau},
+                #{loaiYeuCau});
     </insert>
-    <update id="updatePurchaseRequest">
+    <update id="updatePurchaseRequestIb">
         UPDATE purchase_request
         SET ngay_yeu_cau = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
             sys_id_user  = #{nguoiYeuCau},
             trang_thai   = #{trangThai}
-        WHERE sys_id_pr = #{sysIdYeuCauMuaHang};
+        WHERE sys_id_pr = #{sysIdYeuCauNhapHang}
     </update>
     <select id="getAllPurchaseRequestIb" resultMap="PurchaseRequestIbDtoMap">
         SELECT sys_id_pr,
@@ -44,7 +50,8 @@
     <select id="existById" resultType="java.lang.Boolean">
         SELECT EXISTS(SELECT 1
                       FROM purchase_request
-                      WHERE sys_id_pr = #{sysIdYeuCauMuaHang});
+                      WHERE sys_id_pr = #{sysIdYeuCauMuaHang}
+                        AND loai_yeu_cau = 'NHAP');
     </select>
     <select id="getAllPurchaseRequestIbByMaPR"
             resultMap="PurchaseRequestIbDtoMap">
@@ -58,6 +65,9 @@
                  JOIN user ON purchase_request.sys_id_user = user.sys_id_user
         WHERE loai_yeu_cau = 'NHAP' AND ma_pr = #{maPR};
 
+    </select>
+    <select id="getMaPrById" resultType="java.lang.String">
+        SELECT ma_pr FROM purchase_request WHERE sys_id_pr = #{sysIdYeuCauNhapHang};
     </select>
 
 </mapper>

@@ -1,13 +1,14 @@
 package org.example.wms_be.service.impl;
 
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.converter.inbound.PurchaseDetailsIbConverter;
 import org.example.wms_be.converter.inbound.PurchaseRequestIbConverter;
-import org.example.wms_be.data.dto.PurchaseRequestDto;
-import org.example.wms_be.data.response.PurchaseRequestObResp;
+import org.example.wms_be.data.request.PurchaseDetailsIbReq;
+import org.example.wms_be.data.request.PurchaseRequestIbReq;
 import org.example.wms_be.data.response.inbound.PurchaseRequestDetailsIbResp;
 import org.example.wms_be.data.response.inbound.PurchaseRequestIbResp;
+import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
+import org.example.wms_be.entity.inbound.PurchaseRequestIb;
 import org.example.wms_be.mapper.account.UserMapper;
 import org.example.wms_be.mapper.inbound.PurchaseDetailsIbMapper;
 import org.example.wms_be.mapper.inbound.PurchaseRequestIbMapper;
@@ -17,6 +18,7 @@ import org.example.wms_be.utils.TimeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -24,8 +26,8 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class PurchaseRequestIbImpl implements PurchaseRequestIbService {
-    private static final Logger logger = LoggerFactory.getLogger(PurchaseRequestIbImpl.class);
+public class PurchaseRequestIbServiceImpl implements PurchaseRequestIbService {
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseRequestIbServiceImpl.class);
     private final PurchaseDetailsIbMapper purchaseDetailsIbMapper;
     private final PurchaseRequestIbConverter purchaseRequestIbConverter;
     private final PurchaseDetailsIbConverter purchaseDetailsIbConverter;
@@ -71,7 +73,7 @@ public class PurchaseRequestIbImpl implements PurchaseRequestIbService {
                     logger.info("Found {} details for PurchaseRequest: {}", chiTietNhapHang.size(), pr.getMaPR());
                     chiTietNhapHang.forEach(detail -> {
                         if (detail.getNgayNhapDuKien() != null) {
-                            String ngayNhapDuKienFormatted = TimeConverter.formatNgayXuat(TimeConverter.parseDateOnly(detail.getNgayNhapDuKien()));
+                            String ngayNhapDuKienFormatted = TimeConverter.formatNgayNhap(TimeConverter.parseDateOnly(detail.getNgayNhapDuKien()));
                             detail.setNgayNhapDuKien(ngayNhapDuKienFormatted);
                         }
                     });
@@ -81,8 +83,39 @@ public class PurchaseRequestIbImpl implements PurchaseRequestIbService {
     }
 
     @Override
-    public void savePurchaseRequestWithDetails(PurchaseRequestDto purchaseRequestDto) throws MessagingException {
-
+    @Transactional
+    public void savePurchaseRequestWithDetails(PurchaseRequestIbReq purchaseRequestIbReq) {
+        PurchaseRequestIb purchaseRequestIb = purchaseRequestIbConverter.toPurchaseRequestIb(purchaseRequestIbReq);
+        if(purchaseRequestIbMapper.existById(purchaseRequestIbReq.getSysIdYeuCauNhapHang())){
+            purchaseRequestIbMapper.updatePurchaseRequestIb(purchaseRequestIb);
+        }else {
+            purchaseRequestIbMapper.insertPurchaseRequestIb(purchaseRequestIb);
+        }
+        // lay maPR
+        String maPR = purchaseRequestIbMapper.getMaPrById(purchaseRequestIb.getSysIdYeuCauNhapHang());
+        purchaseRequestIb.setMaPR(maPR);
+        logger.info("Inserted new PurchaseRequestOb: {} with MaPR: {}", purchaseRequestIb, maPR);
+        // luu chi tiet nhap hang
+        for (PurchaseDetailsIbReq purchaseDetailsIbReq : purchaseRequestIbReq.getChiTietNhapHang()) {
+            PurchaseDetailsIb purchaseDetailsIb = purchaseDetailsIbConverter.toPurchaseDetailsIb(purchaseDetailsIbReq);
+            String ngayNhapDuKien = purchaseDetailsIb.getNgayNhapDuKien();
+            if (ngayNhapDuKien != null && !ngayNhapDuKien.isEmpty()) {
+                try {
+                    // Convert ngayXuatDuKien from dd/MM/yyyy to yyyy-MM-dd
+                    String ngayNhapDuKienDbFormat = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayNhapDuKien));
+                    purchaseDetailsIb.setNgayNhapDuKien(ngayNhapDuKienDbFormat);
+                    logger.info("NgayNhapDuKien: {} -> {}", ngayNhapDuKien, ngayNhapDuKienDbFormat);
+                } catch (IllegalArgumentException e) {
+                    logger.error("Invalid date format: {}", ngayNhapDuKien);
+                }
+            }
+            if (purchaseDetailsIbMapper.existById(purchaseDetailsIbReq.getSysIdChiTietNhapHang())) {
+                purchaseDetailsIbMapper.updatePurchaseDetails(purchaseDetailsIb);
+            } else {
+                purchaseDetailsIb.setMaPR(purchaseRequestIb.getMaPR());
+                purchaseDetailsIbMapper.insertPurchaseDetails(purchaseDetailsIb);
+            }
+        }
     }
 }
 
