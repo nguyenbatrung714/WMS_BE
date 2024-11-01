@@ -1,8 +1,5 @@
 package org.example.wms_be.service.impl;
 
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.page.PageMethod;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.converter.CategoryProdConverter;
 import org.example.wms_be.data.dto.CategoryProdDto;
@@ -16,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryProdServiceImpl implements CategoryProdService {
@@ -25,18 +24,11 @@ public class CategoryProdServiceImpl implements CategoryProdService {
     private final WarehouseMapper warehouseMapper;
 
     @Override
-    public PageInfo<CategoryProdDto> getAllCategoryProd(int page, int size) {
-        try {
-            PageMethod.startPage(page + 1, size);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error when starting page for CategoryProd");
-        }
-
-        return new PageInfo<>(
-                categoryProdMapper.getAllCategoryProd()
-                        .stream()
-                        .map(categoryProdConverter::toCategoryProdDto)
-                        .toList());
+    public List<CategoryProdDto> getAllCategoryProd() {
+        return categoryProdMapper.getAllCategoryProd()
+                .stream()
+                .map(categoryProdConverter::toCategoryProdDto)
+                .toList();
     }
 
     @Override
@@ -64,7 +56,7 @@ public class CategoryProdServiceImpl implements CategoryProdService {
     @Override
     public CategoryProdDto getCategoryProdById(Integer sysIdDanhMuc) {
         if (!categoryProdMapper.checkCategoryProdExists(sysIdDanhMuc)) {
-            throw new ResourceNotFoundException("Category product", "maDanhMuc", sysIdDanhMuc +"");
+            throw new ResourceNotFoundException("Category product", "maDanhMuc", sysIdDanhMuc + "");
         }
 
         try {

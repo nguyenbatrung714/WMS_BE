@@ -1,11 +1,12 @@
 package org.example.wms_be.service;
 
-import com.github.pagehelper.PageInfo;
 import org.example.wms_be.data.dto.ZoneDto;
+
+import java.util.List;
 
 public interface ZoneService {
 
-    PageInfo<ZoneDto> getAllZones(int page, int size);
+    List<ZoneDto> getAllZones();
 
     ZoneDto saveZone(ZoneDto zoneDto);
 

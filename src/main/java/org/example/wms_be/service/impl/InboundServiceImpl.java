@@ -8,8 +8,6 @@ import org.example.wms_be.entity.purchase.Inbound;
 import org.example.wms_be.entity.purchase.PurchaseRequestDetails;
 import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.mapper.purchase.InboundMapper;
-import org.example.wms_be.mapper.purchase.PurchaseDetailsMapper;
-import org.example.wms_be.mapper.purchase.PurchaseOrderMapper;
 import org.example.wms_be.service.InboundService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

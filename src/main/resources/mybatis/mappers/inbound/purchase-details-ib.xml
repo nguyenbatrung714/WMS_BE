@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.wms_be.mapper.purchase.PurchaseDetailsMapper">
+<mapper namespace="org.example.wms_be.mapper.inbound.PurchaseDetailsIbMapper">
 
-    <resultMap id="PurchaseDetailsMap" type="PurchaseRequestDetails"
+    <resultMap id="PurchaseDetailsIbMap" type="PurchaseDetailsIb"
                autoMapping="true">
-        <id property="sysIdChiTietDonHang" column="sys_id_chi_tiet_don_hang"/>
+        <id property="sysIdChiTietNhapHang" column="sys_id_chi_tiet_nhap_hang"/>
         <result property="maInBound" column="sys_id_inbound"/>
         <result property="maPR" column="ma_pr"/>
         <result property="maPO" column="ma_po"/>
@@ -15,9 +15,8 @@
         <result property="soLuong" column="so_luong"/>
         <result property="gia" column="gia"/>
         <result property="tongChiPhi" column="tong_chi_phi"/>
-        <result property="ngayNhap" column="ngay_nhap"/>
-        <result property="tenSanPham" column="ten_san_pham"/>
-        <result property="tenKhachHang" column="ten_khach_hang"/>
+        <result property="ngayNhapDuKien" column="ngay_nhap_du_kien"/>
+        <result property="maLo" column="maLo"/>
     </resultMap>
 
     <!--    <resultMap id="UpdateStatusMap" type="PurchaseRequestDetails">-->
@@ -34,20 +33,17 @@
 
     <update id="updatePurchaseDetails">
         UPDATE chi_tiet_don_hang
-        SET
-            --             sys_id_inbound    = #{maInBound},
-            --             ma_pr             = #{maPR},
-            --             ma_po             = #{maPO},
+        SET ma_pr             = #{maPR},
             sys_id_khang_hang = #{sysIdKhachHang},
             sys_id_san_pham   = #{sysIdSanPham},
             so_luong          = #{soLuong},
             gia               = #{gia},
             tong_chi_phi      = #{tongChiPhi},
             ngay_nhap         = #{ngayNhap}
-        WHERE sys_id_chi_tiet_don_hang = #{sysIdChiTietDonHang};
+        WHERE sys_id_chi_tiet_don_hang = #{sysIdChiTietDonHang}
     </update>
 
-    <select id="getAllPurchaseDetails" resultMap="PurchaseDetailsMap">
+    <select id="getAllPurchaseDetails" resultMap="PurchaseDetailsIbMap">
         SELECT sys_id_chi_tiet_don_hang,
                sys_id_inbound,
                ma_pr,
@@ -61,7 +57,7 @@
         FROM chi_tiet_don_hang;
     </select>
 
-    <select id="getPurchaseRequestById" resultMap="PurchaseDetailsMap">
+    <select id="getPurchaseRequestById" resultMap="PurchaseDetailsIbMap">
         SELECT ct.sys_id_chi_tiet_don_hang,
                ct.sys_id_inbound,
                ct.ma_pr,
@@ -85,8 +81,8 @@
                       WHERE sys_id_chi_tiet_don_hang = #{sysIdChiTietDonHang});
     </select>
 
-    <select id="getPRDetailByMaPR" parameterType="string" resultMap="PurchaseDetailsMap">
-        select sys_id_chi_tiet_don_hang,
+    <select id="getPRDetailsIbByMaPR" parameterType="string" resultMap="PurchaseDetailsIbMap">
+        select sys_id_chi_tiet_nhap_hang,
                ma_pr,
                ma_po,
                sys_id_khang_hang,
@@ -94,18 +90,18 @@
                so_luong,
                gia,
                tong_chi_phi,
-               ngay_nhap
-        from chi_tiet_don_hang
+               ngay_nhap_du_kien
+        from chi_tiet_nhap_hang
         where ma_pr = #{maPR}
     </select>
 
-    <update id="updateDetailsFromPR">
-        update chi_tiet_don_hang
+    <update id="updateDetailsIbFromPR">
+        update chi_tiet_nhap_hang
         set ma_po = #{maPO}
         where ma_pr = #{maPR}
     </update>
 
-    <select id="getPRDetailByMaPO" resultMap="PurchaseDetailsMap">
+    <select id="getPurchaseRequestIbByMaPO" resultMap="PurchaseDetailsIbMap">
         SELECT sys_id_chi_tiet_don_hang,
                sys_id_inbound,
                ma_pr,
@@ -115,15 +111,9 @@
                so_luong,
                gia,
                tong_chi_phi,
-               ngay_nhap
-        FROM chi_tiet_don_hang
+               ngay_nhap_du_kien
+        FROM chi_tiet_nhap_hang
         WHERE ma_po = #{maPO};
     </select>
-
-    <update id="updateDetailsFromPO">
-        update chi_tiet_don_hang
-        set sys_id_inbound = #{maInBound}
-        where ma_po = #{maPO};
-    </update>
 
 </mapper>

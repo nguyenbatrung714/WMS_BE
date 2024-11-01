@@ -1,6 +1,5 @@
 package org.example.wms_be.api;
 
-import com.github.pagehelper.PageInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.data.dto.WarehouseDto;
@@ -9,6 +8,8 @@ import org.example.wms_be.service.WarehouseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,14 +20,12 @@ public class WarehouseApi {
     private final WarehouseService warehouseService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageInfo<WarehouseDto>>> getAllWarehouses(@RequestParam(defaultValue = "0") int page,
-                                                                                @RequestParam(defaultValue = "10") int size,
-                                                                                HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<List<WarehouseDto>>> getAllWarehouses(HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
                 "List of warehouses",
-                warehouseService.getAllWarehouses(page, size)
+                warehouseService.getAllWarehouses()
         ), HttpStatus.OK);
     }
 

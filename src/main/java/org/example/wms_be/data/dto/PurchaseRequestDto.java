@@ -3,6 +3,7 @@ package org.example.wms_be.data.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.wms_be.data.request.PurchaseDetailsIbReq;
 
 import java.util.List;
 
@@ -16,5 +17,6 @@ public class PurchaseRequestDto {
     private Integer nguoiYeuCau;
     private String trangThai;
     private String email;
-    List<PurchaseRequestDetailsDto> chiTietDonHang;
+    private String fullName;
+    List<PurchaseDetailsIbReq> chiTietDonHang;
 }

@@ -2,15 +2,18 @@ package org.example.wms_be.utils;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.Getter;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailService {
+@Getter
+
+public class EmailUtil {
     private final JavaMailSender mailSender;
 
-    public EmailService(JavaMailSender mailSender) {
+    public EmailUtil(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
@@ -25,8 +28,8 @@ public class EmailService {
         helper.setTo(to);
         helper.setSubject(subject != null ? subject : "");
         helper.setText(body != null ? body : "", true);  // true để chỉ định nội dung là HTML
-
         mailSender.send(message);
     }
+
 
 }

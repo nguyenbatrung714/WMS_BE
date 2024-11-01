@@ -14,3 +14,6 @@
 <!--</configuration>-->
 
 <!-- Config at application.properties-->
+<settings>
+    <setting name="cacheEnabled" value="false"/>
+</settings>

@@ -1,7 +1,5 @@
 package org.example.wms_be.service.impl;
 
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.converter.ZoneConverter;
 import org.example.wms_be.data.dto.ZoneDto;
@@ -15,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ZoneServiceImpl implements ZoneService {
@@ -25,18 +25,11 @@ public class ZoneServiceImpl implements ZoneService {
     private final WarehouseMapper warehouseMapper;
 
     @Override
-    public PageInfo<ZoneDto> getAllZones(int page, int size) {
-        try {
-            PageMethod.startPage(page + 1, size);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error when starting page for zones");
-        }
-
-        return new PageInfo<>(
-                zoneMapper.getAllZones()
-                        .stream()
-                        .map(zoneConverter::toZoneDto)
-                        .toList());
+    public List<ZoneDto> getAllZones() {
+        return zoneMapper.getAllZones()
+                .stream()
+                .map(zoneConverter::toZoneDto)
+                .toList();
     }
 
     @Override
