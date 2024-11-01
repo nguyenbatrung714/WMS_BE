@@ -1,6 +1,7 @@
 package org.example.wms_be.mapper.inbound;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.example.wms_be.data.response.inbound.PurchaseRequestDetailsIbResp;
 import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public interface PurchaseDetailsIbMapper {
     List<PurchaseDetailsIb> getAllPurchaseDetails(); // lấy tất cả chi tiết đơn hàng
 
-    List<PurchaseDetailsIb> getPurchaseRequestById(String maPR); // lấy chi tiết theo mã yêu cầu mua hàng
+    List<PurchaseRequestDetailsIbResp> getPurchaseRequestById(String maPR); // lấy chi tiết theo mã yêu cầu mua hàng
 
     int insertPurchaseDetails(PurchaseDetailsIb purchaseDetails); // lưu chi tiết đơn hàng
 
