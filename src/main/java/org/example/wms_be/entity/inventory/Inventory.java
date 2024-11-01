@@ -1,4 +1,4 @@
-package org.example.wms_be.entity.warehouse;
+package org.example.wms_be.entity.inventory;
 
 import lombok.Getter;
 import lombok.Setter;

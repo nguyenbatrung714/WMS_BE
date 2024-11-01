@@ -1,7 +1,7 @@
-package org.example.wms_be.converter.warehouse;
+package org.example.wms_be.converter.inventory;
 
 import org.example.wms_be.data.request.InventoryReq;
-import org.example.wms_be.entity.warehouse.Inventory;
+import org.example.wms_be.entity.inventory.Inventory;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
