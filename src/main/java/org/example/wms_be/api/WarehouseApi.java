@@ -1,6 +1,5 @@
 package org.example.wms_be.api;
 
-import com.github.pagehelper.PageInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.data.dto.WarehouseDto;

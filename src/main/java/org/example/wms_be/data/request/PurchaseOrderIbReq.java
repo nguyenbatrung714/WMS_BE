@@ -2,19 +2,20 @@ package org.example.wms_be.data.request;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.wms_be.data.dto.PurchaseRequestDetailsDto;
+import org.example.wms_be.enums.TypeOrder;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Getter
 @Setter
-public class PurchaseOrderReq {
+public class PurchaseOrderIbReq {
     private Integer sysIdPO;
     private String maPO;
     private String maPR;
     private Timestamp ngayTao = new Timestamp(System.currentTimeMillis());
     private Boolean trangThai = true;
+    private TypeOrder loaiDon = TypeOrder.NHAP;
     private Integer sysIdUser;
-    List<PurchaseRequestDetailsDto> chiTietDonHang;
+    List<PurchaseDetailsIbReq> chiTietNhapHang;
 }

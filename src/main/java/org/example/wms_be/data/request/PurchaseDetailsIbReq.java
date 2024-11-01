@@ -1,4 +1,4 @@
-package org.example.wms_be.data.dto;
+package org.example.wms_be.data.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PurchaseRequestDetailsDto {
+public class PurchaseDetailsIbReq {
     private Integer sysIdChiTietDonHang;
     private String  maInBound;
     private String  maPR;

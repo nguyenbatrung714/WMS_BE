@@ -1,7 +1,7 @@
 package org.example.wms_be.api.purchase;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.wms_be.data.dto.PurchaseRequestDetailsDto;
+import org.example.wms_be.data.request.PurchaseDetailsIbReq;
 import org.example.wms_be.data.mgt.ApiResponse;
 import org.example.wms_be.service.PurchaseDetailsService;
 import org.springframework.http.HttpStatus;
@@ -18,9 +18,9 @@ import java.util.List;
 public class PurchaseDetailsApi {
     private final PurchaseDetailsService purchaseDetailsService;
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<PurchaseRequestDetailsDto>>> getAllPurchaseDetails(HttpServletRequest request) {
-        List<PurchaseRequestDetailsDto> purchaseDetails = purchaseDetailsService.getAllPurchaseDetails();
-        ApiResponse<List<PurchaseRequestDetailsDto>> response = new ApiResponse<>(
+    public ResponseEntity<ApiResponse<List<PurchaseDetailsIbReq>>> getAllPurchaseDetails(HttpServletRequest request) {
+        List<PurchaseDetailsIbReq> purchaseDetails = purchaseDetailsService.getAllPurchaseDetails();
+        ApiResponse<List<PurchaseDetailsIbReq>> response = new ApiResponse<>(
                 request.getRequestURI(),
                 HttpStatus.OK.value(),
                 "lấy danh sách thành công",
