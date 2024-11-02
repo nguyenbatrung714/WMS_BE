@@ -2,7 +2,7 @@ package org.example.wms_be.mapper.purchase;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
-import org.example.wms_be.entity.purchase.PurchaseRequestDetailsOb;
+import org.example.wms_be.entity.outbound.PurchaseRequestDetailsOb;
 
 import java.util.List;
 

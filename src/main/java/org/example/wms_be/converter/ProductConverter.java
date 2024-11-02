@@ -1,6 +1,5 @@
 package org.example.wms_be.converter;
 
-import org.example.wms_be.data.dto.ProductDto;
 import org.example.wms_be.data.request.ProductReq;
 import org.example.wms_be.data.response.ProductResp;
 import org.example.wms_be.entity.product.Product;

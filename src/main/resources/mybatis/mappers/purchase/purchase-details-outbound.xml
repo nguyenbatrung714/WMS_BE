@@ -9,7 +9,7 @@
         <result property="maPO" column="ma_po"/>
         <result property="maOB" column="ma_outbound"/>
         <result property="sysIdKhachHang" column="sys_id_khach_hang"/>
-        <result property="maLoHang" column="ma_lo_hang"/>
+        <result property="maLoHang" column="ma_lo"/>
         <result property="sysIdSanPham" column="sys_id_san_pham"/>
         <result property="soLuong" column="so_luong"/>
         <result property="gia" column="gia"/>
@@ -23,7 +23,7 @@
         <result property="maPO" column="ma_po"/>
         <result property="maOB" column="ma_outbound"/>
         <result property="tenKhachHang" column="ten_khach_hang"/>
-        <result property="maLoHang" column="ma_lo_hang"/>
+        <result property="maLoHang" column="ma_lo"/>
         <result property="tenSanPham" column="ten_san_pham"/>
         <result property="soLuong" column="so_luong"/>
         <result property="gia" column="gia"/>

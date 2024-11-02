@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.purchase.InboundMapper">
+
+    <resultMap id="InboundMap" type="Inbound" autoMapping="true">
+        <id property="maInBound" column="sys_id_inbound"/>
+        <result property="maPO" column="ma_po"/>
+        <result property="ngayNhap" column="ngay_nhap" javaType="java.sql.Timestamp"/>
+        <result property="trangThai" column="trang_thai" javaType="org.example.wms_be.enums.TrangThai"/>
+        <result property="sysIdUser" column="sys_id_user"/>
+    </resultMap>
+
+    <insert id="insertInbound" useGeneratedKeys="true" keyProperty="sys_id_inbound">
+        insert into inbound(sys_id_inbound,
+                            ma_po,
+                            ngay_nhap,
+                            trang_thai,
+                            sys_id_user)
+        values (#{maInBound},
+                #{maPO},
+                #{ngayNhap},
+                #{trangThai},
+                #{sysIdUser})
+    </insert>
+</mapper>
