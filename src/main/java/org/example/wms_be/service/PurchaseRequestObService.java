@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface PurchaseRequestObService {
     List<PurchaseRequestObResp> getAllPurchaseRequestOb();
+    List<PurchaseRequestObResp> getPurchaseRequestObByMaPR(String maPR);
     void savePurchaseRequestOb(PurchaseRequestObReq purchaseRequestObReq);
 }

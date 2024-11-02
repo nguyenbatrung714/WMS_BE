@@ -21,17 +21,15 @@
         <result property="loaiYeuCau" column="loai_yeu_cau"/>
         <result property="nguoiYeuCau" column="full_name"/>
     </resultMap>
-    <insert id="insertPurchaseRequestOb">
-        INSERT INTO purchase_request (ma_pr,
-                                      ngay_yeu_cau,
-                                      sys_id_user,
-                                      trang_thai,
-                                      loai_yeu_cau)
-        VALUES (#{maPR},
-                DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
-                #{nguoiYeuCau},
-                #{trangThai},
-                #{loaiYeuCau});
+    <insert id="insertPurchaseRequestOb" useGeneratedKeys="true" keyProperty="sysIdYeuCauXuatHang">
+        INSERT INTO purchase_request (
+            ngay_yeu_cau,
+            sys_id_user,
+            loai_yeu_cau)
+        VALUES (
+                   DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
+                   #{nguoiYeuCau},
+                   #{loaiYeuCau});
     </insert>
     <update id="updatePurchaseRequestOb">
         UPDATE purchase_request
@@ -57,4 +55,19 @@
                       WHERE sys_id_pr = #{sysIdYeuCauXuatHang}
                         AND loai_yeu_cau = 'XUAT');
     </select>
+    <select id="getAllPurchaseRequestObByMaPR" resultMap="PurchaseRequestObDtoMap">
+        SELECT sys_id_pr,
+               ma_pr,
+               ngay_yeu_cau,
+               trang_thai,
+               user.full_name,
+               loai_yeu_cau
+        FROM purchase_request
+                 JOIN user ON purchase_request.sys_id_user = user.sys_id_user
+        WHERE loai_yeu_cau = 'XUAT' AND ma_pr = #{maPR};
+    </select>
+    <select id="getMaPRById" resultType="java.lang.String">
+        SELECT ma_pr FROM purchase_request WHERE sys_id_pr = #{sysIdYeuCauXuatHang}
+    </select>
+
 </mapper>

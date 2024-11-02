@@ -16,5 +16,5 @@ public class PurchaseRequestObResp {
     private String  nguoiYeuCau;
     private String  trangThai;
     private String  loaiYeuCau;
-    List<PurchaseRequestDetailsResp> chiTietXuatHang;
+    List<PurchaseRequestDetailsObResp> chiTietXuatHang;
 }

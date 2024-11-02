@@ -8,31 +8,33 @@
         <result property="maPR" column="ma_pr"/>
         <result property="maPO" column="ma_po"/>
         <result property="maOB" column="ma_outbound"/>
-        <result property="sysIdKhachHang" column="sys_id_khang_hang"/>
-        <result property="maLoHang" column="ma_lo_hang"/>
+        <result property="sysIdKhachHang" column="sys_id_khach_hang"/>
+        <result property="maLoHang" column="ma_lo"/>
         <result property="sysIdSanPham" column="sys_id_san_pham"/>
         <result property="soLuong" column="so_luong"/>
         <result property="gia" column="gia"/>
         <result property="tongChiPhi" column="tong_chi_phi"/>
         <result property="ngayXuatDuKien" column="ngay_xuat"/>
     </resultMap>
-    <resultMap id="PurchaseDetailsDtoMap" type="org.example.wms_be.data.response.PurchaseRequestDetailsResp"
+    <resultMap id="PurchaseDetailsDtoMap" type="org.example.wms_be.data.response.PurchaseRequestDetailsObResp"
                autoMapping="true">
         <id property="sysIdChiTietXuatHang" column="sys_id_chi_tiet_xuat_hang"/>
         <result property="maPR" column="ma_pr"/>
         <result property="maPO" column="ma_po"/>
         <result property="maOB" column="ma_outbound"/>
         <result property="tenKhachHang" column="ten_khach_hang"/>
-        <result property="maLoHang" column="ma_lo_hang"/>
+        <result property="maLoHang" column="ma_lo"/>
         <result property="tenSanPham" column="ten_san_pham"/>
         <result property="soLuong" column="so_luong"/>
         <result property="gia" column="gia"/>
         <result property="tongChiPhi" column="tong_chi_phi"/>
         <result property="ngayXuatDuKien" column="ngay_xuat_du_kien"/>
+        <result property="sysIdKhachHang" column="sys_id_khach_hang"/>
+        <result property="sysIdSanPham" column="sys_id_san_pham"/>
     </resultMap>
-    <update id="updatePurchaseRequestDetailsOb">
+    <update id="updatePurchaseRequestDetailsOb" parameterType="PurchaseRequestDetailsOb">
         UPDATE chi_tiet_xuat_hang
-        SET sys_id_khang_hang = #{sysIdKhachHang},
+        SET sys_id_khach_hang = #{sysIdKhachHang},
             sys_id_san_pham   = #{sysIdSanPham},
             so_luong          = #{soLuong},
             gia               = #{gia},
@@ -45,7 +47,9 @@
                ct.sys_id_outbound,
                ct.ma_pr,
                ct.ma_po,
+               kh.sys_id_khach_hang,
                ten_khach_hang,
+               sp.sys_id_san_pham,
                sp.ten_san_pham,
                ct.so_luong,
                ct.gia,
@@ -53,7 +57,7 @@
                ct.ngay_xuat_du_kien
         FROM chi_tiet_xuat_hang ct
                  JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
-                 JOIN khach_hang kh ON ct.sys_id_khang_hang = kh.sys_id_khach_hang
+                 JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
                  JOIN purchase_request pr ON ct.ma_pr = pr.ma_pr
         WHERE ct.ma_pr = #{maPR}
           AND pr.loai_yeu_cau = 'XUAT';
@@ -69,7 +73,7 @@
                                         ma_pr,
                                         ma_po,
                                         ma_lo,
-                                        sys_id_khang_hang,
+                                        sys_id_khach_hang,
                                         sys_id_san_pham,
                                         so_luong,
                                         gia,

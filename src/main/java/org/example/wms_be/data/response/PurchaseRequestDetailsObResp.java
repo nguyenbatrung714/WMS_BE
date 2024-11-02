@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PurchaseRequestDetailsResp {
+public class PurchaseRequestDetailsObResp {
     private Integer sysIdChiTietXuatHang;
     private String  maOB;
     private String  maPR;
@@ -19,4 +19,6 @@ public class PurchaseRequestDetailsResp {
     private Double  gia;
     private Double  tongChiPhi;
     private String  ngayXuatDuKien;
+    private Integer sysIdKhachHang;
+    private Integer sysIdSanPham;
 }

@@ -1,4 +1,4 @@
-package org.example.wms_be.entity.purchase;
+package org.example.wms_be.entity.outbound;
 
 
 import lombok.Getter;
