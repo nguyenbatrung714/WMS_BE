@@ -50,7 +50,7 @@
     <select id="existById" resultType="java.lang.Boolean">
         SELECT EXISTS(SELECT 1
                       FROM purchase_request
-                      WHERE sys_id_pr = #{sysIdYeuCauMuaHang}
+                      WHERE sys_id_pr = #{sysIdYeuCauNhapHang}
                         AND loai_yeu_cau = 'NHAP');
     </select>
     <select id="getAllPurchaseRequestIbByMaPR"
