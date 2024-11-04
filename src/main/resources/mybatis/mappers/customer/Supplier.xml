@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.customer.SupplierMapper">
+    <resultMap id="supplierMap" type="org.example.wms_be.entity.customer.Supplier">
+        <result property="sysIdNhaCungCap" column="sys_id_nha_cung_cap"/>
+        <result property="tenNhaCungCap" column="ten_nha_cung_cap"/>
+        <result property="moTa" column="mo_ta"/>
+
+    </resultMap>
+    <insert id="insertSupplier">
+        INSERT INTO nha_cung_cap(sys_id_nha_cung_cap,ten_nha_cung_cap,mo_ta)
+        VALUES(#{sysIdNhaCungCap},#{tenNhaCungCap},#{moTa})
+    </insert>
+    <update id="updateSupplier">
+        UPDATE nha_cung_cap
+        SET
+            ten_nha_cung_cap=#{tenNhaCungCap},
+            mo_ta=#{moTa}
+        WHERE sys_id_nha_cung_cap=#{sysIdNhaCungCap}
+    </update>
+    <delete id="deleteSupplier">
+        DELETE FROM nha_cung_cap
+        WHERE sys_id_nha_cung_cap=#{sysIdNhaCungCap}
+    </delete>
+    <select id="getAllSupplier" resultMap="supplierMap">
+        select sys_id_nha_cung_cap,
+               ten_nha_cung_cap,
+               mo_ta
+        from nha_cung_cap
+    </select>
+    <select id="getSupplierById" resultMap="supplierMap">
+        select sys_id_nha_cung_cap,
+               ten_nha_cung_cap,
+               mo_ta
+        from nha_cung_cap
+        WHERE sys_id_nha_cung_cap=#{sysIdNhaCungCap}
+    </select>
+    <select id="checkSupplierExits" resultType="boolean" parameterType="String">
+        select exists(
+            select 1 from nha_cung_cap
+            WHERE sys_id_nha_cung_cap=#{sysIdNhaCungCap}
+        )
+    </select>
+</mapper>

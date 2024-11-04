@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.customer.CustomerMapper">
+    <resultMap id="customerMap" type="org.example.wms_be.entity.customer.Customer">
+        <id property="sysIdKhachHang" column="sys_id_khach_hang"/>
+        <result property="tenKhachHang" column="ten_khach_hang"/>
+        <result property="tenCongTy" column="ten_cong_ty"/>
+        <result property="soDienThoai" column="so_dien_thoai"/>
+        <result property="sysIdNhaCungCap" column="sys_id_nha_cung_cap"/>
+        <result property="diaChi" column="dia_chi"/>
+    </resultMap>
+    <insert id="insertCustomer">
+    INSERT INTO khach_hang(sys_id_khach_hang,ten_khach_hang,ten_cong_ty,so_dien_thoai,sys_id_nha_cung_cap,dia_chi)
+    VALUES(#{sysIdKhachHang},#{tenKhachHang},#{tenCongTy},#{soDienThoai},#{sysIdNhaCungCap},#{diaChi})
+
+    </insert>
+    <update id="updateCustomer">
+    UPDATE khach_hang
+    SET ten_khach_hang=#{tenKhachHang},
+        ten_cong_ty=#{tenCongTy},
+        so_dien_thoai=#{soDienThoai},
+        sys_id_nha_cung_cap=#{sysIdNhaCungCap},
+        dia_chi=#{diaChi}
+    WHERE sys_id_khach_hang=#{sysIdKhachHang}
+    </update>
+    <delete id="deleteCustomer">
+    DELETE FROM khach_hang
+    WHERE sys_id_khach_hang=#{sysIdKhachHang}
+    </delete>
+    <select id="getAllCustomer" resultMap="customerMap">
+        select sys_id_khach_hang,
+               ten_khach_hang,
+               ten_cong_ty,
+               so_dien_thoai,
+               sys_id_nha_cung_cap,
+               dia_chi
+        from khach_hang
+    </select>
+    <select id="checkCustomerExits" resultType="boolean" parameterType="Integer">
+    select exists(select 1
+                  from khach_hang
+                  WHERE sys_id_khach_hang=#{sysIdKhachHang})
+    </select>
+    <select id="getCustomerById" resultMap="customerMap">
+        select sys_id_khach_hang,
+               ten_khach_hang,
+               ten_cong_ty,
+               so_dien_thoai,
+               sys_id_nha_cung_cap,
+               dia_chi
+        from khach_hang
+        WHERE sys_id_khach_hang=#{sysIdKhachHang}
+    </select>
+
+</mapper>
