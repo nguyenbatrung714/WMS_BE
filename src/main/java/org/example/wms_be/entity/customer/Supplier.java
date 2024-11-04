@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 public class Supplier {
     private String sysIdNhaCungCap;
-    private String tenNhaCungCap;
+    private String tenLoaiKhachHang;
+
     private String moTa;
 }

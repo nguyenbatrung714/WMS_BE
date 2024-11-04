@@ -11,5 +11,6 @@ public class Customer {
     private String tenCongTy;
     private String soDienThoai;
     private String sysIdNhaCungCap;
+
     private String diaChi;
 }
