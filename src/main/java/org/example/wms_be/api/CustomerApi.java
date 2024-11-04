@@ -20,7 +20,7 @@ import java.util.List;
 public class CustomerApi {
     private final CustomerService customerService;
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CustomerDto>>> getAllCustomer(HttpServletRequest httpServletRequest){
+    public ResponseEntity<ApiResponse<List<CustomerDto>>> getAllCustomers(HttpServletRequest httpServletRequest){
         return new ResponseEntity<>( new ApiResponse<>(
                 httpServletRequest.getRequestURI(),
                 200,
