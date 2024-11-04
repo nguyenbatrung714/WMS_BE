@@ -30,6 +30,10 @@ public class TimeConverter {
         if (timestamp == null) return null;
         return timestamp.toLocalDateTime().format(displayDateOnlyFormatter);
     }
+    public static String formatNgayNhap(Timestamp timestamp) {
+        if (timestamp == null) return null;
+        return timestamp.toLocalDateTime().format(displayDateOnlyFormatter);
+    }
 
     /**
      * Chuyển đổi chuỗi ngày giờ từ database (yyyy-MM-dd HH:mm:ss) sang Timestamp

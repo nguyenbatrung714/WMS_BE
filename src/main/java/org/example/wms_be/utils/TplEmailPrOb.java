@@ -1,6 +1,6 @@
 package org.example.wms_be.utils;
 
-import org.example.wms_be.data.response.PurchaseRequestDetailsResp;
+import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class  TplEmailPrOb {
                         "</div>",
                 nguoiTao, daiDienPo, chucVu);
     }
-    public static String bangYeuCauXuatHang(List<PurchaseRequestDetailsResp> chiTietXuatHangs){
+    public static String bangYeuCauXuatHang(List<PurchaseRequestDetailsObResp> chiTietXuatHangs){
         StringBuilder sb = new StringBuilder();
         sb.append("<table border='1' cellspacing='0' cellpadding='5' style='color: black;'>");
         sb.append("<caption style='font-weight: bold; font-size: 1.5em; margin-bottom: 10px;'>Thông Tin Chi Tiết yêu cầu</caption>")
@@ -37,7 +37,7 @@ public class  TplEmailPrOb {
                 .append("<th>Ngày Nhập</th>")
                 .append("</tr>");
 
-        for (PurchaseRequestDetailsResp chiTietXuatHang : chiTietXuatHangs) {
+        for (PurchaseRequestDetailsObResp chiTietXuatHang : chiTietXuatHangs) {
             sb.append("<tr>")
                     .append("<td>").append(chiTietXuatHang.getTenSanPham()).append("</td>")
                     .append("<td>").append(chiTietXuatHang.getSoLuong()).append("</td>")

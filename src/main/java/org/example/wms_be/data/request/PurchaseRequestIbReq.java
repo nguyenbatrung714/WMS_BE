@@ -1,4 +1,4 @@
-package org.example.wms_be.entity.inbound;
+package org.example.wms_be.data.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,12 +7,11 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PurchaseRequestIb {
+public class PurchaseRequestIbReq {
     private Integer sysIdYeuCauNhapHang;
     private String maPR;
-    private String ngayYeuCau;
-    private Integer nguoiYeuCau;
+    private String nguoiYeuCau;
     private String trangThai;
     private String loaiYeuCau;
-    List<PurchaseDetailsIb> chiTietNhapHang;
+    List<PurchaseDetailsIbReq> chiTietNhapHang;
 }

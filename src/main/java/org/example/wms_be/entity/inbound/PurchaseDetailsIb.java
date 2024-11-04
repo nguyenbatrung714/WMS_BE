@@ -15,5 +15,5 @@ public class PurchaseDetailsIb {
     private Double  gia;
     private Double  tongChiPhi;
     private String  ngayNhapDuKien;
-    private String maLo;
+    private String maLoHang;
 }
