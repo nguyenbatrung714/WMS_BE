@@ -15,5 +15,24 @@
         <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
     </resultMap>
 
-
+    <insert id="insertConsignment" useGeneratedKeys="true" keyProperty="sysIdLoHang">
+        insert into lo_hang(sys_id_lo_hang,
+                            ma_lo,
+                            sys_id_inbound,
+                            sys_id_san_pham,
+                            so_luong,
+                            ngay_san_xuat,
+                            han_su_dung,
+                            dung_tich,
+                            ma_chi_tiet_khu_vuc)
+        values (#{sysIdLoHang},
+                #{maLo},
+                #{sysIdInbound},
+                #{sysIdSanPham},
+                #{soLuong},
+                #{ngaySanXuat},
+                #{hanSuDung},
+                #{dungTich},
+                #{maChiTietKhuVuc});
+    </insert>
 </mapper>
