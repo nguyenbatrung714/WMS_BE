@@ -57,4 +57,20 @@ public class InboundServiceImpl implements InboundService {
             throw new BadSqlGrammarException("Bad sql: " + e.getMessage());
         }
     }
+
+    @Override
+    public List<InboundReq> getAllInbound() {
+        try {
+            List<Inbound> inbounds = inboundMapper.getAllInbound();
+
+            return inbounds.stream().map(inbound -> {
+                        inbound.setChiTietNhapHang(purchaseDetailsIbMapper.getPurchaseDetailsIbByMaIb(inbound.getMaInBound()));
+                        return inboundConverter.toInboundReq(inbound);
+                    })
+                    .filter(inboundReq -> inboundReq.getChiTietNhapHang() != null && !inboundReq.getChiTietNhapHang().isEmpty())
+                    .toList();
+        } catch (Exception e) {
+            throw new BadSqlGrammarException("Bad sql: " + e.getMessage());
+        }
+    }
 }

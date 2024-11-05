@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.example.wms_be.entity.inventory.Consignment;
 
 import java.util.List;
-import org.example.wms_be.entity.inventory.Consignment;
 
 @Mapper
 public interface ConsignmentMapper {
