@@ -24,4 +24,8 @@
                 #{trangThai},
                 #{sysIdUser})
     </insert>
+
+    <select id="getAllInbound" resultMap="InboundMap">
+        select sys_id_inbound, ma_po, ngay_nhap, trang_thai, sys_id_user from inbound
+    </select>
 </mapper>

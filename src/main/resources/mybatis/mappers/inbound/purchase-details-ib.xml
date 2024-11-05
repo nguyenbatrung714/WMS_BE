@@ -136,4 +136,19 @@
         set sys_id_inbound = #{maInBound}
         where ma_po = #{maPO}
     </update>
+
+    <select id="getPurchaseDetailsIbByMaIb" resultMap="PurchaseDetailsIbMap">
+        SELECT sys_id_chi_tiet_nhap_hang,
+               sys_id_inbound,
+               ma_pr,
+               ma_po,
+               sys_id_khang_hang,
+               sys_id_san_pham,
+               so_luong,
+               gia,
+               tong_chi_phi,
+               ngay_nhap_du_kien
+        FROM chi_tiet_nhap_hang
+        WHERE sys_id_inbound = #{maInBound};
+    </select>
 </mapper>

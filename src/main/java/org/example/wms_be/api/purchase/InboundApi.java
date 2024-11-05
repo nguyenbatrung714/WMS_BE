@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
@@ -26,5 +28,15 @@ public class InboundApi {
                 "Create inbound successfully",
                 inboundService.createInbound(inboundReq)
         ), HttpStatus.CREATED);
+    }
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse<List<InboundReq>>> getAllInbounds(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "List of Inbound",
+                inboundService.getAllInbound()
+        ), HttpStatus.OK);
     }
 }
