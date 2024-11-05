@@ -142,7 +142,7 @@
                sys_id_inbound,
                ma_pr,
                ma_po,
-               sys_id_khang_hang,
+               sys_id_khach_hang,
                sys_id_san_pham,
                so_luong,
                gia,
