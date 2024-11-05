@@ -6,7 +6,6 @@
     <resultMap id="ConsignmentMap" type="org.example.wms_be.entity.inventory.Consignment">
         <id property="sysIdLoHang" column="sys_id_lo_hang"/>
         <result property="maLo" column="ma_lo"/>
-        <result property="sysIdInbound" column="sys_id_inbound"/>
         <result property="sysIdSanPham" column="sys_id_san_pham"/>
         <result property="soLuong" column="so_luong"/>
         <result property="ngaySanXuat" column="ngay_san_xuat"/>
@@ -14,10 +13,12 @@
         <result property="dungTich" column="dung_tich"/>
         <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
     </resultMap>
+
     <insert id="insertConsignment">
         INSERT INTO lo_hang(sys_id_san_pham,so_luong,ngay_san_xuat,han_su_dung,dung_tich,ma_chi_tiet_khu_vuc)
         VALUES(#{sysIdSanPham},#{soLuong},#{ngaySanXuat},#{hanSuDung},#{dungTich},#{maChiTietKhuVuc})
     </insert>
+
     <update id="updateConsignment">
         UPDATE lo_hang
         SET sys_id_san_pham=#{sysIdSanPham},
@@ -28,10 +29,12 @@
             ma_chi_tiet_khu_vuc=#{maChiTietKhuVuc}
         WHERE ma_lo=#{maLo}
     </update>
+
     <delete id="deleteConsignment">
         DELETE FROM lo_hang
         WHERE ma_lo=#{maLo}
     </delete>
+
     <select id="getAllConsignment" resultMap="ConsignmentMap">
         select sys_id_lo_hang,
                ma_lo,
@@ -43,12 +46,14 @@
                ma_chi_tiet_khu_vuc
         from lo_hang
     </select>
-    <select id="checkConsignmentExists">
+
+    <select id="checkConsignmentExists" resultType="boolean">
         SELECT EXISTS(
             select 1 from lo_hang
             WHERE ma_lo=#{maLo}
         )
     </select>
+
     <select id="getConsignmentByMaLo" resultMap="ConsignmentMap">
         select sys_id_lo_hang,
                ma_lo,
@@ -61,6 +66,4 @@
         from lo_hang
         WHERE ma_lo=#{maLo}
     </select>
-
-
 </mapper>
