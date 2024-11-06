@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
@@ -25,5 +27,15 @@ public class PurchaseOrderApi {
                 "Create purchase order successfully",
                 purchaseOrderIbService.createPurchaseOrder(purchaseOrderIbReq)
         ), HttpStatus.CREATED);
+    }
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse<List<PurchaseOrderIbReq>>> getAllInbounds(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "List of Inbound",
+                purchaseOrderIbService.getAllPurchaseOrders()
+        ), HttpStatus.OK);
     }
 }

@@ -87,4 +87,19 @@ public class PurchaseOrderIbServiceImpl implements PurchaseOrderIbService {
         purchaseOrderIbMapper.insertPurchaseOrderIb(purchaseOrderIb);
         return purchaseOrderIb;
     }
+
+    @Override
+    public List<PurchaseOrderIbReq> getAllPurchaseOrders() {
+        try {
+            return purchaseOrderIbMapper.getAllPuchaseOrderIb().stream()
+                    .map(purchaseOrderIb -> {
+                        purchaseOrderIb.setChiTietNhapHang(purchaseDetailsIbMapper.getPurchaseDetailsIbByMaPO(purchaseOrderIb.getMaPO()));
+                        return purchaseOrderIbConverter.toPurchaseOrderIbReq(purchaseOrderIb);
+                    })
+                    .filter(purchaseOrderIb -> purchaseOrderIb.getChiTietNhapHang() != null && !purchaseOrderIb.getChiTietNhapHang().isEmpty())
+                    .toList();
+        } catch (Exception e) {
+            throw new BadSqlGrammarException("Error getting all purchase orders: " + e.getMessage());
+        }
+    }
 }
