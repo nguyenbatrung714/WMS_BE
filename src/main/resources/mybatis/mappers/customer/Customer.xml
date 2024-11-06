@@ -9,6 +9,7 @@
         <result property="tenCongTy" column="ten_cong_ty"/>
         <result property="soDienThoai" column="so_dien_thoai"/>
         <result property="sysIdNhaCungCap" column="sys_id_nha_cung_cap"/>
+        <result property="tenNhaCungCap" column="ten_nha_cung_cap"/>
         <result property="diaChi" column="dia_chi"/>
     </resultMap>
     <insert id="insertCustomer">
@@ -34,9 +35,10 @@
                ten_khach_hang,
                ten_cong_ty,
                so_dien_thoai,
-               sys_id_nha_cung_cap,
+               ncc.sys_id_nha_cung_cap,
+               ncc.ten_nha_cung_cap,
                dia_chi
-        from khach_hang
+        from khach_hang kh join nha_cung_cap ncc on kh.sys_id_nha_cung_cap = ncc.sys_id_nha_cung_cap
     </select>
     <select id="checkCustomerExits" resultType="boolean" parameterType="Integer">
     select exists(select 1
