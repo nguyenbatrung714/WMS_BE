@@ -36,7 +36,7 @@
                dm.mo_ta,
                k.ma_kho,
                k.ten_kho
-        FROM danh_muc dm Left Join wms_inventory.kho k on dm.ma_kho = k.ma_kho
+        FROM danh_muc dm Left Join kho k on dm.ma_kho = k.ma_kho
     </select>
 
     <select id="checkCategoryProdExists" resultType="boolean" parameterType="integer">

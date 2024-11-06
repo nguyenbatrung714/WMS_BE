@@ -25,7 +25,7 @@
                u.sys_id_user,
                u.full_name
         FROM kho k
-                 left join wms_inventory.user u on k.sys_id_user = u.sys_id_user
+                 left join user u on k.sys_id_user = u.sys_id_user
     </select>
 
     <!-- Insert new warehouse -->
