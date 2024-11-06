@@ -10,4 +10,5 @@ public class CategoryProdDto {
     private String tenDanhMuc;
     private String moTa;
     private String maKho;
+    private String tenKho;
 }
