@@ -15,6 +15,11 @@ public class  TplEmailPrOb {
                 "<h2>Xác nhận yêu cầu xuất hàng mã: %s [%s].</h2>",
                 maYeuCau, trangThai);
     }
+    public static String emailTitleReject(String maYeuCau, String trangThai){
+        return String.format(
+                "<h2> Từ chối yêu cầu xuất hàng mã: %s [%s].</h2>",
+                maYeuCau, trangThai);
+    }
     public static String requestInfor(String nguoiTao, String daiDienPo, String chucVu){
         return String.format(
                 "<div style='margin-bottom: 15px; color: black;'>" +
@@ -69,5 +74,15 @@ public class  TplEmailPrOb {
                         "%s" + //  chi tiết đơn hàng
                         "</body></html>",
                 title, detailsObTable);
+    }
+    public static String emailBodyReject(String title, String reason, String detailsObTable){
+        return String.format(
+                "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
+                        "%s" + //  tiêu đề
+                        "%s" + //  chi tiết đơn hàng
+                        "<p style='color: red; font-weight: bold;'>YÊU CẦU ĐÃ BỊ TỪ CHỐI.</p>" +
+                        "<p style='color: red; font-weight: bold;'>Lý Do: %s</p>" +
+                        "</body></html>",
+                title, reason, detailsObTable);
     }
 }
