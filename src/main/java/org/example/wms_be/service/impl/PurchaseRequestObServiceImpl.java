@@ -124,7 +124,9 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
             sendMailForApprove(purchaseRequestOb);
         } else if ("confirm".equals(purchaseRequestObReq.getTrangThai())) {
             sendMailForConfirm(purchaseRequestOb);
-        } else {
+        } else if ("reject".equals(purchaseRequestObReq.getTrangThai())) {
+            sendMailForReject(purchaseRequestOb);
+        }else {
             logger.info("failed to send email");
         }
     }
@@ -160,6 +162,7 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
         String title ;
         String requestInfor ;
         String body ;
+        String reason = (purchaseRequestOb.getLyDo());
         List<PurchaseRequestDetailsObResp> chiTietXuatHang = purchaseDetailsObMapper.layDanhSachXuatHangTheoMaPR(purchaseRequestOb.getMaPR());
         chiTietXuatHang.forEach(detail -> {
             if (detail.getNgayXuatDuKien() != null) {
@@ -178,6 +181,10 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
                 title = TplEmailPrOb.emailTitle(purchaseRequestOb.getMaPR(), purchaseRequestOb.getTrangThai());
                 requestInfor = TplEmailPrOb.requestInfor(nguoiTao, daiDienPo, chucVu);
                 body = TplEmailPrOb.emailBody(title, requestInfor, detailsObTable);
+                break;
+            case Status.REJECT:
+                title = TplEmailPrOb.emailTitleReject(purchaseRequestOb.getMaPR(), purchaseRequestOb.getTrangThai());
+                body = TplEmailPrOb.emailBodyReject(title,detailsObTable,reason);
                 break;
             default:
                 logger.error("Trạng thái không hợp lệ: {}", purchaseRequestOb.getTrangThai());
@@ -201,6 +208,10 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
         sendEmail(emailToSend, purchaseRequestOb);
     }
     private void sendMailForConfirm(PurchaseRequestOb purchaseRequestOb) {
+        String emailToSend = PurchaseRequestConst.DEFAULT_PR_EMAIL;
+        sendEmail(emailToSend, purchaseRequestOb);
+    }
+    private void sendMailForReject(PurchaseRequestOb purchaseRequestOb) {
         String emailToSend = PurchaseRequestConst.DEFAULT_PR_EMAIL;
         sendEmail(emailToSend, purchaseRequestOb);
     }
