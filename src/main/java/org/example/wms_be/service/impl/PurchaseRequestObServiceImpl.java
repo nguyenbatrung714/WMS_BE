@@ -10,6 +10,7 @@ import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
 import org.example.wms_be.data.response.PurchaseRequestObResp;
 import org.example.wms_be.entity.outbound.PurchaseRequestDetailsOb;
 import org.example.wms_be.entity.outbound.PurchaseRequestOb;
+import org.example.wms_be.constant.Status;
 import org.example.wms_be.mapper.account.UserMapper;
 import org.example.wms_be.mapper.purchase.PurchaseDetailsObMapper;
 import org.example.wms_be.mapper.purchase.PurchaseRequestObMapper;
@@ -92,49 +93,48 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
         } else {
             purchaseRequestObMapper.insertPurchaseRequestOb(purchaseRequestOb);
         }
-            // Lấy mã PR
-            String maPR = purchaseRequestObMapper.getMaPRById(purchaseRequestOb.getSysIdYeuCauXuatHang());
-            purchaseRequestOb.setMaPR(maPR);
-            logger.info("Inserted new PurchaseRequestOb: {} with MaPR: {}", purchaseRequestOb, maPR);
-            // Lưu chi tiết xuất hàng
-            for (PurchaseRequestDetailsObReq purchaseRequestDetailsObReq : purchaseRequestObReq.getChiTietXuatHang()) {
-                // Convert sang entity
-                PurchaseRequestDetailsOb purchaseRequestDetailsOb = purchaseDetailsObConverter.toPurchaseRequestDeatilsOb(purchaseRequestDetailsObReq);
-                String ngayXuatDuKien = purchaseRequestDetailsOb.getNgayXuatDuKien();
-                if (ngayXuatDuKien != null && !ngayXuatDuKien.isEmpty()) {
-                    try {
-                        // Convert ngayXuatDuKien from dd/MM/yyyy to yyyy-MM-dd
-                        String ngayXuatDuKienDbFormat = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayXuatDuKien));
-                        purchaseRequestDetailsOb.setNgayXuatDuKien(ngayXuatDuKienDbFormat);
-                        logger.info("NgayXuatDuKien: {} -> {}", ngayXuatDuKien, ngayXuatDuKienDbFormat);
-                    } catch (IllegalArgumentException e) {
-                        logger.error("Invalid date format: {}", ngayXuatDuKien);
-                    }
-                }
-                if (purchaseDetailsObMapper.existById(purchaseRequestDetailsObReq.getSysIdChiTietXuatHang())) {
-                    purchaseDetailsObMapper.updatePurchaseRequestDetailsOb(purchaseRequestDetailsOb);
-                } else {
-                    purchaseRequestDetailsOb.setMaPR(purchaseRequestOb.getMaPR());
-                    purchaseDetailsObMapper.insertPurchaseRequestDetailsOb(purchaseRequestDetailsOb);
+        // Lấy mã PR
+        String maPR = purchaseRequestObMapper.getMaPRById(purchaseRequestOb.getSysIdYeuCauXuatHang());
+        purchaseRequestOb.setMaPR(maPR);
+        logger.info("Inserted new PurchaseRequestOb: {} with MaPR: {}", purchaseRequestOb, maPR);
+        // Lưu chi tiết xuất hàng
+        for (PurchaseRequestDetailsObReq purchaseRequestDetailsObReq : purchaseRequestObReq.getChiTietXuatHang()) {
+            // Convert sang entity
+            PurchaseRequestDetailsOb purchaseRequestDetailsOb = purchaseDetailsObConverter.toPurchaseRequestDeatilsOb(purchaseRequestDetailsObReq);
+            String ngayXuatDuKien = purchaseRequestDetailsOb.getNgayXuatDuKien();
+            if (ngayXuatDuKien != null && !ngayXuatDuKien.isEmpty()) {
+                try {
+                    // Convert ngayXuatDuKien from dd/MM/yyyy to yyyy-MM-dd
+                    String ngayXuatDuKienDbFormat = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayXuatDuKien));
+                    purchaseRequestDetailsOb.setNgayXuatDuKien(ngayXuatDuKienDbFormat);
+                    logger.info("NgayXuatDuKien: {} -> {}", ngayXuatDuKien, ngayXuatDuKienDbFormat);
+                } catch (IllegalArgumentException e) {
+                    logger.error("Invalid date format: {}", ngayXuatDuKien);
                 }
             }
+            if (purchaseDetailsObMapper.existById(purchaseRequestDetailsObReq.getSysIdChiTietXuatHang())) {
+                purchaseDetailsObMapper.updatePurchaseRequestDetailsOb(purchaseRequestDetailsOb);
+            } else {
+                purchaseRequestDetailsOb.setMaPR(purchaseRequestOb.getMaPR());
+                purchaseDetailsObMapper.insertPurchaseRequestDetailsOb(purchaseRequestDetailsOb);
+            }
+        }
         // Gửi email
-        if (purchaseRequestObReq.getSysIdYeuCauXuatHang() == null) {
-            sendMailForInsert(purchaseRequestOb);
+        if ("approving".equals(purchaseRequestObReq.getTrangThai())) {
+            sendMailForApprove(purchaseRequestOb);
+        } else if ("confirm".equals(purchaseRequestObReq.getTrangThai())) {
+            sendMailForConfirm(purchaseRequestOb);
         } else {
-            sendMailForUpdate(purchaseRequestOb);
+            logger.info("failed to send email");
         }
     }
 
-    private void sendEmail(String emailToSend, PurchaseRequestOb purchaseRequestOb, boolean isUpdate) {
+    private void sendEmail(String emailToSend, PurchaseRequestOb purchaseRequestOb) {
         if (emailToSend == null || emailToSend.isEmpty()) {
             logger.error("Email to send is empty");
             return;
         }
-        if (!userMapper.checkMailExits(emailToSend)) {
-            logger.error("Email to send is not exist");
-            return;
-        }
+
         String nguoiTao = PurchaseRequestConst.DEFAULT_USER_REQUESTING;
         String chucVu = PurchaseRequestConst.DEFAULT_ROLE;
         String daiDienPo = PurchaseRequestConst.DEFAULT_FULL_NAME;
@@ -155,18 +155,36 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
                 logger.error("Error when get user info", e);
             }
         }
-        String title = Optional
-                .ofNullable(purchaseRequestOb)
-                .map(ob -> isUpdate ? TplEmailPrOb.emailTitleUpdate(ob.getMaPR()) : TplEmailPrOb.emailTitle(ob.getMaPR()))
-                .orElse("Default Title");
-        String requestInfor = isUpdate ? TplEmailPrOb.updateInFor(nguoiTao) : TplEmailPrOb.requestInfor(nguoiTao, daiDienPo, chucVu);
-        List<PurchaseRequestDetailsObResp> chiTietXuatHang = Optional
-                .ofNullable(purchaseRequestOb)
-                .map(ob -> purchaseDetailsObMapper.layDanhSachXuatHangTheoMaPR(ob.getMaPR()))
-                .orElseGet(ArrayList::new);
+
+        String status = Objects.requireNonNull(purchaseRequestOb).getTrangThai();
+        String title ;
+        String requestInfor ;
+        String body ;
+        List<PurchaseRequestDetailsObResp> chiTietXuatHang = purchaseDetailsObMapper.layDanhSachXuatHangTheoMaPR(purchaseRequestOb.getMaPR());
+        chiTietXuatHang.forEach(detail -> {
+            if (detail.getNgayXuatDuKien() != null) {
+                String ngayXuatDuKienFormatted = TimeConverter.formatNgayXuat(TimeConverter.parseDateOnly(detail.getNgayXuatDuKien()));
+                detail.setNgayXuatDuKien(ngayXuatDuKienFormatted);
+            }
+        });
         String detailsObTable = TplEmailPrOb.bangYeuCauXuatHang(chiTietXuatHang);
-        String body = isUpdate ? TplEmailPrOb.emailBodyForUpdate(title, requestInfor, detailsObTable) : TplEmailPrOb.emailBody(title, requestInfor, detailsObTable);
-        String subject = isUpdate ? "Thông báo chỉnh sửa yêu cầu: từ phòng purchase request" : "Thông báo yêu cầu: phê duyệt yêu cầu mua hàng";
+
+        switch (status) {
+            case Status.CONFIRM:
+                title = TplEmailPrOb.emailTitleConfirm(purchaseRequestOb.getMaPR(), purchaseRequestOb.getTrangThai());
+                body = TplEmailPrOb.emailBodyConfirm(title, detailsObTable);
+                break;
+            case Status.APPROVING:
+                title = TplEmailPrOb.emailTitle(purchaseRequestOb.getMaPR(), purchaseRequestOb.getTrangThai());
+                requestInfor = TplEmailPrOb.requestInfor(nguoiTao, daiDienPo, chucVu);
+                body = TplEmailPrOb.emailBody(title, requestInfor, detailsObTable);
+                break;
+            default:
+                logger.error("Trạng thái không hợp lệ: {}", purchaseRequestOb.getTrangThai());
+                return;
+        }
+        String subject = "Thông báo yêu cầu: phê duyệt yêu cầu mua hàng";
+        // emailToSend
         try {
             emailUtil.sendEmail(emailToSend, subject, body);
             logger.info("Đã gửi email đến: {}", emailToSend);
@@ -174,14 +192,16 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
             logger.error("Lỗi khi gửi email đến {}: {}", emailToSend, e.getMessage());
         }
     }
-
-    private void sendMailForInsert(PurchaseRequestOb purchaseRequestOb) {
+    private void sendMailForApprove(PurchaseRequestOb purchaseRequestOb) {
+        if (!userMapper.checkMailExits(PurchaseRequestConst.DEFAULT_PO_EMAIL)) {
+            logger.error("Email to send is not exist");
+            return;
+        }
         String emailToSend = PurchaseRequestConst.DEFAULT_PO_EMAIL;
-        sendEmail(emailToSend, purchaseRequestOb, false);
+        sendEmail(emailToSend, purchaseRequestOb);
     }
-
-    private void sendMailForUpdate(PurchaseRequestOb purchaseRequestOb) {
-        String emailToSend = PurchaseRequestConst.DEFAULT_PO_EMAIL;
-        sendEmail(emailToSend, purchaseRequestOb, true);
+    private void sendMailForConfirm(PurchaseRequestOb purchaseRequestOb) {
+        String emailToSend = PurchaseRequestConst.DEFAULT_PR_EMAIL;
+        sendEmail(emailToSend, purchaseRequestOb);
     }
 }
