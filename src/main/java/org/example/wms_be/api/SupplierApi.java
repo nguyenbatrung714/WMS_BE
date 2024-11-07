@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin
 @RestController
-@RequestMapping("/api/v1/supplier")
+@RequestMapping("/api/v1/suppliers")
 public class SupplierApi {
     private final SupplierService supplierService;
     @GetMapping
