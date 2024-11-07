@@ -5,15 +5,20 @@ import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
 import java.util.List;
 
 public class  TplEmailPrOb {
-    public static String emailTitle(String maYeuCau){
+    public static String emailTitle(String maYeuCau, String trangThai){
         return String.format(
-                "<h2>Yêu cầu xuất hàng mã: %s đang chờ xử lý.</h2>",
-                maYeuCau);
+                "<h2>Yêu cầu xuất hàng mã: %s [%s].</h2>",
+                maYeuCau, trangThai);
     }
-    public static String emailTitleUpdate(String maYeuCau){
+    public static String emailTitleConfirm(String maYeuCau, String trangThai){
         return String.format(
-                "<h2>Yêu cầu xuất hàng mã: %s vừa được điều chỉnh.</h2>",
-                maYeuCau);
+                "<h2>Xác nhận yêu cầu xuất hàng mã: %s [%s].</h2>",
+                maYeuCau, trangThai);
+    }
+    public static String emailTitleReject(String maYeuCau, String trangThai){
+        return String.format(
+                "<h2> Từ chối yêu cầu xuất hàng mã: %s [%s].</h2>",
+                maYeuCau, trangThai);
     }
     public static String requestInfor(String nguoiTao, String daiDienPo, String chucVu){
         return String.format(
@@ -54,29 +59,30 @@ public class  TplEmailPrOb {
         return String.format(
                 "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
                         "%s" + //  tiêu đề
-                        "<p><strong>Yêu cầu mua hàng từ phòng purchase request:</strong></p>" +
+                        "<p><strong>Yêu cầu xuất hàng từ phòng purchase request:</strong></p>" +
                         "%s" + //  thông tin yêu cầu mua hàng
                         "<p>Vui lòng kiểm tra và xác nhận yêu cầu mua hàng.</p>" +
                         "%s" + //  chi tiết đơn hàng
                         "</body></html>",
                 title, requestInfo, detailsObTable);
     }
-    public static String emailBodyForUpdate(String title, String requestInfo, String detailsObTable){
+    public static String emailBodyConfirm(String title,String detailsObTable){
         return String.format(
                 "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
-                        "%s" + // tiêu đề
-                        "<p><strong>Thông báo cập nhật:</strong></p>" +
-                        "%s" + // thông tin yêu cầu mua hàng đã cập nhật
-                        "<p>Vui lòng kiểm tra lại hệ thống để biết thêm chi tiết.</p>" +
-                        "%s" + // chi tiết đơn hàng đã cập nhật
+                        "%s" + //  tiêu đề
+                        "<p style='color: red; font-weight: bold;'>YÊU CẦU ĐÃ ĐƯỢC PHÊ DUYỆT.</p>" +
+                        "%s" + //  chi tiết đơn hàng
                         "</body></html>",
-                title, requestInfo, detailsObTable);
+                title, detailsObTable);
     }
-    public static String updateInFor(String nguoiTao){
+    public static String emailBodyReject(String title, String reason, String detailsObTable){
         return String.format(
-                "<div style='margin-bottom: 15px; color: black;'>" +
-                        "<p><strong>Người thực hiện cập nhật:</strong> %s</p>" +
-                        "</div>",
-                nguoiTao);
+                "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
+                        "%s" + //  tiêu đề
+                        "%s" + //  chi tiết đơn hàng
+                        "<p style='color: red; font-weight: bold;'>YÊU CẦU ĐÃ BỊ TỪ CHỐI.</p>" +
+                        "<p style='color: red; font-weight: bold;'>Lý Do: %s</p>" +
+                        "</body></html>",
+                title, reason, detailsObTable);
     }
 }

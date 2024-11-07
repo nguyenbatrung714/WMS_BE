@@ -12,7 +12,6 @@ public class PurchaseRequestDetailsObResp {
     private String  maOB;
     private String  maPR;
     private String  maPO;
-    private String  maLoHang;
     private String  tenKhachHang;
     private String  tenSanPham;
     private Double  soLuong;
