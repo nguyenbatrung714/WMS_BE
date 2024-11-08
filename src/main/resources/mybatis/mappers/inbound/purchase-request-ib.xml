@@ -10,14 +10,17 @@
         <result property="nguoiYeuCau" column="sys_id_user"/>
         <result property="trangThai" column="trang_thai"/>
         <result property="loaiYeuCau" column="loai_yeu_cau"/>
+        <result property="lyDo" column="ly_do"/>
     </resultMap>
     <resultMap id="PurchaseRequestIbDtoMap" type="org.example.wms_be.data.response.inbound.PurchaseRequestIbResp" autoMapping="true">
         <id property="sysIdYeuCauNhapHang" column="sys_id_pr"/>
         <result property="maPR" column="ma_pr"/>
         <result property="ngayYeuCau" column="ngay_yeu_cau"/>
         <result property="nguoiYeuCau" column="full_name"/>
+        <result property="sysIdNguoiYeuCau" column="sys_id_user"/>
         <result property="trangThai" column="trang_thai"/>
         <result property="loaiYeuCau" column="loai_yeu_cau"/>
+        <result property="lyDo" column="ly_do"/>
     </resultMap>
     <insert id="insertPurchaseRequestIb" useGeneratedKeys="true" keyProperty="sysIdYeuCauNhapHang">
         INSERT INTO purchase_request(ma_pr,
@@ -33,7 +36,11 @@
         UPDATE purchase_request
         SET ngay_yeu_cau = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
             sys_id_user  = #{nguoiYeuCau},
-            trang_thai   = #{trangThai}
+            trang_thai   = #{trangThai},
+            ly_do = CASE
+                        WHEN #{trangThai} = 'reject' THEN COALESCE(#{lyDo}, ly_do)
+                        ELSE NULL
+                END
         WHERE sys_id_pr = #{sysIdYeuCauNhapHang}
     </update>
     <select id="getAllPurchaseRequestIb" resultMap="PurchaseRequestIbDtoMap">
@@ -41,8 +48,10 @@
                ma_pr,
                ngay_yeu_cau,
                trang_thai,
+               user.sys_id_user,
                user.full_name,
-               loai_yeu_cau
+               loai_yeu_cau,
+               ly_do
         FROM purchase_request
                  JOIN user ON purchase_request.sys_id_user = user.sys_id_user
         WHERE loai_yeu_cau = 'NHAP';
@@ -59,8 +68,10 @@
                ma_pr,
                ngay_yeu_cau,
                trang_thai,
+               user.sys_id_user,
                user.full_name,
-               loai_yeu_cau
+               loai_yeu_cau,
+               ly_do
         FROM purchase_request
                  JOIN user ON purchase_request.sys_id_user = user.sys_id_user
         WHERE loai_yeu_cau = 'NHAP' AND ma_pr = #{maPR};

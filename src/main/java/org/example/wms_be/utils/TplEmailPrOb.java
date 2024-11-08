@@ -39,7 +39,7 @@ public class  TplEmailPrOb {
                 .append("<th>Số Lượng(Kg)</th>")
                 .append("<th>Giá(VND)</th>")
                 .append("<th>Tổng Chi Phí(VND)</th>")
-                .append("<th>Ngày Nhập</th>")
+                .append("<th>Ngày Xuất</th>")
                 .append("</tr>");
 
         for (PurchaseRequestDetailsObResp chiTietXuatHang : chiTietXuatHangs) {
@@ -61,7 +61,7 @@ public class  TplEmailPrOb {
                         "%s" + //  tiêu đề
                         "<p><strong>Yêu cầu xuất hàng từ phòng purchase request:</strong></p>" +
                         "%s" + //  thông tin yêu cầu mua hàng
-                        "<p>Vui lòng kiểm tra và xác nhận yêu cầu mua hàng.</p>" +
+                        "<p>Vui lòng kiểm tra và xác nhận yêu cầu xuất hàng.</p>" +
                         "%s" + //  chi tiết đơn hàng
                         "</body></html>",
                 title, requestInfo, detailsObTable);
@@ -81,7 +81,7 @@ public class  TplEmailPrOb {
                         "%s" + //  tiêu đề
                         "%s" + //  chi tiết đơn hàng
                         "<p style='color: red; font-weight: bold;'>YÊU CẦU ĐÃ BỊ TỪ CHỐI.</p>" +
-                        "<p style='color: red; font-weight: bold;'>Lý Do: %s</p>" +
+                        "<p style='color: red; font-weight: bold;'>LÝ DO: %s</p>" +
                         "</body></html>",
                 title, reason, detailsObTable);
     }

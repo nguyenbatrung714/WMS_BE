@@ -1,6 +1,8 @@
 package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.wms_be.constant.PurchaseRequestConst;
+import org.example.wms_be.constant.Status;
 import org.example.wms_be.converter.inbound.PurchaseDetailsIbConverter;
 import org.example.wms_be.converter.inbound.PurchaseRequestIbConverter;
 import org.example.wms_be.data.request.PurchaseDetailsIbReq;
@@ -15,6 +17,7 @@ import org.example.wms_be.mapper.inbound.PurchaseRequestIbMapper;
 import org.example.wms_be.service.PurchaseRequestIbService;
 import org.example.wms_be.utils.EmailUtil;
 import org.example.wms_be.utils.TimeConverter;
+import org.example.wms_be.utils.TplEmailPR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -85,37 +88,146 @@ public class PurchaseRequestIbServiceImpl implements PurchaseRequestIbService {
     @Override
     @Transactional
     public void savePurchaseRequestWithDetails(PurchaseRequestIbReq purchaseRequestIbReq) {
+        PurchaseRequestIb purchaseRequestIb = saveRequestIb(purchaseRequestIbReq);
+        String maPR = layMaPR(purchaseRequestIb);
+        logger.info("them ma pr moi: {} with MaPR: {}", purchaseRequestIb, maPR);
+        saveRequestDetails(purchaseRequestIbReq, maPR);
+        handleEmailNotification(purchaseRequestIbReq.getTrangThai(), purchaseRequestIb);
+    }
+
+    private void handleEmailNotification(String trangThai, PurchaseRequestIb purchaseRequestIb) {
+        if (trangThai == null) {
+            logger.warn("khong the gui mail vi trang thai null");
+            return;
+        }
+        switch (trangThai) {
+            case "approving" -> sendMailForApprove(purchaseRequestIb);
+            case "confirm" -> sendMailForConfirm(purchaseRequestIb);
+            case "reject" -> sendMailForReject(purchaseRequestIb);
+            default -> logger.info("Failed to send email");
+        }
+    }
+
+    private void saveRequestDetails(PurchaseRequestIbReq purchaseRequestIbReq, String maPR) {
+        for (PurchaseDetailsIbReq detailsReq : purchaseRequestIbReq.getChiTietNhapHang()) {
+            PurchaseDetailsIb details = purchaseDetailsIbConverter.toPurchaseDetailsIb(detailsReq);
+            ngayNhapDuKien(details);
+            if (purchaseDetailsIbMapper.existById(detailsReq.getSysIdChiTietNhapHang())) {
+                purchaseDetailsIbMapper.updatePurchaseDetails(details);
+            } else {
+                details.setMaPR(maPR);
+                purchaseDetailsIbMapper.insertPurchaseDetails(details);
+            }
+        }
+    }
+
+    private void ngayNhapDuKien(PurchaseDetailsIb details) {
+        String ngayNhapDuKien = details.getNgayNhapDuKien();
+        if (ngayNhapDuKien != null && !ngayNhapDuKien.isEmpty()) {
+            try {
+                String dbFormatDate = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayNhapDuKien));
+                details.setNgayNhapDuKien(dbFormatDate);
+                logger.info("NgayXuatDuKien: {} -> {}", ngayNhapDuKien, dbFormatDate);
+            } catch (IllegalArgumentException e) {
+                logger.error("khong dung format: {}", ngayNhapDuKien);
+            }
+        }
+    }
+
+    private String layMaPR(PurchaseRequestIb purchaseRequestIb) {
+        return purchaseRequestIbMapper.getMaPrById(purchaseRequestIb.getSysIdYeuCauNhapHang());
+    }
+
+    private PurchaseRequestIb saveRequestIb(PurchaseRequestIbReq purchaseRequestIbReq) {
         PurchaseRequestIb purchaseRequestIb = purchaseRequestIbConverter.toPurchaseRequestIb(purchaseRequestIbReq);
-        if(purchaseRequestIbMapper.existById(purchaseRequestIbReq.getSysIdYeuCauNhapHang())){
+        if (purchaseRequestIbMapper.existById(purchaseRequestIbReq.getSysIdYeuCauNhapHang())) {
             purchaseRequestIbMapper.updatePurchaseRequestIb(purchaseRequestIb);
-        }else {
+        } else {
             purchaseRequestIbMapper.insertPurchaseRequestIb(purchaseRequestIb);
         }
-        // lay maPR
-        String maPR = purchaseRequestIbMapper.getMaPrById(purchaseRequestIb.getSysIdYeuCauNhapHang());
-        purchaseRequestIb.setMaPR(maPR);
-        logger.info("Inserted new PurchaseRequestOb: {} with MaPR: {}", purchaseRequestIb, maPR);
-        // luu chi tiet nhap hang
-        for (PurchaseDetailsIbReq purchaseDetailsIbReq : purchaseRequestIbReq.getChiTietNhapHang()) {
-            PurchaseDetailsIb purchaseDetailsIb = purchaseDetailsIbConverter.toPurchaseDetailsIb(purchaseDetailsIbReq);
-            String ngayNhapDuKien = purchaseDetailsIb.getNgayNhapDuKien();
-            if (ngayNhapDuKien != null && !ngayNhapDuKien.isEmpty()) {
-                try {
-                    // Convert ngayXuatDuKien from dd/MM/yyyy to yyyy-MM-dd
-                    String ngayNhapDuKienDbFormat = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayNhapDuKien));
-                    purchaseDetailsIb.setNgayNhapDuKien(ngayNhapDuKienDbFormat);
-                    logger.info("NgayNhapDuKien: {} -> {}", ngayNhapDuKien, ngayNhapDuKienDbFormat);
-                } catch (IllegalArgumentException e) {
-                    logger.error("Invalid date format: {}", ngayNhapDuKien);
-                }
+        return purchaseRequestIb;
+    }
+
+    private void sendEmail(String emailToSend, PurchaseRequestIb purchaseRequestIb) {
+        if (emailToSend == null || emailToSend.isEmpty()) {
+            logger.error("Email to send is empty");
+            return;
+        }
+        if (!userMapper.checkMailExits(emailToSend)) {
+            logger.error("Email to send is not exist");
+            return;
+        }
+        String nguoiTao = PurchaseRequestConst.DEFAULT_USER_REQUESTING;
+        String chucVu = PurchaseRequestConst.DEFAULT_ROLE;
+        String daiDienPo = PurchaseRequestConst.DEFAULT_FULL_NAME;
+        try {
+            Map<String, String> thongTinEmail = userMapper.getEmailByRoles(emailToSend);
+            logger.info("Get info from getEmailByRoles: {}", thongTinEmail);
+            if (thongTinEmail != null) {
+                daiDienPo = thongTinEmail.getOrDefault("fullName", PurchaseRequestConst.DEFAULT_FULL_NAME);
+                chucVu = thongTinEmail.getOrDefault("role", PurchaseRequestConst.DEFAULT_ROLE);
             }
-            if (purchaseDetailsIbMapper.existById(purchaseDetailsIbReq.getSysIdChiTietNhapHang())) {
-                purchaseDetailsIbMapper.updatePurchaseDetails(purchaseDetailsIb);
-            } else {
-                purchaseDetailsIb.setMaPR(purchaseRequestIb.getMaPR());
-                purchaseDetailsIbMapper.insertPurchaseDetails(purchaseDetailsIb);
+        } catch (Exception e) {
+            logger.error("Error when get user info", e);
+        }
+        if (purchaseRequestIb != null) {
+            try {
+                nguoiTao = userMapper.getFullNameByRoles(purchaseRequestIb.getNguoiYeuCau());
+            } catch (Exception e) {
+                logger.error("Error when get user info", e);
             }
         }
+        String status = Objects.requireNonNull(purchaseRequestIb).getTrangThai();
+        String title;
+        String requestInfor;
+        String body;
+        String reason = (purchaseRequestIb.getLyDo());
+        List<PurchaseDetailsIb> chiTietNhapHang = purchaseDetailsIbMapper.getPRDetailsIbByMaPR(purchaseRequestIb.getMaPR());
+        chiTietNhapHang.forEach(detail -> {
+            if (detail.getNgayNhapDuKien() != null) {
+                String ngayXuatDuKienFormatted = TimeConverter.formatNgayXuat(TimeConverter.parseDateOnly(detail.getNgayNhapDuKien()));
+                detail.setNgayNhapDuKien(ngayXuatDuKienFormatted);
+            }
+        });
+        String detailsIbTable = TplEmailPR.bangYeuCauNhapHang(chiTietNhapHang);
+        switch (status) {
+            case Status.CONFIRM:
+                title = TplEmailPR.emailTitleConfirm(purchaseRequestIb.getMaPR(), purchaseRequestIb.getTrangThai());
+                body = TplEmailPR.emailBodyConfirm(title, detailsIbTable);
+                break;
+            case Status.APPROVING:
+                title = TplEmailPR.emailTitle(purchaseRequestIb.getMaPR(), purchaseRequestIb.getTrangThai());
+                requestInfor = TplEmailPR.requestInfor(nguoiTao, daiDienPo, chucVu);
+                body = TplEmailPR.emailBody(title, requestInfor, detailsIbTable);
+                break;
+            case Status.REJECT:
+                title = TplEmailPR.emailTitleReject(purchaseRequestIb.getMaPR(), purchaseRequestIb.getTrangThai());
+                body = TplEmailPR.emailBodyReject(title, detailsIbTable, reason);
+                break;
+            default:
+                logger.error("Trạng thái không hợp lệ: {}", purchaseRequestIb.getTrangThai());
+                return;
+        }
+        String subject = "Thông báo yêu cầu: phê duyệt yêu cầu mua hàng";
+        // emailToSend
+        try {
+            emailUtil.sendEmail(emailToSend, subject, body);
+            logger.info("Đã gửi email đến: {}", emailToSend);
+        } catch (Exception e) {
+            logger.error("Lỗi khi gửi email đến {}: {}", emailToSend, e.getMessage());
+        }
+    }
+
+    public void sendMailForApprove(PurchaseRequestIb purchaseRequestIb) {
+        sendEmail(PurchaseRequestConst.DEFAULT_PO_EMAIL, purchaseRequestIb);
+    }
+
+    public void sendMailForConfirm(PurchaseRequestIb purchaseRequestIb) {
+        sendEmail(PurchaseRequestConst.DEFAULT_PR_EMAIL, purchaseRequestIb);
+    }
+
+    public void sendMailForReject(PurchaseRequestIb purchaseRequestIb) {
+        sendEmail(PurchaseRequestConst.DEFAULT_PR_EMAIL, purchaseRequestIb);
     }
 }
 

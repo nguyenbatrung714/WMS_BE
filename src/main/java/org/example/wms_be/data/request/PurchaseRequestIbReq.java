@@ -13,5 +13,6 @@ public class PurchaseRequestIbReq {
     private String nguoiYeuCau;
     private String trangThai;
     private String loaiYeuCau;
+    private String lyDo;
     List<PurchaseDetailsIbReq> chiTietNhapHang;
 }
