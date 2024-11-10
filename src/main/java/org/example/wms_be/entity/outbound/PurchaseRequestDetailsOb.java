@@ -11,7 +11,6 @@ public class PurchaseRequestDetailsOb {
     private String  maOB;
     private String  maPR;
     private String  maPO;
-    private String  maLoHang;
     private Integer  sysIdKhachHang;
     private Integer  sysIdSanPham;
     private Double  soLuong;
