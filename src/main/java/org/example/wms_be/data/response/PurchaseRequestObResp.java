@@ -14,6 +14,7 @@ public class PurchaseRequestObResp {
     private String  maPR;
     private String  ngayYeuCau;
     private String  nguoiYeuCau;
+    private Integer sysIdNguoiYeuCau;
     private String  trangThai;
     private String  loaiYeuCau;
     private String  lyDo;

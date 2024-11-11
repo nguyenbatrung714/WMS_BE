@@ -86,48 +86,63 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
     @Override
     @Transactional
     public void savePurchaseRequestOb(PurchaseRequestObReq purchaseRequestObReq) {
-        //convert sang entity
+        PurchaseRequestOb purchaseRequestOb = saveRequest(purchaseRequestObReq);
+        String maPR = layMaPR(purchaseRequestOb);
+        purchaseRequestOb.setMaPR(maPR);
+        logger.info("them ma pr moi: {} with MaPR: {}", purchaseRequestOb, maPR);
+        saveRequestDetails(purchaseRequestObReq, maPR);
+        handleEmailNotification(purchaseRequestObReq.getTrangThai(), purchaseRequestOb);
+    }
+
+    private PurchaseRequestOb saveRequest(PurchaseRequestObReq purchaseRequestObReq) {
         PurchaseRequestOb purchaseRequestOb = purchaseRequestObConverter.toPurchaseRequestObReq(purchaseRequestObReq);
         if (purchaseRequestObMapper.existById(purchaseRequestObReq.getSysIdYeuCauXuatHang())) {
             purchaseRequestObMapper.updatePurchaseRequestOb(purchaseRequestOb);
         } else {
             purchaseRequestObMapper.insertPurchaseRequestOb(purchaseRequestOb);
         }
-        // Lấy mã PR
-        String maPR = purchaseRequestObMapper.getMaPRById(purchaseRequestOb.getSysIdYeuCauXuatHang());
-        purchaseRequestOb.setMaPR(maPR);
-        logger.info("Inserted new PurchaseRequestOb: {} with MaPR: {}", purchaseRequestOb, maPR);
-        // Lưu chi tiết xuất hàng
-        for (PurchaseRequestDetailsObReq purchaseRequestDetailsObReq : purchaseRequestObReq.getChiTietXuatHang()) {
-            // Convert sang entity
-            PurchaseRequestDetailsOb purchaseRequestDetailsOb = purchaseDetailsObConverter.toPurchaseRequestDeatilsOb(purchaseRequestDetailsObReq);
-            String ngayXuatDuKien = purchaseRequestDetailsOb.getNgayXuatDuKien();
-            if (ngayXuatDuKien != null && !ngayXuatDuKien.isEmpty()) {
-                try {
-                    // Convert ngayXuatDuKien from dd/MM/yyyy to yyyy-MM-dd
-                    String ngayXuatDuKienDbFormat = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayXuatDuKien));
-                    purchaseRequestDetailsOb.setNgayXuatDuKien(ngayXuatDuKienDbFormat);
-                    logger.info("NgayXuatDuKien: {} -> {}", ngayXuatDuKien, ngayXuatDuKienDbFormat);
-                } catch (IllegalArgumentException e) {
-                    logger.error("Invalid date format: {}", ngayXuatDuKien);
-                }
-            }
-            if (purchaseDetailsObMapper.existById(purchaseRequestDetailsObReq.getSysIdChiTietXuatHang())) {
-                purchaseDetailsObMapper.updatePurchaseRequestDetailsOb(purchaseRequestDetailsOb);
+        return purchaseRequestOb;
+    }
+
+    private String layMaPR(PurchaseRequestOb purchaseRequestOb) {
+        return purchaseRequestObMapper.getMaPRById(purchaseRequestOb.getSysIdYeuCauXuatHang());
+    }
+
+    private void saveRequestDetails(PurchaseRequestObReq purchaseRequestObReq, String maPR) {
+        for (PurchaseRequestDetailsObReq detailsReq : purchaseRequestObReq.getChiTietXuatHang()) {
+            PurchaseRequestDetailsOb details = purchaseDetailsObConverter.toPurchaseRequestDeatilsOb(detailsReq);
+            ngayXuatDuKien(details);
+            if (purchaseDetailsObMapper.existById(detailsReq.getSysIdChiTietXuatHang())) {
+                purchaseDetailsObMapper.updatePurchaseRequestDetailsOb(details);
             } else {
-                purchaseRequestDetailsOb.setMaPR(purchaseRequestOb.getMaPR());
-                purchaseDetailsObMapper.insertPurchaseRequestDetailsOb(purchaseRequestDetailsOb);
+                details.setMaPR(maPR);
+                purchaseDetailsObMapper.insertPurchaseRequestDetailsOb(details);
             }
         }
-        // Gửi email
-        if ("approving".equals(purchaseRequestObReq.getTrangThai())) {
-            sendMailForApprove(purchaseRequestOb);
-        } else if ("confirm".equals(purchaseRequestObReq.getTrangThai())) {
-            sendMailForConfirm(purchaseRequestOb);
-        } else if ("reject".equals(purchaseRequestObReq.getTrangThai())) {
-            sendMailForReject(purchaseRequestOb);
-        }else {
-            logger.info("failed to send email");
+    }
+
+    private void ngayXuatDuKien(PurchaseRequestDetailsOb details) {
+        String ngayXuatDuKien = details.getNgayXuatDuKien();
+        if (ngayXuatDuKien != null && !ngayXuatDuKien.isEmpty()) {
+            try {
+                String dbFormatDate = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngayXuatDuKien));
+                details.setNgayXuatDuKien(dbFormatDate);
+                logger.info("NgayXuatDuKien: {} -> {}", ngayXuatDuKien, dbFormatDate);
+            } catch (IllegalArgumentException e) {
+                logger.error("khong dung format: {}", ngayXuatDuKien);
+            }
+        }
+    }
+    private void handleEmailNotification(String trangThai, PurchaseRequestOb purchaseRequestOb) {
+        if (trangThai == null) {
+            logger.warn("khong the gui mail vi trang thai null");
+            return;
+        }
+        switch (trangThai) {
+            case "approving" -> sendMailForApprove(purchaseRequestOb);
+            case "confirm" -> sendMailForConfirm(purchaseRequestOb);
+            case "reject" -> sendMailForReject(purchaseRequestOb);
+            default -> logger.info("Failed to send email");
         }
     }
 
@@ -136,7 +151,10 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
             logger.error("Email to send is empty");
             return;
         }
-
+        if (!userMapper.checkMailExits(emailToSend)) {
+            logger.error("Email to send is not exist");
+            return;
+        }
         String nguoiTao = PurchaseRequestConst.DEFAULT_USER_REQUESTING;
         String chucVu = PurchaseRequestConst.DEFAULT_ROLE;
         String daiDienPo = PurchaseRequestConst.DEFAULT_FULL_NAME;
@@ -157,11 +175,10 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
                 logger.error("Error when get user info", e);
             }
         }
-
         String status = Objects.requireNonNull(purchaseRequestOb).getTrangThai();
-        String title ;
-        String requestInfor ;
-        String body ;
+        String title;
+        String requestInfor;
+        String body;
         String reason = (purchaseRequestOb.getLyDo());
         List<PurchaseRequestDetailsObResp> chiTietXuatHang = purchaseDetailsObMapper.layDanhSachXuatHangTheoMaPR(purchaseRequestOb.getMaPR());
         chiTietXuatHang.forEach(detail -> {
@@ -171,7 +188,6 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
             }
         });
         String detailsObTable = TplEmailPrOb.bangYeuCauXuatHang(chiTietXuatHang);
-
         switch (status) {
             case Status.CONFIRM:
                 title = TplEmailPrOb.emailTitleConfirm(purchaseRequestOb.getMaPR(), purchaseRequestOb.getTrangThai());
@@ -184,13 +200,13 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
                 break;
             case Status.REJECT:
                 title = TplEmailPrOb.emailTitleReject(purchaseRequestOb.getMaPR(), purchaseRequestOb.getTrangThai());
-                body = TplEmailPrOb.emailBodyReject(title,detailsObTable,reason);
+                body = TplEmailPrOb.emailBodyReject(title, detailsObTable, reason);
                 break;
             default:
                 logger.error("Trạng thái không hợp lệ: {}", purchaseRequestOb.getTrangThai());
                 return;
         }
-        String subject = "Thông báo yêu cầu: phê duyệt yêu cầu mua hàng";
+        String subject = "Thông báo yêu cầu: phê duyệt yêu cầu xuất hàng";
         // emailToSend
         try {
             emailUtil.sendEmail(emailToSend, subject, body);
@@ -199,20 +215,15 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
             logger.error("Lỗi khi gửi email đến {}: {}", emailToSend, e.getMessage());
         }
     }
-    private void sendMailForApprove(PurchaseRequestOb purchaseRequestOb) {
-        if (!userMapper.checkMailExits(PurchaseRequestConst.DEFAULT_PO_EMAIL)) {
-            logger.error("Email to send is not exist");
-            return;
-        }
-        String emailToSend = PurchaseRequestConst.DEFAULT_PO_EMAIL;
-        sendEmail(emailToSend, purchaseRequestOb);
+    public void sendMailForApprove(PurchaseRequestOb purchaseRequestOb) {
+        sendEmail(PurchaseRequestConst.DEFAULT_ADMIN_EMAIL, purchaseRequestOb);
     }
-    private void sendMailForConfirm(PurchaseRequestOb purchaseRequestOb) {
-        String emailToSend = PurchaseRequestConst.DEFAULT_PR_EMAIL;
-        sendEmail(emailToSend, purchaseRequestOb);
+
+    public void sendMailForConfirm(PurchaseRequestOb purchaseRequestOb) {
+        sendEmail(PurchaseRequestConst.DEFAULT_PR_EMAIL, purchaseRequestOb);
     }
-    private void sendMailForReject(PurchaseRequestOb purchaseRequestOb) {
-        String emailToSend = PurchaseRequestConst.DEFAULT_PR_EMAIL;
-        sendEmail(emailToSend, purchaseRequestOb);
+
+    public void sendMailForReject(PurchaseRequestOb purchaseRequestOb) {
+        sendEmail(PurchaseRequestConst.DEFAULT_PR_EMAIL, purchaseRequestOb);
     }
 }

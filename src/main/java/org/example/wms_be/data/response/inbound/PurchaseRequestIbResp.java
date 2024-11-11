@@ -13,7 +13,9 @@ public class PurchaseRequestIbResp {
     private String maPR;
     private String ngayYeuCau;
     private String nguoiYeuCau;
+    private String sysIdNguoiYeuCau;
     private String trangThai;
     private String loaiYeuCau;
+    private String lyDo;
     List<PurchaseRequestDetailsIbResp> chiTietNhapHang;
 }

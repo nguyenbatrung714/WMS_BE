@@ -1,23 +1,24 @@
 package org.example.wms_be.utils;
 import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
-
 import java.util.List;
 
 public class TplEmailPR {
-    // Tạo tiêu đề cho email
-    public static String buildEmailTitle(String purchaseRequestId) {
+    public static String emailTitle(String maYeuCau, String trangThai){
         return String.format(
-                "<h2>Số yêu cầu mua hàng mã: %s đang chờ xử lý.</h2>",
-                purchaseRequestId);
+                "<h2>Yêu cầu nhập hàng mã: %s [%s].</h2>",
+                maYeuCau, trangThai);
     }
-    public static String buildEmailTitleUpdate(String purchaseRequestId) {
+    public static String emailTitleConfirm(String maYeuCau, String trangThai){
         return String.format(
-                "<h2>Số yêu cầu mua hàng mã: %s vừa được điều chỉnh (Đang chờ duyệt).</h2>",
-                purchaseRequestId);
+                "<h2>Xác nhận yêu cầu nhập hàng mã: %s [%s].</h2>",
+                maYeuCau, trangThai);
     }
-
-    // Tạo  thông tin yêu cầu mua hàng
-    public static String buildRequestInfo(String userRequesting, String fullName, String role) {
+    public static String emailTitleReject(String maYeuCau, String trangThai){
+        return String.format(
+                "<h2> Từ chối yêu cầu nhập hàng mã: %s [%s].</h2>",
+                maYeuCau, trangThai);
+    }
+    public static String requestInfor(String nguoiTao, String daiDienPo, String chucVu){
         return String.format(
                 "<div style='margin-bottom: 15px; color: black;'>" +
                         "<p><strong> người tạo yêu cầu :</strong> %s</p>" +
@@ -25,11 +26,9 @@ public class TplEmailPR {
                         "<p><strong> Yêu cầu đại điện từ phòng Purchase Oder là:</strong> %s</p>" +
                         "<p><strong>Chức Vụ:</strong> %s</p>" +
                         "</div>",
-                userRequesting, fullName, role);
+                nguoiTao, daiDienPo, chucVu);
     }
-
-    // Tạo bảng chi tiết đơn hàng
-    public static String buildOrderDetailsTable(List<PurchaseDetailsIb> details) {
+    public static String bangYeuCauNhapHang(List<PurchaseDetailsIb> chiTietNhapHangs){
         StringBuilder sb = new StringBuilder();
         sb.append("<table border='1' cellspacing='0' cellpadding='5' style='color: black;'>");
         sb.append("<caption style='font-weight: bold; font-size: 1.5em; margin-bottom: 10px;'>Thông Tin Chi Tiết yêu cầu</caption>")
@@ -40,48 +39,48 @@ public class TplEmailPR {
                 .append("<th>Tổng Chi Phí(VND)</th>")
                 .append("<th>Ngày Nhập</th>")
                 .append("</tr>");
-        for (PurchaseDetailsIb detail : details) {
+
+        for (PurchaseDetailsIb chiTietNhapHang : chiTietNhapHangs) {
             sb.append("<tr>")
-                    .append("<td>").append(detail.getSysIdSanPham()).append("</td>")
-                    .append("<td>").append(detail.getSoLuong()).append("</td>")
-                    .append("<td>").append(detail.getGia()).append("</td>")
-                    .append("<td>").append(detail.getTongChiPhi()).append("</td>")
-                    .append("<td>").append(detail.getNgayNhapDuKien()).append("</td>")
+                    .append("<td>").append(chiTietNhapHang.getTenSanPham()).append("</td>")
+                    .append("<td>").append(chiTietNhapHang.getSoLuong()).append("</td>")
+                    .append("<td>").append(chiTietNhapHang.getGia()).append("</td>")
+                    .append("<td>").append(chiTietNhapHang.getTongChiPhi()).append("</td>")
+                    .append("<td>").append(chiTietNhapHang.getNgayNhapDuKien()).append("</td>")
                     .append("</tr>");
         }
         sb.append("</table>");
         return sb.toString();
+
     }
-    // Tạo body email
-    public static String buildEmailBody(String title, String requestInfo, String orderDetailsTable) {
+    public static String emailBody(String title, String requestInfo, String detailsIbTable){
         return String.format(
                 "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
                         "%s" + //  tiêu đề
-                        "<p><strong>Yêu cầu mua hàng từ phòng purchase request:</strong></p>" +
+                        "<p><strong>Yêu cầu nhập hàng từ phòng purchase request:</strong></p>" +
                         "%s" + //  thông tin yêu cầu mua hàng
                         "<p>Vui lòng kiểm tra và xác nhận yêu cầu mua hàng.</p>" +
                         "%s" + //  chi tiết đơn hàng
                         "</body></html>",
-                title, requestInfo, orderDetailsTable);
+                title, requestInfo, detailsIbTable);
     }
-    // Tạo body email cho trường hợp cập nhật
-    public static String buildEmailBodyForUpdate(String title, String updatedInfo, String orderDetailsTable) {
+    public static String emailBodyConfirm(String title,String detailsIbTable){
         return String.format(
                 "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
-                        "%s" + // tiêu đề
-                        "<p><strong>Thông báo cập nhật:</strong></p>" +
-                        "%s" + // thông tin yêu cầu mua hàng đã cập nhật
-                        "<p>Vui lòng kiểm tra lại hệ thống để biết thêm chi tiết.</p>" +
-                        "%s" + // chi tiết đơn hàng đã cập nhật
+                        "%s" + //  tiêu đề
+                        "<p style='color: red; font-weight: bold;'>YÊU CẦU ĐÃ ĐƯỢC PHÊ DUYỆT.</p>" +
+                        "%s" + //  chi tiết đơn hàng
                         "</body></html>",
-                title, updatedInfo, orderDetailsTable);
+                title, detailsIbTable);
     }
-    // Tạo thông tin cập nhật đơn hàng
-    public static String buildUpdateInfo(String userRequesting) {
+    public static String emailBodyReject(String title, String reason, String detailsIbTable){
         return String.format(
-                "<div style='margin-bottom: 15px; color: black;'>" +
-                        "<p><strong>Người thực hiện cập nhật:</strong> %s</p>" +
-                        "</div>",
-                userRequesting);
+                "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
+                        "%s" + //  tiêu đề
+                        "%s" + //  chi tiết đơn hàng
+                        "<p style='color: red; font-weight: bold;'>YÊU CẦU ĐÃ BỊ TỪ CHỐI.</p>" +
+                        "<p style='color: red; font-weight: bold;'>LÝ DO: %s</p>" +
+                        "</body></html>",
+                title, reason, detailsIbTable);
     }
 }
