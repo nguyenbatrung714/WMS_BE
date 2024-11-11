@@ -12,4 +12,6 @@ public interface PurchaseOrderIbMapper {
     boolean purchaseOrderIbExistByMaPO(String maPO);
 
     List<PurchaseOrderIb> getAllPuchaseOrderIb();
+
+    PurchaseOrderIb getPurchaseOrderById(Integer sysIdPO);
 }

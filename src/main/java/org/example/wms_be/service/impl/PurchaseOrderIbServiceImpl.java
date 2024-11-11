@@ -20,6 +20,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PurchaseOrderIbServiceImpl implements PurchaseOrderIbService {
+    // logger
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PurchaseOrderIbServiceImpl.class);
     private final PurchaseOrderIbConverter purchaseOrderIbConverter;
     private final PurchaseDetailsIbConverter purchaseDetailsIbConverter;
     private final PurchaseOrderIbMapper purchaseOrderIbMapper;
@@ -37,19 +39,22 @@ public class PurchaseOrderIbServiceImpl implements PurchaseOrderIbService {
                     throw new ResourceNotFoundException("PR Detail", "MaPR", purchaseOrderIbReq.getMaPR());
                 }
 
-                // Update PR details when PO comfirmed
-                purchaseDetailsIbMapper.updateDetailsIbFromPR(purchaseOrderIbReq.getMaPR(), purchaseOrderIbReq.getMaPO());
-                purchaseOrderIbReq.setChiTietNhapHang(purchaseRequestDetailIbs.stream().map(
-                        prDetail -> {
-                            prDetail.setMaPO(purchaseOrderIbReq.getMaPO());
-                            return purchaseDetailsIbConverter.toPurchaseDetailsIbReq(prDetail);
-                        }).toList());
-
                 PurchaseOrderIb purchaseOrderIb = purchaseOrderIbConverter.toPurchaseOrderIb(purchaseOrderIbReq);
 
                 purchaseOrderIbMapper.insertPurchaseOrderIb(purchaseOrderIb);
 
-                return purchaseOrderIbConverter.toPurchaseOrderIbReq(purchaseOrderIb);
+                Integer sysIdPO = purchaseOrderIb.getSysIdPO();
+                PurchaseOrderIb purchaseOrderIb1 = purchaseOrderIbMapper.getPurchaseOrderById(sysIdPO);
+                String maPO = purchaseOrderIb1.getMaPO();
+
+                // Update PR details when PO comfirmed
+                purchaseDetailsIbMapper.updateDetailsIbFromPR(purchaseOrderIbReq.getMaPR(), maPO);
+                purchaseRequestDetailIbs.forEach(prDetail ->
+                    prDetail.setMaPO(maPO)
+                );
+                purchaseOrderIb1.setChiTietNhapHang(purchaseRequestDetailIbs);
+
+                return purchaseOrderIbConverter.toPurchaseOrderIbReq(purchaseOrderIb1);
             } catch (Exception e) {
                 throw new BadSqlGrammarException("Error getting PR detail by MaPR: " + e.getMessage());
             }
