@@ -14,8 +14,6 @@ public class PurchaseOrderIb {
     private String maPO;
     private String maPR;
     private Timestamp ngayTao;
-    private Boolean trangThai;
-    private TypeOrder loaiDon;
     private Integer sysIdUser;
     List<PurchaseDetailsIb> chiTietNhapHang;
 }

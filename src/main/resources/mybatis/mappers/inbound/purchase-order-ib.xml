@@ -9,14 +9,12 @@
         <result property="maPO" column="ma_po"/>
         <result property="maPR" column="ma_pr"/>
         <result property="ngayTao" column="ngay_tao" javaType="java.sql.Timestamp"/>
-        <result property="trangThai" column="trang_thai"/>
-        <result property="loaiDon" column="loai_don"/>
         <result property="sysIdUser" column="sys_id_user"/>
     </resultMap>
 
     <insert id="insertPurchaseOrderIb" useGeneratedKeys="true" keyProperty="sysIdPO">
-        insert into purchase_order(ma_po, ma_pr, ngay_tao, trang_thai, loai_don, sys_id_user)
-        values (#{maPO}, #{maPR}, #{ngayTao}, #{trangThai}, #{loaiDon}, #{sysIdUser});
+        insert into purchase_order(ma_pr, ngay_tao, sys_id_user)
+        values (#{maPR}, #{ngayTao}, #{sysIdUser});
     </insert>
 
     <select id="purchaseOrderIbExistByMaPO" resultType="boolean">
@@ -26,8 +24,12 @@
     </select>
 
     <select id="getAllPuchaseOrderIb" resultMap="PurchaseOrderIbMap">
-        select sys_id_po, ma_po, ma_pr, ngay_tao, sys_id_user, trang_thai, loai_don
+        select sys_id_po, ma_po, ma_pr, ngay_tao, sys_id_user
         from purchase_order;
+    </select>
+
+    <select id="getPurchaseOrderById" parameterType="int" resultMap="PurchaseOrderIbMap">
+        select sys_id_po, ma_po, ma_pr, ngay_tao, sys_id_user from purchase_order where sys_id_po = #{maPO};
     </select>
 
 </mapper>
