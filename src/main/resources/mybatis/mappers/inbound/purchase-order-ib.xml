@@ -14,8 +14,8 @@
     </resultMap>
 
     <insert id="insertPurchaseOrderIb" useGeneratedKeys="true" keyProperty="sysIdPO">
-        insert into purchase_order(ma_po, ma_pr, ngay_tao, sys_id_user)
-        values (#{maPO}, #{maPR}, #{ngayTao}, #{sysIdUser});
+        insert into purchase_order(ma_pr, ngay_tao, sys_id_user)
+        values (#{maPR}, #{ngayTao}, #{sysIdUser});
     </insert>
 
     <select id="purchaseOrderIbExistByMaPO" resultType="boolean">
@@ -27,7 +27,11 @@
     <select id="getAllPuchaseOrderIb" resultMap="PurchaseOrderIbMap">
         select sys_id_po, ma_po, ma_pr, ngay_tao, u.sys_id_user, u.full_name
         from purchase_order po
-        join user u on po.sys_id_user = u.sys_id_user;
+                 join user u on po.sys_id_user = u.sys_id_user;
+    </select>
+
+    <select id="getPurchaseOrderById" parameterType="int" resultMap="PurchaseOrderIbMap">
+        select sys_id_po, ma_po, ma_pr, ngay_tao, sys_id_user from purchase_order where sys_id_po = #{maPO};
     </select>
 
 </mapper>
