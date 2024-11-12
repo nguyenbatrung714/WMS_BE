@@ -124,16 +124,21 @@
     <select id="getPurchaseDetailsIbByMaPO" resultMap="PurchaseDetailsIbMap">
         SELECT sys_id_chi_tiet_nhap_hang,
                sys_id_inbound,
-               ma_pr,
-               ma_po,
-               sys_id_khach_hang,
-               sys_id_san_pham,
+               ct.ma_pr,
+               po.ma_po,
+               kh.sys_id_khach_hang,
+               kh.ten_khach_hang,
+               sp.sys_id_san_pham,
+               sp.ten_san_pham,
                so_luong,
                gia,
                tong_chi_phi,
                ngay_nhap_du_kien
-        FROM chi_tiet_nhap_hang
-        WHERE ma_po = #{maPO};
+        FROM chi_tiet_nhap_hang ct
+                 JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
+                 JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
+                 JOIN purchase_order po ON ct.ma_po = po.ma_po
+        WHERE po.ma_po = #{maPO};
     </select>
 
     <update id="updateDetailsIbFromPO">

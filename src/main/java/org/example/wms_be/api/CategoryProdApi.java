@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/category-products")
+@RequestMapping("/api/v1/categories")
 @CrossOrigin
 public class CategoryProdApi {
     private final CategoryProdService categoryProdService;
