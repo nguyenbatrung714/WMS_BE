@@ -12,12 +12,20 @@
         <result property="moTa" column="mo_ta"/>
         <result property="dienTich" column="dien_tich"/>
         <result property="sysIdUser" column="sys_id_user"/>
+        <result property="nguoiPhuTrach" column="full_name"/>
     </resultMap>
 
     <!-- Get all warehouses -->
     <select id="getAllWarehouses" resultMap="WarehouseMap">
-        SELECT sys_id_kho, ma_kho, ten_kho, mo_ta, dien_tich, sys_id_user
-        FROM kho
+        SELECT sys_id_kho,
+               ma_kho,
+               ten_kho,
+               mo_ta,
+               dien_tich,
+               u.sys_id_user,
+               u.full_name
+        FROM kho k
+                 left join user u on k.sys_id_user = u.sys_id_user
     </select>
 
     <!-- Insert new warehouse -->
