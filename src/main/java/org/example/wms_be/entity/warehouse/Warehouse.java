@@ -12,4 +12,5 @@ public class Warehouse {
     private String moTa;
     private Double dienTich;
     private Integer sysIdUser;
+    private String  nguoiPhuTrach;
 }
