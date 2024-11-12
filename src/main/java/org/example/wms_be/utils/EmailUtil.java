@@ -3,6 +3,7 @@ package org.example.wms_be.utils;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.Getter;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,14 @@ public class EmailUtil {
         mailSender.send(message);
     }
 
+    public  void sendMailForgotPass(MailBody mailBody){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(mailBody.to());
+        message.setSubject(mailBody.subject());
+        message.setText(mailBody.text());
+
+        mailSender.send(message);
+
+    }
 
 }
