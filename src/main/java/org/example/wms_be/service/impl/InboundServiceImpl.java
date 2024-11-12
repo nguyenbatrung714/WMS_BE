@@ -40,17 +40,19 @@ public class InboundServiceImpl implements InboundService {
                 throw new IllegalArgumentException("PO Detail null");
             }
 
+            Inbound inbound = inboundConverter.toInbound(inboundReq);
+            inboundMapper.insertInbound(inbound);
+
+            String maInBound = inbound.getMaInBound();
+
             // Update PR details when PO comfirmed
-            purchaseDetailsIbMapper.updateDetailsIbFromPO(inboundReq.getMaPO(), inboundReq.getMaInBound());
+            purchaseDetailsIbMapper.updateDetailsIbFromPO(inboundReq.getMaPO(), maInBound);
 
             inboundReq.setChiTietNhapHang(purchaseDetailsIbs.stream().map(
                     inboundDetail -> {
-                        inboundDetail.setMaInBound(inboundReq.getMaInBound());
+                        inboundDetail.setMaInBound(maInBound);
                         return purchaseDetailsIbConverter.toPurchaseDetailsIbReq(inboundDetail);
                     }).toList());
-
-            Inbound inbound = inboundConverter.toInbound(inboundReq);
-            inboundMapper.insertInbound(inbound);
 
             return inboundConverter.toInboundReq(inbound);
         } catch (Exception e) {

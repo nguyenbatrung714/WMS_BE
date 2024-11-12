@@ -12,14 +12,12 @@
         <result property="sysIdUser" column="sys_id_user"/>
     </resultMap>
 
-    <insert id="insertInbound" useGeneratedKeys="true" keyProperty="sys_id_inbound">
-        insert into inbound(sys_id_inbound,
-                            ma_po,
+    <insert id="insertInbound" useGeneratedKeys="true" keyProperty="maInBound">
+        insert into inbound(ma_po,
                             ngay_nhap,
                             trang_thai,
                             sys_id_user)
-        values (#{maInBound},
-                #{maPO},
+        values (#{maPO},
                 #{ngayNhap},
                 #{trangThai},
                 #{sysIdUser})
