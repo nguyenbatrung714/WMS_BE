@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class InboundReq {
+    private Integer sysIdInBound;
     private String maInBound;
     private String maPO;
     private Timestamp ngayNhap = new Timestamp(System.currentTimeMillis());

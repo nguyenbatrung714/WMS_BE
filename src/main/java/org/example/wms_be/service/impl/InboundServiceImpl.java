@@ -48,11 +48,14 @@ public class InboundServiceImpl implements InboundService {
             // Update PR details when PO comfirmed
             purchaseDetailsIbMapper.updateDetailsIbFromPO(inboundReq.getMaPO(), maInBound);
 
-            inboundReq.setChiTietNhapHang(purchaseDetailsIbs.stream().map(
-                    inboundDetail -> {
-                        inboundDetail.setMaInBound(maInBound);
-                        return purchaseDetailsIbConverter.toPurchaseDetailsIbReq(inboundDetail);
-                    }).toList());
+//            inboundReq.setChiTietNhapHang(purchaseDetailsIbs.stream().map(
+//                    inboundDetail -> {
+//                        inboundDetail.setMaInBound(maInBound);
+//                        return purchaseDetailsIbConverter.toPurchaseDetailsIbReq(inboundDetail);
+//                    }).toList());
+
+            purchaseDetailsIbs.forEach(purchaseDetailsIb -> purchaseDetailsIb.setMaInBound(maInBound));
+            inbound.setChiTietNhapHang(purchaseDetailsIbs);
 
             return inboundConverter.toInboundReq(inbound);
         } catch (Exception e) {

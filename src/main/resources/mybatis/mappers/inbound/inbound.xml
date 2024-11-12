@@ -5,14 +5,15 @@
 <mapper namespace="org.example.wms_be.mapper.purchase.InboundMapper">
 
     <resultMap id="InboundMap" type="Inbound" autoMapping="true">
-        <id property="maInBound" column="sys_id_inbound"/>
+        <id property="sysIdInBound" column="sys_id_inbound"/>
+        <result property="maInBound" column="ma_inbound"/>
         <result property="maPO" column="ma_po"/>
         <result property="ngayNhap" column="ngay_nhap" javaType="java.sql.Timestamp"/>
         <result property="trangThai" column="trang_thai" javaType="org.example.wms_be.enums.TrangThai"/>
         <result property="sysIdUser" column="sys_id_user"/>
     </resultMap>
 
-    <insert id="insertInbound" useGeneratedKeys="true" keyProperty="maInBound">
+    <insert id="insertInbound" useGeneratedKeys="true" keyProperty="sysIdInBound">
         insert into inbound(ma_po,
                             ngay_nhap,
                             trang_thai,
@@ -24,6 +25,6 @@
     </insert>
 
     <select id="getAllInbound" resultMap="InboundMap">
-        select sys_id_inbound, ma_po, ngay_nhap, trang_thai, sys_id_user from inbound
+        select ma_inbound, ma_po, ngay_nhap, trang_thai, sys_id_user from inbound
     </select>
 </mapper>

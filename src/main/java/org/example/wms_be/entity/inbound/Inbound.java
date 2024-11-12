@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Inbound {
+    private Integer sysIdInBound;
     private String maInBound;
     private String maPO;
     private Timestamp ngayNhap;
