@@ -2,10 +2,8 @@ package org.example.wms_be.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.example.wms_be.constant.ForgotPassWordConst;
 import org.example.wms_be.data.mgt.ApiResponse;
-import org.example.wms_be.data.mgt.RespMessagePurchaseReuqestIb;
-import org.example.wms_be.data.response.inbound.PurchaseRequestIbResp;
-import org.example.wms_be.entity.account.ForgotPassWord;
 import org.example.wms_be.entity.account.User;
 import org.example.wms_be.service.ForgotPassWordService;
 import org.example.wms_be.utils.ChangePassWord;
@@ -15,11 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
-@RequestMapping("/forgot-password")
+@RequestMapping("/api/v1/forgot-password")
 @RequiredArgsConstructor
+@CrossOrigin
 public class ForgotPassWordApi {
     private final ForgotPassWordService forgotPassWordService;
     private final Logger logger = LoggerFactory.getLogger(ForgotPassWordApi.class);
@@ -62,6 +60,25 @@ public class ForgotPassWordApi {
             );
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
+            if (e.getMessage().equals(ForgotPassWordConst.INVALID_OTP)) {
+                logger.error("OTP không hợp lệ! Xác thực thất bại", e);
+                ApiResponse<User> response = new ApiResponse<>(
+                        request.getRequestURI(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        "OTP không hợp lệ! Xác thực thất bại",
+                        null
+                );
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            } else if (e.getMessage().equals(ForgotPassWordConst.INVALID_EXPIRATION_TIME)) {
+                logger.error("OTP đã hết hạn! Xác thực thất bại", e);
+                ApiResponse<User> response = new ApiResponse<>(
+                        request.getRequestURI(),
+                        HttpStatus.GONE.value(),
+                        "OTP đã hết hạn! Xác thực thất bại",
+                        null
+                );
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
             logger.error("Xác thực mã OTP thất bại", e);
             ApiResponse<User> response = new ApiResponse<>(
                     request.getRequestURI(),
