@@ -15,5 +15,6 @@ public class PurchaseOrderIbReq {
     private String maPR;
     private Timestamp ngayTao = new Timestamp(System.currentTimeMillis());
     private Integer sysIdUser;
+    private String nguoiTao;
     List<PurchaseDetailsIbReq> chiTietNhapHang;
 }

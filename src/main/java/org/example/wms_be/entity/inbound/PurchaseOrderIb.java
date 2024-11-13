@@ -15,5 +15,6 @@ public class PurchaseOrderIb {
     private String maPR;
     private Timestamp ngayTao;
     private Integer sysIdUser;
+    private String nguoiTao;
     List<PurchaseDetailsIb> chiTietNhapHang;
 }
