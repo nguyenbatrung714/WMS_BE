@@ -17,5 +17,6 @@ public class Inbound {
     private Timestamp ngayNhap;
     private TrangThai trangThai;
     private Integer sysIdUser;
+    private String fullName;
     List<PurchaseDetailsIb> chiTietNhapHang;
 }

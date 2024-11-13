@@ -17,5 +17,6 @@ public class InboundReq {
     private Timestamp ngayNhap = new Timestamp(System.currentTimeMillis());
     private TrangThai trangThai = TrangThai.DANG_XU_LY;
     private Integer sysIdUser;
+    private String fullName;
     List<PurchaseDetailsIbReq> chiTietNhapHang;
 }

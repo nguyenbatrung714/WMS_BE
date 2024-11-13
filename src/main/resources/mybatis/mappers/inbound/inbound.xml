@@ -12,6 +12,7 @@
         <result property="ngayNhap" column="ngay_nhap" javaType="java.sql.Timestamp"/>
         <result property="trangThai" column="trang_thai" javaType="org.example.wms_be.enums.TrangThai"/>
         <result property="sysIdUser" column="sys_id_user"/>
+        <result property="fullName" column="full_name"/>
     </resultMap>
 
     <insert id="insertInbound" useGeneratedKeys="true" keyProperty="sysIdInBound">
@@ -28,7 +29,16 @@
     </insert>
 
     <select id="getAllInbound" resultMap="InboundMap">
-        select sys_id_inbound, ma_inbound, ma_po, ma_kho, ngay_nhap, trang_thai, sys_id_user from inbound
+        select ib.sys_id_inbound,
+               ib.ma_inbound,
+               ib.ma_po,
+               ib.ma_kho,
+               ib.ngay_nhap,
+               ib.trang_thai,
+               ib.sys_id_user,
+               u.full_name
+        from inbound ib
+                 join user u on u.sys_id_user = ib.sys_id_user;
     </select>
 
     <select id="getInboundBySysId" resultMap="InboundMap" parameterType="integer">
