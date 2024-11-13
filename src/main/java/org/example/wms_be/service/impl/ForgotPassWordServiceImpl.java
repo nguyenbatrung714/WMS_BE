@@ -1,6 +1,7 @@
 package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.wms_be.constant.ForgotPassWordConst;
 import org.example.wms_be.entity.account.ForgotPassWord;
 import org.example.wms_be.entity.account.User;
 import org.example.wms_be.mapper.account.ForgotPassWordMapper;
@@ -15,8 +16,7 @@ import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -32,53 +32,76 @@ public class ForgotPassWordServiceImpl implements ForgotPassWordService {
 
     @Override
     public User findByEmail(String email) {
-        if (!isValidEmail(email)) {
-            throw new IllegalArgumentException("Invalid email");
+        if (isValidEmail(email)) {
+            throw new IllegalArgumentException(ForgotPassWordConst.INVALID_EMAIL);
         }
         User user = userMapper.findByEmail(email);
-        logger.info("Raw user from database: {}", user);
-        logger.info("sys_id_user value: {}", user.getSysIdUser());
+//        logger.info("Raw user from database: {}", user);
+//        logger.info("sys_id_user value: {}", user.getSysIdUser());
         Optional<User> userOpt = Optional.of(user);
         userOpt.ifPresent(u -> logger.info("User found: {}", user.getUsername()));
+
+        int otpCount = forgotPassWordMapper.countOtpRequestsInTimeRange(user.getSysIdUser());
+        if (otpCount >= 3) {
+            logger.warn(" {} đã yêu cầu OTP quá 3 lần", email);
+            throw new IllegalArgumentException("Bạn đã yêu cầu OTP quá nhiều lần. Vui lòng thử lại sau 60 giây.");
+        }
         int otp = otpGenerator();
 
         MailBody mailBody = MailBody.builder()
                 .to(email)
-                .text("This is the OTP for your password reset: " + otp)
-                .subject("OTP for forgot password request")
+                .text("Mã OTP để đặt lại mật khẩu của bạn là: " + otp +
+                        "\nMã này sẽ hết hạn sau " +
+                        ForgotPassWordConst.OTP_TIMEOUT_SECONDS + " giây.")
+                .subject("Yêu cầu đặt lại mật khẩu")
                 .build();
 
         ForgotPassWord fp = ForgotPassWord.builder()
                 .otp(otp)
-                .expirationTime(new Date(System.currentTimeMillis() + 30_000))
-                .createdAt(new Date())
+                .expirationTime(LocalDateTime.now().plusSeconds(ForgotPassWordConst.OTP_TIMEOUT_SECONDS))
+                .createdAt(LocalDateTime.now())
                 .sysIdUser(user.getSysIdUser())
                 .build();
 
         try {
-            // Gửi email
             emailUtil.sendMailForgotPass(mailBody);
+            forgotPassWordMapper.insertForgotPass(fp);
+            logger.info("Đã gửi OTP tới email: {}", email);
         } catch (MailException e) {
-            logger.error("Failed to send email");
+            logger.error("Lỗi khi gửi email: {}", e.getMessage());
+            throw new IllegalArgumentException(ForgotPassWordConst.EMAIL_SEND_FAILED);
         }
-        forgotPassWordMapper.insertForgotPass(fp);
+
         return user;
     }
 
     @Override
     public User findByOtpWithEmail(Integer otp, String email) {
-        User user = userMapper.findByEmail(email);
-        Optional<User> userOpt = Optional.of(user);
-        userOpt.ifPresent(u -> logger.info(" Hay Cung cap email hop le: {}", user.getUsername()));
-        ForgotPassWord fp = forgotPassWordMapper.findByOtpAndUser(otp, user.getSysIdUser());
-                Optional<ForgotPassWord> fpOpt = Optional.of(fp);
-        fpOpt.ifPresent(f -> logger.info("Otp cung cap cho mail khong hop le: {}", fp.getOtp()));
-        if (fp.getExpirationTime().before(Date.from(Instant.now()))){
-            forgotPassWordMapper.deleteForgotPass(fp.getId());
-
+        if (isValidEmail(email)) {
+            throw new IllegalArgumentException(ForgotPassWordConst.INVALID_EMAIL);
         }
+
+        User user = userMapper.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException(ForgotPassWordConst.INVALID_USER);
+        }
+
+        ForgotPassWord fp = forgotPassWordMapper.findByOtpAndUser(otp, user.getSysIdUser());
+        if (fp == null) {
+            throw new IllegalArgumentException(ForgotPassWordConst.INVALID_OTP);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (fp.getExpirationTime().isBefore(now)) {
+            forgotPassWordMapper.deleteForgotPass(fp.getId());
+            throw new IllegalArgumentException(ForgotPassWordConst.INVALID_EXPIRATION_TIME);
+        }
+        forgotPassWordMapper.deleteForgotPass(fp.getId());
+        logger.info("OTP hợp lệ : {}", user.getUsername());
+
         return user;
     }
+
 
     @Override
     public User saveForgotPass(String email, ChangePassWord changePassWord) {
@@ -91,13 +114,14 @@ public class ForgotPassWordServiceImpl implements ForgotPassWordService {
     }
 
     private final Random random = new Random();
+
     private int otpGenerator() {
-        return random.nextInt(900_000) + 100_000; // Đảm bảo OTP có 6 chữ số
+        return random.nextInt(900_000) + 100_000;
     }
 
 
     private boolean isValidEmail(String email) {
         String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-        return email != null && email.matches(emailRegex);
+        return email == null || !email.matches(emailRegex);
     }
 }

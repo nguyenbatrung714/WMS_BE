@@ -24,4 +24,9 @@
         SELECT * from forgot_password
         where otp = #{otp} and sys_id_user = #{sysIdUser};
     </select>
+    <select id="countOtpRequestsInTimeRange" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM forgot_password
+        WHERE sys_id_user = #{sysIdUser}
+          AND created_at > DATE_SUB(NOW(), INTERVAL 60 SECOND );
+    </select>
 </mapper>
