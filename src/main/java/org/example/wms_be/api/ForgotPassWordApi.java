@@ -77,7 +77,7 @@ public class ForgotPassWordApi {
                         "OTP đã hết hạn! Xác thực thất bại",
                         null
                 );
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(response, HttpStatus.GONE);
             }
             logger.error("Xác thực mã OTP thất bại", e);
             ApiResponse<User> response = new ApiResponse<>(
