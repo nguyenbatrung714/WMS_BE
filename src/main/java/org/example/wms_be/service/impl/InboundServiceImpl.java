@@ -7,9 +7,11 @@ import org.example.wms_be.data.request.InboundReq;
 import org.example.wms_be.entity.inbound.Inbound;
 import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
 import org.example.wms_be.exception.BadSqlGrammarException;
+import org.example.wms_be.exception.ResourceNotFoundException;
 import org.example.wms_be.mapper.inbound.PurchaseDetailsIbMapper;
 import org.example.wms_be.mapper.inbound.PurchaseOrderIbMapper;
 import org.example.wms_be.mapper.purchase.InboundMapper;
+import org.example.wms_be.mapper.warehouse.WarehouseMapper;
 import org.example.wms_be.service.InboundService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,7 @@ public class InboundServiceImpl implements InboundService {
     private final InboundConverter inboundConverter;
     private final PurchaseDetailsIbConverter purchaseDetailsIbConverter;
     private final PurchaseOrderIbMapper purchaseOrderIbMapper;
+    private final WarehouseMapper warehouseMapper;
 
     @Override
     public InboundReq createInbound(InboundReq inboundReq) {
@@ -40,22 +43,24 @@ public class InboundServiceImpl implements InboundService {
                 throw new IllegalArgumentException("PO Detail null");
             }
 
+            if (!warehouseMapper.checkWarehouseExists(inboundReq.getMaKho())) {
+                throw new ResourceNotFoundException("Warehouse", "maKho", inboundReq.getMaKho());
+            }
+
             Inbound inbound = inboundConverter.toInbound(inboundReq);
             inboundMapper.insertInbound(inbound);
 
-            String maInBound = inbound.getMaInBound();
+            Integer sysIdInbound = inbound.getSysIdInBound();
+
+            Inbound inboundAfterSave = inboundMapper.getInboundBySysId(sysIdInbound);
+            String maInBound = inboundAfterSave.getMaInBound();
 
             // Update PR details when PO comfirmed
             purchaseDetailsIbMapper.updateDetailsIbFromPO(inboundReq.getMaPO(), maInBound);
 
-//            inboundReq.setChiTietNhapHang(purchaseDetailsIbs.stream().map(
-//                    inboundDetail -> {
-//                        inboundDetail.setMaInBound(maInBound);
-//                        return purchaseDetailsIbConverter.toPurchaseDetailsIbReq(inboundDetail);
-//                    }).toList());
-
             purchaseDetailsIbs.forEach(purchaseDetailsIb -> purchaseDetailsIb.setMaInBound(maInBound));
             inbound.setChiTietNhapHang(purchaseDetailsIbs);
+            inbound.setMaInBound(maInBound);
 
             return inboundConverter.toInboundReq(inbound);
         } catch (Exception e) {

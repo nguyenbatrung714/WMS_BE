@@ -50,7 +50,7 @@ public class PurchaseOrderIbServiceImpl implements PurchaseOrderIbService {
                 // Update PR details when PO comfirmed
                 purchaseDetailsIbMapper.updateDetailsIbFromPR(purchaseOrderIbReq.getMaPR(), maPO);
                 purchaseRequestDetailIbs.forEach(prDetail ->
-                    prDetail.setMaPO(maPO)
+                        prDetail.setMaPO(maPO)
                 );
                 purchaseOrderIb1.setChiTietNhapHang(purchaseRequestDetailIbs);
 
@@ -60,19 +60,36 @@ public class PurchaseOrderIbServiceImpl implements PurchaseOrderIbService {
             }
         } else {
             try {
-                List<PurchaseDetailsIb> purchaseRequestDetailIbs = createPurchaseDetails(purchaseOrderIbReq.getChiTietNhapHang());
-                purchaseOrderIbReq.setChiTietNhapHang(purchaseRequestDetailIbs.stream().map(
-                        prDetail -> {
-                            prDetail.setMaPO(purchaseOrderIbReq.getMaPO());
-                            return purchaseDetailsIbConverter.toPurchaseDetailsIbReq(prDetail);
-                        }).toList());
 
-                // Create PO
-                PurchaseOrderIb purchaseOrderIb = createPO(purchaseOrderIbReq);
+                PurchaseOrderIb purchaseOrderIb = purchaseOrderIbConverter.toPurchaseOrderIb(purchaseOrderIbReq);
+                purchaseOrderIbMapper.insertPurchaseOrderIb(purchaseOrderIb);
+
+                Integer sysIdPO = purchaseOrderIb.getSysIdPO();
+                PurchaseOrderIb purchaseOrderIb1 = purchaseOrderIbMapper.getPurchaseOrderById(sysIdPO);
+                String maPO = purchaseOrderIb1.getMaPO();
+
+                List<PurchaseDetailsIb> purchaseDetailIbs = purchaseOrderIbReq.getChiTietNhapHang().stream()
+                        .map(prDetailReq -> {
+                            PurchaseDetailsIb purchaseDetailsIb = purchaseDetailsIbConverter.toPurchaseDetailsIb(prDetailReq);
+                            purchaseDetailsIb.setMaPO(maPO);
+                            purchaseDetailsIbMapper.insertPurchaseDetails(purchaseDetailsIb);
+                            return purchaseDetailsIb;
+                        })
+                        .toList();
+
+                purchaseOrderIb.setChiTietNhapHang(purchaseDetailIbs);
+                purchaseOrderIbReq.setChiTietNhapHang(
+                        purchaseDetailIbs.stream()
+                                .map(purchaseDetailsIbConverter::toPurchaseDetailsIbReq)
+                                .toList()
+                );
+
                 return purchaseOrderIbConverter.toPurchaseOrderIbReq(purchaseOrderIb);
+
             } catch (Exception e) {
                 throw new BadSqlGrammarException("Error creating purchase order: " + e.getMessage());
             }
+
         }
     }
 
