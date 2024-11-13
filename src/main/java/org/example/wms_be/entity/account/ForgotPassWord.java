@@ -2,7 +2,7 @@ package org.example.wms_be.entity.account;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -12,7 +12,7 @@ import java.util.Date;
 public class ForgotPassWord {
     private Integer id;
     private Integer otp;
-    private Date createdAt;
-    private Date expirationTime;
+    private LocalDateTime createdAt;
+    private LocalDateTime expirationTime;
     private Integer sysIdUser;
 }
