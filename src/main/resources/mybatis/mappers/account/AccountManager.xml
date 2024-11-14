@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.account.AccountManagerMapper">
+
+    <resultMap id="acountManagerMap" type="org.example.wms_be.entity.account.Account" >
+        <id property="sysIdUser" column="sys_id_user"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="fullName" column="full_name"/>
+        <result property="soDienThoai" column="so_dien_thoai"/>
+        <result property="sysIdRole" column="sys_id_role"/>
+    </resultMap>
+    <insert id="insertAccount" useGeneratedKeys="true" keyProperty="sysIdUser">
+        INSERT INTO user (username, password, email, full_name, so_dien_thoai)
+        VALUES (#{username}, #{password}, #{email}, #{fullName}, #{soDienThoai})
+    </insert>
+    <insert id="insertUserRole" parameterType="org.example.wms_be.entity.account.UserRole">
+        INSERT INTO users_roles (sys_id_user, sys_id_role)
+        VALUES (#{sysIdUser}, #{sysIdRole})
+    </insert>
+    <delete id="deleteAccount">
+        DELETE FROM user
+        where username = #{username}
+    </delete>
+    <select id="checkUserExitsByUserName">
+        SELECT EXISTS(SELECT 1 FROM user WHERE username = #{username})
+    </select>
+    <select id="checkUserExitsById">
+        SELECT EXISTS(SELECT 1 FROM user WHERE sys_id_user = #{sysIdUser})
+    </select>
+    <select id="checkUserRoleExists">
+        SELECT COUNT(1) > 0
+        FROM users_roles
+        WHERE sys_id_user = #{sysIdUser} AND sys_id_role = #{sysIdRole}
+    </select>
+</mapper>
