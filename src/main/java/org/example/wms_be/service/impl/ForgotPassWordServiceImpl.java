@@ -31,11 +31,14 @@ public class ForgotPassWordServiceImpl implements ForgotPassWordService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User findByEmail(String email) {
+    public void findByEmail(String email) {
         if (isValidEmail(email)) {
             throw new IllegalArgumentException(ForgotPassWordConst.INVALID_EMAIL);
         }
         User user = userMapper.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException(ForgotPassWordConst.EMAIL_NOT_EXIST);
+        }
 //        logger.info("Raw user from database: {}", user);
 //        logger.info("sys_id_user value: {}", user.getSysIdUser());
         Optional<User> userOpt = Optional.of(user);
@@ -44,7 +47,7 @@ public class ForgotPassWordServiceImpl implements ForgotPassWordService {
         int otpCount = forgotPassWordMapper.countOtpRequestsInTimeRange(user.getSysIdUser());
         if (otpCount >= 3) {
             logger.warn(" {} đã yêu cầu OTP quá 3 lần", email);
-            throw new IllegalArgumentException("Bạn đã yêu cầu OTP quá nhiều lần. Vui lòng thử lại sau 60 giây.");
+            throw new IllegalArgumentException(ForgotPassWordConst.EMAIL_SPAM_ERROR);
         }
         int otp = otpGenerator();
 
@@ -72,11 +75,10 @@ public class ForgotPassWordServiceImpl implements ForgotPassWordService {
             throw new IllegalArgumentException(ForgotPassWordConst.EMAIL_SEND_FAILED);
         }
 
-        return user;
     }
 
     @Override
-    public User findByOtpWithEmail(Integer otp, String email) {
+    public void findByOtpWithEmail(Integer otp, String email) {
         if (isValidEmail(email)) {
             throw new IllegalArgumentException(ForgotPassWordConst.INVALID_EMAIL);
         }
@@ -98,19 +100,17 @@ public class ForgotPassWordServiceImpl implements ForgotPassWordService {
         }
         forgotPassWordMapper.deleteForgotPass(fp.getId());
         logger.info("OTP hợp lệ : {}", user.getUsername());
-
-        return user;
     }
 
 
     @Override
-    public User saveForgotPass(String email, ChangePassWord changePassWord) {
+    public void saveForgotPass(String email, ChangePassWord changePassWord) {
         if (!Objects.equals(changePassWord.password(), changePassWord.repeatPassword())) {
-            throw new IllegalArgumentException("Password and repeat password do not match");
+            throw new IllegalArgumentException(ForgotPassWordConst.PASSWORD_NOT_MATCH);
         }
         String encodedPassword = passwordEncoder.encode(changePassWord.password());
         userMapper.updateForgotPass(email, encodedPassword);
-        return userMapper.findByEmail(email);
+        logger.info("Đã đặt lại mật khẩu cho email: {}", email);
     }
 
     private final Random random = new Random();
