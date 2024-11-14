@@ -22,4 +22,7 @@ public interface UserMapper {
     Map<String, String> getEmailByRoles(String email);
     String getFullNameByRoles(Integer roleId);
     boolean checkMailExits(String email);
+
+    User findByEmail(String email);
+    int updateForgotPass(String email, String password);
 }
