@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.constant.ForgotPassWordConst;
 import org.example.wms_be.data.mgt.ApiResponse;
-import org.example.wms_be.entity.account.User;
+import org.example.wms_be.data.mgt.RespMessageForgetPass;
 import org.example.wms_be.service.ForgotPassWordService;
 import org.example.wms_be.utils.ChangePassWord;
 import org.slf4j.Logger;
@@ -23,23 +23,25 @@ public class ForgotPassWordApi {
     private final Logger logger = LoggerFactory.getLogger(ForgotPassWordApi.class);
 
     @PostMapping("/verify-mail/{email}")
-    public ResponseEntity<ApiResponse<User>> verifyEmail(
+    public ResponseEntity<ApiResponse<RespMessageForgetPass>> verifyEmail(
             @PathVariable String email,
             HttpServletRequest request) {
         try {
-            ApiResponse<User> response = new ApiResponse<>(
+            forgotPassWordService.findByEmail(email);
+            ApiResponse<RespMessageForgetPass> response = new ApiResponse<>(
                     request.getRequestURI(),
                     HttpStatus.OK.value(),
-                    "mã OTP đã được gửi",
-                    forgotPassWordService.findByEmail(email)
+                    RespMessageForgetPass.SEND_OTP_SUCCESS.getMessage(),
+                    null
+
             );
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("mail không tồn tại", e);
-            ApiResponse<User> response = new ApiResponse<>(
+            ApiResponse<RespMessageForgetPass> response = new ApiResponse<>(
                     request.getRequestURI(),
                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    "mail không tồn tại",
+                   RespMessageForgetPass.SEND_OTP_FAILED.getMessage(),
                     null
             );
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -47,40 +49,42 @@ public class ForgotPassWordApi {
     }
 
     @PostMapping("/verify-otp/{otp}/{email}")
-    public ResponseEntity<ApiResponse<User>> verifyOtp(
+    public ResponseEntity<ApiResponse<RespMessageForgetPass>> verifyOtp(
             @PathVariable Integer otp,
             @PathVariable String email,
             HttpServletRequest request) {
         try {
-            ApiResponse<User> response = new ApiResponse<>(
+            forgotPassWordService.findByOtpWithEmail(otp, email);
+            ApiResponse<RespMessageForgetPass> response = new ApiResponse<>(
                     request.getRequestURI(),
                     HttpStatus.OK.value(),
-                    "Xác thực mã OTP thành công",
-                    forgotPassWordService.findByOtpWithEmail(otp, email)
+                    RespMessageForgetPass.VERIFY_OTP_SUCCESS.getMessage(),
+                    null
+
             );
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             if (e.getMessage().equals(ForgotPassWordConst.INVALID_OTP)) {
                 logger.error("OTP không hợp lệ! Xác thực thất bại", e);
-                ApiResponse<User> response = new ApiResponse<>(
+                ApiResponse<RespMessageForgetPass> response = new ApiResponse<>(
                         request.getRequestURI(),
                         HttpStatus.BAD_REQUEST.value(),
-                        "OTP không hợp lệ! Xác thực thất bại",
+                        RespMessageForgetPass.VERIFY_OTP_FAILED.getMessage(),
                         null
                 );
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             } else if (e.getMessage().equals(ForgotPassWordConst.INVALID_EXPIRATION_TIME)) {
                 logger.error("OTP đã hết hạn! Xác thực thất bại", e);
-                ApiResponse<User> response = new ApiResponse<>(
+                ApiResponse<RespMessageForgetPass> response = new ApiResponse<>(
                         request.getRequestURI(),
                         HttpStatus.GONE.value(),
-                        "OTP đã hết hạn! Xác thực thất bại",
+                        RespMessageForgetPass.EXPIRED_OTP.getMessage(),
                         null
                 );
                 return new ResponseEntity<>(response, HttpStatus.GONE);
             }
             logger.error("Xác thực mã OTP thất bại", e);
-            ApiResponse<User> response = new ApiResponse<>(
+            ApiResponse<RespMessageForgetPass> response = new ApiResponse<>(
                     request.getRequestURI(),
                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                     "Xác thực mã OTP thất bại",
@@ -91,24 +95,25 @@ public class ForgotPassWordApi {
     }
 
     @PostMapping("/change-password/{email}")
-    public ResponseEntity<ApiResponse<User>> changePassword(
+    public ResponseEntity<ApiResponse<RespMessageForgetPass>> changePassword(
             @PathVariable String email,
             @RequestBody ChangePassWord changePassWord,
             HttpServletRequest request) {
         try {
-            ApiResponse<User> response = new ApiResponse<>(
+            forgotPassWordService.saveForgotPass(email, changePassWord);
+            ApiResponse<RespMessageForgetPass> response = new ApiResponse<>(
                     request.getRequestURI(),
                     HttpStatus.OK.value(),
-                    "Thay đổi mật khẩu thành công",
-                    forgotPassWordService.saveForgotPass(email, changePassWord)
+                    RespMessageForgetPass.RESET_PASS_SUCCESS.getMessage(),
+                    null
             );
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Thay đổi mật khẩu thất bại", e);
-            ApiResponse<User> response = new ApiResponse<>(
+            ApiResponse<RespMessageForgetPass> response = new ApiResponse<>(
                     request.getRequestURI(),
                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    "Thay đổi mật khẩu thất bại",
+                    RespMessageForgetPass.RESET_PASS_FAILED.getMessage(),
                     null
             );
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
