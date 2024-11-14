@@ -10,10 +10,13 @@ import java.util.List;
 @Getter
 @Setter
 public class InboundReq {
+    private Integer sysIdInBound;
     private String maInBound;
+    private String maKho;
     private String maPO;
     private Timestamp ngayNhap = new Timestamp(System.currentTimeMillis());
     private TrangThai trangThai = TrangThai.DANG_XU_LY;
     private Integer sysIdUser;
+    private String fullName;
     List<PurchaseDetailsIbReq> chiTietNhapHang;
 }

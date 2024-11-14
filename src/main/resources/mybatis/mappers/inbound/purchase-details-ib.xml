@@ -148,17 +148,21 @@
     </update>
 
     <select id="getPurchaseDetailsIbByMaIb" resultMap="PurchaseDetailsIbMap">
-        SELECT sys_id_chi_tiet_nhap_hang,
-               sys_id_inbound,
-               ma_pr,
-               ma_po,
-               sys_id_khach_hang,
-               sys_id_san_pham,
-               so_luong,
-               gia,
-               tong_chi_phi,
-               ngay_nhap_du_kien
-        FROM chi_tiet_nhap_hang
+        SELECT ct.sys_id_chi_tiet_nhap_hang,
+               ct.sys_id_inbound,
+               ct.ma_pr,
+               ct.ma_po,
+               ct.sys_id_khach_hang,
+               ct.sys_id_san_pham,
+               ct.so_luong,
+               ct.gia,
+               ct.tong_chi_phi,
+               ct.ngay_nhap_du_kien,
+               kh.ten_khach_hang,
+               sp.ten_san_pham
+        FROM chi_tiet_nhap_hang ct
+                 join khach_hang kh on kh.sys_id_khach_hang = ct.sys_id_khach_hang
+                 join san_pham sp on sp.sys_id_san_pham = ct.sys_id_san_pham
         WHERE sys_id_inbound = #{maInBound};
     </select>
 </mapper>
