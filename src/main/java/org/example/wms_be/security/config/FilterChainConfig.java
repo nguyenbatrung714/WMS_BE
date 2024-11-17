@@ -23,17 +23,31 @@ public class FilterChainConfig {
         http
                 .authorizeHttpRequests(registry ->
                         registry
-//                                .requestMatchers("/api/v1/auth/**").permitAll()
-//                                .requestMatchers("api/v1/category-product/**").permitAll()
-//                                .requestMatchers("api/v1/products/**").permitAll()
-//                                .requestMatchers("api/v1/warehouses/**").permitAll()
-//                                .requestMatchers("api/v1/product-types/**").permitAll()
-//                                .requestMatchers("api/v1/customer-types/**").permitAll()
-//                                .requestMatchers("api/v1/customers/**").permitAll()
-//                                .requestMatchers("api/v1/warehouse-types/**").permitAll()
-//                                .requestMatchers("api/v1/warehouse-zones/**").permitAll()
-//                                .anyRequest().authenticated()
-                                .anyRequest().permitAll()
+                                .requestMatchers("api/v1/categories/**").authenticated()
+                                .requestMatchers("api/v1/consignment/**").authenticated()
+                                .requestMatchers("api/v1/customers/**").authenticated()
+                                .requestMatchers("api/v1/products/**").authenticated()
+                                .requestMatchers("api/v1/suppliers/**").authenticated()
+                                .requestMatchers("api/v1/warehouses/**").authenticated()
+                                .requestMatchers("api/v1/zones/**").authenticated()
+                                .requestMatchers("api/v1/zone-details/**").authenticated()
+                                .requestMatchers("api/v1/users/**").authenticated()
+
+                                // account
+                                .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/forgot-password/**").permitAll()
+
+                                // ib
+                                .requestMatchers("api/v1/inbounds/**").hasRole("PO")
+                                .requestMatchers("api/v1/purchase-details/**").hasRole("PR")
+                                .requestMatchers("api/v1/purchase-requests/**").hasRole("PR")
+                                .requestMatchers("api/v1/purchase-orders/**").hasRole("PO")
+
+                                // ob
+                                .requestMatchers("api/v1/purchase-details-outbound/**").hasRole("PR")
+                                .requestMatchers("api/v1/purchase-request-ob/**").hasRole("PR")
+
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
