@@ -12,8 +12,10 @@ public class ConsignmentReq {
     private String maLo;
     private Integer sysIdSanPham;
     private Double soLuong;
-    private Timestamp ngaySanXuat;
-    private Timestamp hanSuDung;
+    private String ngaySanXuat;
+    private String hanSuDung;
     private Double dungTich;
     private String maChiTietKhuVuc;
+    private Integer sysIdChiTietNhapHang;
+    private String tenSanPham;
 }
