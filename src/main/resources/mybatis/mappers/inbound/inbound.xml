@@ -5,27 +5,46 @@
 <mapper namespace="org.example.wms_be.mapper.purchase.InboundMapper">
 
     <resultMap id="InboundMap" type="Inbound" autoMapping="true">
-        <id property="maInBound" column="sys_id_inbound"/>
+        <id property="sysIdInBound" column="sys_id_inbound"/>
+        <result property="maInBound" column="ma_inbound"/>
+        <result property="maKho" column="ma_kho"/>
         <result property="maPO" column="ma_po"/>
         <result property="ngayNhap" column="ngay_nhap" javaType="java.sql.Timestamp"/>
         <result property="trangThai" column="trang_thai" javaType="org.example.wms_be.enums.TrangThai"/>
         <result property="sysIdUser" column="sys_id_user"/>
+        <result property="fullName" column="full_name"/>
     </resultMap>
 
-    <insert id="insertInbound" useGeneratedKeys="true" keyProperty="sys_id_inbound">
-        insert into inbound(sys_id_inbound,
-                            ma_po,
+    <insert id="insertInbound" useGeneratedKeys="true" keyProperty="sysIdInBound">
+        insert into inbound(ma_po,
+                            ma_kho,
                             ngay_nhap,
                             trang_thai,
                             sys_id_user)
-        values (#{maInBound},
-                #{maPO},
+        values (#{maPO},
+                #{maKho},
                 #{ngayNhap},
                 #{trangThai},
                 #{sysIdUser})
     </insert>
 
     <select id="getAllInbound" resultMap="InboundMap">
-        select sys_id_inbound, ma_po, ngay_nhap, trang_thai, sys_id_user from inbound
+        select ib.sys_id_inbound,
+               ib.ma_inbound,
+               ib.ma_po,
+               ib.ma_kho,
+               ib.ngay_nhap,
+               ib.trang_thai,
+               ib.sys_id_user,
+               u.full_name
+        from inbound ib
+                 join user u on u.sys_id_user = ib.sys_id_user;
     </select>
+
+    <select id="getInboundBySysId" resultMap="InboundMap" parameterType="integer">
+        select sys_id_inbound, ma_inbound, ma_po, ma_kho, ngay_nhap, trang_thai, sys_id_user
+        from inbound
+        where sys_id_inbound = #{sysIdInBound}
+    </select>
+
 </mapper>

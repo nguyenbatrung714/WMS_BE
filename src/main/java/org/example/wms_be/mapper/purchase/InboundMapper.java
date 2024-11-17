@@ -10,4 +10,6 @@ public interface InboundMapper {
     int insertInbound(Inbound inbound);
 
     List<Inbound> getAllInbound();
+
+    Inbound getInboundBySysId(Integer sysIdInbound);
 }
