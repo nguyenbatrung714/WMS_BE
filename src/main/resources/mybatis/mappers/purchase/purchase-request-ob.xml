@@ -17,7 +17,7 @@
         <id property="sysIdYeuCauXuatHang" column="sys_id_pr"/>
         <result property="maPR" column="ma_pr"/>
         <result property="ngayYeuCau" column="ngay_yeu_cau"/>
-        <result property="nguoiYeuCau" column="sys_id_user"/>
+        <result property="sysIdNguoiYeuCau" column="sys_id_user"/>
         <result property="trangThai" column="trang_thai"/>
         <result property="loaiYeuCau" column="loai_yeu_cau"/>
         <result property="nguoiYeuCau" column="full_name"/>
@@ -38,14 +38,18 @@
         SET ngay_yeu_cau = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
             sys_id_user  = #{nguoiYeuCau},
             trang_thai   = #{trangThai},
-            ly_do        = #{lyDo}
-        WHERE sys_id_pr = #{sysIdYeuCauXuatHang} AND ly_do IS NULL;
+            ly_do = CASE
+                        WHEN #{trangThai} = 'reject' THEN COALESCE(#{lyDo}, ly_do)
+                        ELSE NULL
+                END
+        WHERE sys_id_pr = #{sysIdYeuCauXuatHang};
     </update>
     <select id="getAllPurchaseRequestOb" resultMap="PurchaseRequestObDtoMap">
         SELECT sys_id_pr,
                ma_pr,
                ngay_yeu_cau,
                trang_thai,
+               user.sys_id_user,
                user.full_name,
                loai_yeu_cau,
                ly_do
@@ -64,6 +68,7 @@
                ma_pr,
                ngay_yeu_cau,
                trang_thai,
+               user.sys_id_user,
                user.full_name,
                loai_yeu_cau,
                ly_do
