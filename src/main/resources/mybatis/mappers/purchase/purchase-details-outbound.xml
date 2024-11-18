@@ -42,7 +42,7 @@
     </update>
     <select id="layDanhSachXuatHangTheoMaPR" resultMap="PurchaseDetailsDtoMap">
         SELECT ct.sys_id_chi_tiet_xuat_hang,
-               ct.sys_id_outbound,
+               ct.ma_outbound,
                ct.ma_pr,
                ct.ma_po,
                kh.sys_id_khach_hang,
@@ -67,7 +67,7 @@
     </select>
 
     <insert id="insertPurchaseRequestDetailsOb" parameterType="purchaseRequestDetailsOb">
-        INSERT INTO chi_tiet_xuat_hang (sys_id_outbound,
+        INSERT INTO chi_tiet_xuat_hang (ma_outbound,
                                         ma_pr,
                                         ma_po,
                                         sys_id_khach_hang,
