@@ -11,8 +11,8 @@
         <result property="diaChi" column="dia_chi"/>
     </resultMap>
     <insert id="insertCustomer">
-        INSERT INTO khach_hang(sys_id_khach_hang,ten_khach_hang,ten_cong_ty,so_dien_thoai,dia_chi)
-        VALUES(#{sysIdKhachHang},#{tenKhachHang},#{tenCongTy},#{soDienThoai},#{diaChi})
+        INSERT INTO khach_hang(sys_id_khach_hang, ten_khach_hang, ten_cong_ty, so_dien_thoai, dia_chi)
+        VALUES (#{sysIdKhachHang}, #{tenKhachHang}, #{tenCongTy}, #{soDienThoai}, #{diaChi})
 
     </insert>
     <update id="updateCustomer">
@@ -21,11 +21,12 @@
             ten_cong_ty=#{tenCongTy},
             so_dien_thoai=#{soDienThoai},
             dia_chi=#{diaChi}
-        WHERE sys_id_khach_hang=#{sysIdKhachHang}
+        WHERE sys_id_khach_hang = #{sysIdKhachHang}
     </update>
     <delete id="deleteCustomer">
-        DELETE FROM khach_hang
-        WHERE sys_id_khach_hang=#{sysIdKhachHang}
+        DELETE
+        FROM khach_hang
+        WHERE sys_id_khach_hang = #{sysIdKhachHang}
     </delete>
     <select id="getAllCustomer" resultMap="customerMap">
         select sys_id_khach_hang,
@@ -38,7 +39,7 @@
     <select id="checkCustomerExits" resultType="boolean" parameterType="Integer">
         select exists(select 1
                       from khach_hang
-                      WHERE sys_id_khach_hang=#{sysIdKhachHang})
+                      WHERE sys_id_khach_hang = #{sysIdKhachHang})
     </select>
     <select id="getCustomerById" resultMap="customerMap">
         select sys_id_khach_hang,
@@ -47,7 +48,7 @@
                so_dien_thoai,
                dia_chi
         from khach_hang
-        WHERE sys_id_khach_hang=#{sysIdKhachHang}
+        WHERE sys_id_khach_hang = #{sysIdKhachHang}
     </select>
 
 </mapper>

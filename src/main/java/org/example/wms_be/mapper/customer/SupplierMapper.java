@@ -10,8 +10,8 @@ public interface SupplierMapper {
     List<Supplier> getAllSupplier();
     int insertSupplier(Supplier supplier);
     int updateSupplier(Supplier supplier);
-    int deleteSupplier(String maNhaCungCap);
-    Supplier getSupplierById(String maNhaCungCap);
-    boolean checkSupplierExits(String maNhaCungCap);
+    int deleteSupplier(Integer maNhaCungCap);
+    Supplier getSupplierById(Integer maNhaCungCap);
+    boolean checkSupplierExits(Integer maNhaCungCap);
 
 }

@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/api/v1/supplier")
 public class SupplierApi {
     private final SupplierService supplierService;
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<SupplierDto>>> getAllSuppliers(HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
@@ -26,6 +27,7 @@ public class SupplierApi {
                 supplierService.getAllSuppliers()
         ), HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<ApiResponse<SupplierDto>> saveSupplier(HttpServletRequest request, @RequestBody SupplierDto supplierDto) {
         return new ResponseEntity<>(new ApiResponse<>(
@@ -33,28 +35,30 @@ public class SupplierApi {
                 200,
                 "Supplier save successfully ",
                 supplierService.saveSupplier(supplierDto)
-        ),HttpStatus.OK);
+        ), HttpStatus.OK);
     }
+
     @DeleteMapping("/{maNhaCungCap}")
-    public ResponseEntity<ApiResponse<Void>> deleteSupplier(@PathVariable String maNhaCungCap,
+    public ResponseEntity<ApiResponse<Void>> deleteSupplier(@PathVariable Integer maNhaCungCap,
                                                             HttpServletRequest request
-                                                            ){
+    ) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
                 "Supplier delete successfully",
                 supplierService.deleteSupplier(maNhaCungCap)
-        ),HttpStatus.OK);
+        ), HttpStatus.OK);
     }
+
     @GetMapping("/{maNhaCungCap}")
-    public ResponseEntity<ApiResponse<SupplierDto>> getSupplierById(@PathVariable String maNhaCungCap,
-                                                            HttpServletRequest request
-                                                            ){
+    public ResponseEntity<ApiResponse<SupplierDto>> getSupplierById(@PathVariable Integer maNhaCungCap,
+                                                                    HttpServletRequest request
+    ) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
                 "Supplier found successfully",
                 supplierService.getSupplierById(maNhaCungCap)
-        ),HttpStatus.OK);
+        ), HttpStatus.OK);
     }
 }

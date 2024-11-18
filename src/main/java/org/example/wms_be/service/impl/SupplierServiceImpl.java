@@ -20,19 +20,20 @@ public class SupplierServiceImpl implements SupplierService {
     private static final Logger logger = LoggerFactory.getLogger(SupplierServiceImpl.class);
     private final SupplierMapper supplierMapper;
     private final SupplierConverter supplierConverter;
+
     @Override
     public SupplierDto saveSupplier(SupplierDto supplierDto) {
-        Supplier supplier= supplierConverter.toSupplier(supplierDto);
-        try{
-            if(supplierMapper.checkSupplierExits(supplierDto.getSysIdNhaCungCap())){
+        Supplier supplier = supplierConverter.toSupplier(supplierDto);
+        try {
+            if (supplierMapper.checkSupplierExits(supplierDto.getSysIdNhaCungCap())) {
                 supplierMapper.updateSupplier(supplier);
-                supplier=supplierMapper.getSupplierById(supplier.getSysIdNhaCungCap());
-            }else{
+                supplier = supplierMapper.getSupplierById(supplier.getSysIdNhaCungCap());
+            } else {
                 supplierMapper.insertSupplier(supplier);
             }
 
 
-        }catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Insert supplier failed: {}", e.getMessage());
             throw new BadSqlGrammarException("Insert supplier failed");
         }
@@ -43,14 +44,14 @@ public class SupplierServiceImpl implements SupplierService {
     public List<SupplierDto> getAllSuppliers() {
         return supplierMapper.getAllSupplier()
                 .stream()
-                .map(supplierConverter ::toSupLierDto)
+                .map(supplierConverter::toSupLierDto)
                 .toList();
     }
 
     @Override
-    public SupplierDto getSupplierById(String maNhaCungCap) {
+    public SupplierDto getSupplierById(Integer maNhaCungCap) {
         if (!supplierMapper.checkSupplierExits(maNhaCungCap)) {
-            throw new ResourceNotFoundException("Supplier", "maNhaCungCap", maNhaCungCap);
+            throw new ResourceNotFoundException("Supplier", "maNhaCungCap", maNhaCungCap.toString());
         }
         try {
             Supplier supplier = supplierMapper.getSupplierById(maNhaCungCap);
@@ -61,16 +62,16 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Void deleteSupplier(String maNhaCungCap) {
-       if(!supplierMapper.checkSupplierExits(maNhaCungCap)) {
-           throw new ResourceNotFoundException("Supplier", "maNhaCungCap", maNhaCungCap);
-       }
-           try{
-             supplierMapper.deleteSupplier(maNhaCungCap);
-               return null;
-       }catch(Exception e){
-               logger.error("Delete supplier failed: {}", e.getMessage());
-               throw new BadSqlGrammarException("Delete supplier failed");
+    public Void deleteSupplier(Integer maNhaCungCap) {
+        if (!supplierMapper.checkSupplierExits(maNhaCungCap)) {
+            throw new ResourceNotFoundException("Supplier", "maNhaCungCap", maNhaCungCap.toString());
+        }
+        try {
+            supplierMapper.deleteSupplier(maNhaCungCap);
+            return null;
+        } catch (Exception e) {
+            logger.error("Delete supplier failed: {}", e.getMessage());
+            throw new BadSqlGrammarException("Delete supplier failed");
 
         }
     }

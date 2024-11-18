@@ -27,9 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDto> getAllCustomer() {
-        return customerMapper.getAllCustomer()
-                .stream().map(customerConverter::toCustomerDto)
-                .toList();
+        return customerMapper.getAllCustomer().stream().map(customerConverter::toCustomerDto).toList();
     }
 
     @Override
