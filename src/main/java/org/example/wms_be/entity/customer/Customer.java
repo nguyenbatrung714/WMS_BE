@@ -10,7 +10,5 @@ public class Customer {
     private String tenKhachHang;
     private String tenCongTy;
     private String soDienThoai;
-    private String sysIdNhaCungCap;
-
     private String diaChi;
 }
