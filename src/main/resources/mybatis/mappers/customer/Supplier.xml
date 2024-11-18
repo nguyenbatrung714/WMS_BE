@@ -12,8 +12,8 @@
 
     </resultMap>
     <insert id="insertSupplier">
-        INSERT INTO nha_cung_cap(sys_id_nha_cung_cap,ten_nha_cung_cap,ten_cong_ty,so_dien_thoai,dia_chi)
-        VALUES(#{sysIdNhaCungCap},#{tenNhaCungCap},#{tenCongTy},#{soDienThoai},#{diaChi})
+        INSERT INTO nha_cung_cap(sys_id_nha_cung_cap, ten_nha_cung_cap, ten_cong_ty, so_dien_thoai, dia_chi)
+        VALUES (#{sysIdNhaCungCap}, #{tenNhaCungCap}, #{tenCongTy}, #{soDienThoai}, #{diaChi})
     </insert>
     <update id="updateSupplier">
         UPDATE nha_cung_cap
@@ -44,7 +44,7 @@
         from nha_cung_cap
         WHERE sys_id_nha_cung_cap=#{sysIdNhaCungCap}
     </select>
-    <select id="checkSupplierExits" resultType="boolean" parameterType="String">
+    <select id="checkSupplierExits" resultType="boolean" parameterType="Integer">
         select exists(
             select 1 from nha_cung_cap
             WHERE sys_id_nha_cung_cap=#{sysIdNhaCungCap}
