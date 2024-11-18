@@ -34,9 +34,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDto saveCustomer(CustomerDto customerDto) {
-        if (!supplierMapper.checkSupplierExits(customerDto.getSysIdNhaCungCap())) {
-            throw new ResourceNotFoundException("Supplier", "maNhaCungCap", customerDto.getSysIdNhaCungCap());
-        }
         Customer customer = customerConverter.toCustomer(customerDto);
         try {
             if (customerMapper.checkCustomerExits(customerDto.getSysIdKhachHang())) {

@@ -8,5 +8,7 @@ import lombok.Setter;
 public class SupplierDto {
     private String sysIdNhaCungCap;
     private String tenNhaCungCap;
-    private String moTa;
+    private String tenCongTy;
+    private String soDienThoai;
+    private String diaChi;
 }
