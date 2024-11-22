@@ -6,7 +6,6 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
-import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
 import org.example.wms_be.entity.inbound.PurchaseOrderIb;
 import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.mapper.inbound.PurchaseDetailsIbMapper;
@@ -42,21 +41,20 @@ public class BarCodeServiceImpl implements BarCodeService {
     @Override
     public ResponseEntity<byte[]> generateQRCode(@RequestParam String maPO) {
         try {
-            String url = "http://localhost:8080/api/v1/" + maPO;
+            String url = "http://localhost:8080/api/v1/barcodes/" + maPO;
 
-            // Cấu hình cho mã QR
+            // Config
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             Map<EncodeHintType, Object> hints = new HashMap<>();
             hints.put(EncodeHintType.MARGIN, 1);
 
-            // Tạo BitMatrix cho mã QR
+            // Tạo BitMatrix
             BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, 200, 200, hints);
 
-            // Chuyển BitMatrix thành ảnh PNG
+            // Chuyển thành ảnh
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
 
-            // Trả về mã QR dưới dạng byte[]
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=QRCode.png")
                     .body(outputStream.toByteArray());
