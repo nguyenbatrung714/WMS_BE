@@ -14,9 +14,31 @@
         <result property="ngayCapNhat" column="ngay_cap_nhat"/>
     </resultMap>
 
+    <resultMap id="Inventory" type="org.example.wms_be.data.response.InventoryResp" autoMapping="true">
+        <id property="sysIdTonKho" column="sys_id_ton_kho"/>
+        <result property="sysysIdSanPham" column="sys_id_san_pham"/>
+        <result property="maKho" column="ma_kho"/>
+        <result property="maLo" column="ma_lo"/>
+        <result property="soLuong" column="so_luong"/>
+        <result property="ngayCapNhat" column="ngay_cap_nhat"/>
+        <result property="tenSanPham" column="ten_san_pham"/>
+    </resultMap>
+
     <insert id="createInventoy" useGeneratedKeys="true" keyProperty="sysIdTonKho">
         insert into ton_kho(sys_id_ton_kho, sys_id_san_pham, ma_kho, ma_lo, so_luong, ngay_cap_nhat)
         values (#{sysIdTonKho}, #{sysysIdSanPham}, #{maKho}, #{maLo}, #{soLuong}, #{ngayCapNhat})
     </insert>
+
+    <select id="getAllInventory" resultMap="Inventory">
+        select tk.sys_id_ton_kho,
+               tk.ma_kho,
+               tk.ma_lo,
+               tk.so_luong,
+               tk.ngay_cap_nhat,
+               tk.sys_id_san_pham,
+               sp.ten_san_pham
+        from ton_kho tk
+                 join san_pham sp on tk.sys_id_san_pham = sp.sys_id_san_pham
+    </select>
 
 </mapper>
