@@ -32,20 +32,24 @@ public class FilterChainConfig {
                                 .requestMatchers("api/v1/zones/**").authenticated()
                                 .requestMatchers("api/v1/zone-details/**").authenticated()
                                 .requestMatchers("api/v1/users/**").authenticated()
+                                .requestMatchers("api/v1/inventories/**").authenticated()
 
                                 // account
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/api/v1/forgot-password/**").permitAll()
 
                                 // ib
-                                .requestMatchers("api/v1/inbounds/**").hasRole("PO")
-                                .requestMatchers("api/v1/purchase-details/**").hasRole("PR")
-                                .requestMatchers("api/v1/purchase-requests/**").hasRole("PR")
-                                .requestMatchers("api/v1/purchase-orders/**").hasRole("PO")
+                                .requestMatchers("api/v1/inbounds/**").hasRole("Manager")
+                                .requestMatchers("api/v1/purchase-details/**").hasRole("User")
+                                .requestMatchers("api/v1/purchase-requests/**").hasRole("User")
+                                .requestMatchers("api/v1/purchase-orders/**").hasRole("Manager")
 
                                 // ob
-                                .requestMatchers("api/v1/purchase-details-outbound/**").hasRole("PR")
-                                .requestMatchers("api/v1/purchase-request-ob/**").hasRole("PR")
+                                .requestMatchers("api/v1/purchase-details-outbound/**").hasRole("User")
+                                .requestMatchers("api/v1/purchase-request-ob/**").hasRole("User")
+
+                                // Barcode
+                                .requestMatchers("api/v1/barcodes/**").permitAll()
 
                                 .anyRequest().authenticated()
                 )
