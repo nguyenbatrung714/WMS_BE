@@ -2,7 +2,6 @@ package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.converter.InboundConverter;
-import org.example.wms_be.converter.inbound.PurchaseDetailsIbConverter;
 import org.example.wms_be.data.request.InboundReq;
 import org.example.wms_be.entity.inbound.Inbound;
 import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
@@ -26,7 +25,6 @@ public class InboundServiceImpl implements InboundService {
     private final InboundMapper inboundMapper;
     private final PurchaseDetailsIbMapper purchaseDetailsIbMapper;
     private final InboundConverter inboundConverter;
-    private final PurchaseDetailsIbConverter purchaseDetailsIbConverter;
     private final PurchaseOrderIbMapper purchaseOrderIbMapper;
     private final WarehouseMapper warehouseMapper;
 
