@@ -5,6 +5,7 @@ import org.example.wms_be.constant.InventoryConst;
 import org.example.wms_be.data.response.InventoryResp;
 import org.example.wms_be.entity.inventory.KiemTraTonKho;
 import org.example.wms_be.entity.inventory.LoSuDung;
+import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.mapper.inventory.InventoryMapper;
 import org.example.wms_be.mapper.purchase.PurchaseDetailsObMapper;
 import org.example.wms_be.service.InventoryService;
@@ -20,6 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class InventoryServiceImpl implements InventoryService {
+
     private final InventoryMapper inventoryMapper;
     private final   PurchaseDetailsObMapper purchaseDetailsObMapper;
     private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
@@ -68,6 +70,15 @@ public class InventoryServiceImpl implements InventoryService {
 
 
         return new KiemTraTonKho(sysIdSanPham, loSuDung);
+    }
+
+    @Override
+    public List<InventoryResp> getInventoryList() {
+        try {
+            return inventoryMapper.getAllInventory();
+        } catch (Exception e) {
+            throw new BadSqlGrammarException("Failed to get inventory list" + e.getMessage());
+        }
     }
 
 }

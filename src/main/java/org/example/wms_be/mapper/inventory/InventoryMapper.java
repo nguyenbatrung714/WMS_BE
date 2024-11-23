@@ -10,4 +10,5 @@ public interface InventoryMapper {
     List<InventoryResp> layDanhSachLoHangCanXuat(Integer sysIdSanPham);
     int updateInventory(Integer sysIdTonKho, Double soLuong);
 
+    List<InventoryResp> getAllInventory();
 }

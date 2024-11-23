@@ -14,4 +14,5 @@ public class InventoryResp {
     private String maLo;
     private Double soLuong;
     private Timestamp ngayCapNhat = new Timestamp(System.currentTimeMillis());
+    private String tenSanPham;
 }
