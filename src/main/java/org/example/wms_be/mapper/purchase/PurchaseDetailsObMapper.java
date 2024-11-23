@@ -1,6 +1,7 @@
 package org.example.wms_be.mapper.purchase;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.example.wms_be.data.request.PurchaseRequestDetailsObReq;
 import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
 import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
@@ -15,7 +16,13 @@ public interface PurchaseDetailsObMapper {
     int insertPurchaseRequestDetailsOb(PurchaseRequestDetailsOb purchaseRequestDetailsOb);
     int updatePurchaseRequestDetailsOb(PurchaseRequestDetailsOb purchaseRequestDetailsOb);
     boolean existById(Integer sysIdChiTietXuatHang);
-    int updateDetailsObFromPO(String maPO, String maOB);
+    void updateDetailsObFromPO(@Param("maPO") String maPO,
+                               @Param("maOB") String maOB,
+                               @Param("sysIdChiTietXuatHang") Integer sysIdChiTietXuatHang);
+
     List<PurchaseRequestDetailsOb> getPurchaseDetailsObByMaPO(String maPO);
+    double getSoLuongCanXuat( Integer sysIdChiTietXuatHang,Integer sysIdSanPham);
+    List<Integer> getSysIdSanPhamByMaPO(String maPO);
+    Integer getMaOutbound(Integer sysIdChiTietXuatHang);
 
 }

@@ -34,6 +34,8 @@ public class OutboundServiceImpl implements OutboundService {
     private final PurchaseOrderIbMapper purchaseOrderIbMapper;
     private final PurchaseDetailsObConverter purchaseDetailsObConverter;
 
+
+
     @Override
     public List<OutboundResp> getAllOutbound() {
         try {
@@ -50,15 +52,15 @@ public class OutboundServiceImpl implements OutboundService {
     @Override
     @Transactional
     public void saveOutbound(OutboundReq outboundReq) {
-        // Lưu Outbound và lấy mã Outbound
+
         OutBound outBound = saveOutbounds(outboundReq);
 
-        // Lấy mã Outbound và cập nhật cho OutBound
+
         String maOB = layMaOB(outBound);
         outBound.setMaOB(maOB);
         logger.info("Thêm mã OB mới: {} với MaOB: {}", outBound, maOB);
 
-        // Cập nhật chi tiết xuất hàng với mã Outbound
+
         updateDeatils(outboundReq, maOB);
     }
 
@@ -71,33 +73,39 @@ public class OutboundServiceImpl implements OutboundService {
             PurchaseRequestDetailsOb details = purchaseDetailsObConverter.toPurchaseRequestDeatilsOb(detailsReq);
             details.setMaPR(maOB);
 
-            // Cập nhật chi tiết xuất hàng với mã outbound
-            purchaseDetailsObMapper.updateDetailsObFromPO(outboundReq.getMaPO(), maOB);
+
+            logger.info("Cập nhật chi tiết với sysIdChiTietXuatHang: {}, maPO: {}, maOB: {}",
+                    detailsReq.getSysIdChiTietXuatHang(), outboundReq.getMaPO(), maOB);
+
+            try {
+                purchaseDetailsObMapper.updateDetailsObFromPO(outboundReq.getMaPO(), maOB, detailsReq.getSysIdChiTietXuatHang());
+
+            } catch (Exception e) {
+                logger.error("Lỗi khi cập nhật chi tiết xuất hàng: {}", e.getMessage(), e);
+                throw new RuntimeException("Cập nhật thất bại", e);
+            }
+
         }
     }
 
-
     private String layMaOB(OutBound outBound) {
-        // Lấy mã Outbound từ cơ sở dữ liệu thông qua sysIdOutbound
+
         return outboundMapper.getMaOBById(outBound.getSysIdOutbound());
     }
 
     private OutBound saveOutbounds(OutboundReq outboundReq) {
-        // Kiểm tra PO có tồn tại không
+
         if (!purchaseOrderIbMapper.purchaseOrderIbExistByMaPO(outboundReq.getMaPO())) {
             throw new IllegalArgumentException("PO không tồn tại");
         }
 
-        // Lấy chi tiết xuất hàng từ cơ sở dữ liệu
         List<PurchaseRequestDetailsOb> purchaseRequestDetailsObs = purchaseDetailsObMapper.getPurchaseDetailsObByMaPO(outboundReq.getMaPO());
         if (purchaseRequestDetailsObs == null || purchaseRequestDetailsObs.isEmpty()) {
             throw new IllegalArgumentException("Chi tiết PO không có dữ liệu");
         }
 
-        // Chuyển đổi outboundReq thành đối tượng OutBound và lưu vào cơ sở dữ liệu
         OutBound outBound = outboundConverter.toOutbound(outboundReq);
         outboundMapper.insertOutbound(outBound);
-
         return outBound;
     }
 
@@ -109,7 +117,6 @@ public class OutboundServiceImpl implements OutboundService {
                 .filter(ob -> ob.getMaOB() != null)
                 .forEach(ob -> {
                     if (ob.getNgayXuat() != null) {
-                        // convert ngayYeuCau from yyyy-MM-dd HH:mm:ss to dd/MM/yyyy
                         String ngayXuat = TimeConverter.formatNgayYeuCau(Timestamp.valueOf(ob.getNgayXuat()));
                         ob.setNgayXuat(ngayXuat);
                     }

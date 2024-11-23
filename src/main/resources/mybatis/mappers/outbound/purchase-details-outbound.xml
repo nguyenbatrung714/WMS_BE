@@ -40,11 +40,14 @@
             ngay_xuat_du_kien = #{ngayXuatDuKien}
         WHERE sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang};
     </update>
-    <update id="updateDetailsObFromPO" parameterType="PurchaseRequestDetailsOb">
+    <update id="updateDetailsObFromPO" parameterType="map">
         UPDATE chi_tiet_xuat_hang
         SET ma_outbound = #{maOB}
-        WHERE ma_po = #{maPO} AND ma_outbound IS NULL
+        WHERE ma_po = #{maPO}
+          AND sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang}
+          AND ma_outbound IS NULL
     </update>
+
 
     <select id="layDanhSachXuatHangTheoMaPR" resultMap="PurchaseDetailsDtoMap">
         SELECT ct.sys_id_chi_tiet_xuat_hang,
@@ -131,6 +134,22 @@
                  JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
                  JOIN purchase_order po ON ct.ma_po = po.ma_po
         WHERE po.ma_po = #{maPO};
+    </select>
+    <select id="getSoLuongCanXuat" resultType="java.lang.Double">
+        SELECT so_luong
+        FROM chi_tiet_xuat_hang
+        WHERE sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang}
+          AND sys_id_san_pham = #{sysIdSanPham}
+    </select>
+
+
+    <select id="getSysIdSanPhamByMaPO" resultType="java.lang.Integer">
+        SELECT sys_id_san_pham
+        FROM chi_tiet_xuat_hang WHERE ma_po = #{maPO};
+    </select>
+    <select id="getMaOutbound" resultType="java.lang.Integer">
+        select ma_outbound from chi_tiet_xuat_hang
+        where sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang};
     </select>
 
 </mapper>
