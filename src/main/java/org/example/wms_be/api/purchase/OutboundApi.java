@@ -108,7 +108,7 @@ public class OutboundApi {
     }
 
 
-    @GetMapping("/check-outbound/{sysIdChiTietXuatHang}/{sysIdSanPham}")
+    @PostMapping("/check-outbound/{sysIdChiTietXuatHang}/{sysIdSanPham}")
     public ResponseEntity<ApiResponse<KiemTraTonKho>> kiemTraTonKho(
             @PathVariable("sysIdChiTietXuatHang") Integer sysIdChiTietXuatHang,
             @PathVariable("sysIdSanPham") Integer sysIdSanPham,

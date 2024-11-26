@@ -7,13 +7,16 @@ import org.example.wms_be.entity.inventory.KiemTraTonKho;
 import org.example.wms_be.entity.inventory.LoSuDung;
 import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.mapper.inventory.InventoryMapper;
+import org.example.wms_be.mapper.product.ProductMapper;
 import org.example.wms_be.mapper.purchase.PurchaseDetailsObMapper;
 import org.example.wms_be.service.InventoryService;
+import org.example.wms_be.utils.TimeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,12 +27,22 @@ public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryMapper inventoryMapper;
     private final   PurchaseDetailsObMapper purchaseDetailsObMapper;
+    private final ProductMapper productMapper;
     private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
 
     @Override
     public List<InventoryResp> layDanhSachLoHangCanXuat(Integer sysIdSanPham) {
         try {
-            return inventoryMapper.layDanhSachLoHangCanXuat(sysIdSanPham);
+            List<InventoryResp> inventoryList = inventoryMapper.layDanhSachLoHangCanXuat(sysIdSanPham);
+
+            // Format ngayCapNhat for each inventory response
+            for (InventoryResp resp : inventoryList) {
+                if (resp.getNgayCapNhat() != null) {
+                    resp.setNgayCapNhat(TimeConverter.formatTimestamp(Timestamp.valueOf(resp.getNgayCapNhat())));
+                }
+            }
+
+            return inventoryList;
         } catch (Exception e) {
             logger.error(InventoryConst.GET_FIRSTOUT_FAILED);
             return Collections.emptyList();
@@ -62,6 +75,7 @@ public class InventoryServiceImpl implements InventoryService {
             inventoryMapper.updateInventory(inventoryResp.getSysIdTonKho(), inventoryResp.getSoLuong() - soLuongTru);
 
         }
+        inventoryMapper.updateSoLuongHienCo(sysIdSanPham);
 
 
         if (soLuongConThieu > 0) {

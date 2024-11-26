@@ -13,6 +13,6 @@ public class InventoryResp {
     private String maKho;
     private String maLo;
     private Double soLuong;
-    private Timestamp ngayCapNhat = new Timestamp(System.currentTimeMillis());
+    private String ngayCapNhat;
     private String tenSanPham;
 }
