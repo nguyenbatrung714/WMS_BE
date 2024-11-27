@@ -9,10 +9,10 @@ import java.sql.Timestamp;
 @Setter
 public class InventoryResp {
     private Integer sysIdTonKho;
-    private Integer sysysIdSanPham;
+    private Integer sysIdSanPham;
     private String maKho;
     private String maLo;
-    private String soLuong;
-    private Timestamp ngayCapNhat;
+    private Double soLuong;
+    private String ngayCapNhat;
     private String tenSanPham;
 }

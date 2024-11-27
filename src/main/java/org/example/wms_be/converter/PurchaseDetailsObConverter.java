@@ -5,6 +5,8 @@ import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
 import org.example.wms_be.entity.outbound.PurchaseRequestDetailsOb;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface PurchaseDetailsObConverter {
     PurchaseRequestDetailsOb toPurchaseRequestDeatilsOb(PurchaseRequestDetailsObResp purchaseRequestDetailsObResp);
@@ -13,4 +15,5 @@ public interface PurchaseDetailsObConverter {
     PurchaseRequestDetailsOb toPurchaseRequestDeatilsOb(PurchaseRequestDetailsObReq purchaseRequestDetailsObReq);
     PurchaseRequestDetailsObReq toPurchaseRequestDetailsObReq(PurchaseRequestDetailsOb purchaseRequestDeatilsOb);
 
+    List<PurchaseRequestDetailsOb> toPurchaseRequestDetailsOb(List<PurchaseRequestDetailsObResp> purchaseRequestDetailsObs);
 }
