@@ -38,4 +38,12 @@
         select sys_id_po, ma_po, ma_pr, ngay_tao, sys_id_user from purchase_order where ma_po = #{maPO};
     </select>
 
+    <select id="checkExistByMaPR" resultType="boolean" parameterType="string">
+        select exists(
+            select 1
+            from purchase_order
+            where ma_pr = #{maPR}
+        );
+    </select>
+
 </mapper>

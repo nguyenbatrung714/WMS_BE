@@ -124,4 +124,13 @@ public class PurchaseOrderIbServiceImpl implements PurchaseOrderIbService {
             throw new BadSqlGrammarException("Error getting all purchase orders: " + e.getMessage());
         }
     }
+
+    @Override
+    public Boolean checkExistByMaPR(String maPR) {
+        try {
+            return purchaseOrderIbMapper.checkExistByMaPR(maPR);
+        } catch (Exception e) {
+            throw new BadSqlGrammarException("Error checking exist by MaPR: " + e.getMessage());
+        }
+    }
 }

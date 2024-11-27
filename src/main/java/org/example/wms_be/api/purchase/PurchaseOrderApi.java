@@ -38,4 +38,15 @@ public class PurchaseOrderApi {
                 purchaseOrderIbService.getAllPurchaseOrders()
         ), HttpStatus.OK);
     }
+
+    @GetMapping("/check-exist-by-ma-pr")
+    public ResponseEntity<ApiResponse<Boolean>> getAllInbounds(HttpServletRequest request,
+                                                               @RequestParam("maPR") String maPR) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "Get success",
+                purchaseOrderIbService.checkExistByMaPR(maPR)
+        ), HttpStatus.OK);
+    }
 }

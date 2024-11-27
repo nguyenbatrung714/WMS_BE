@@ -17,4 +17,6 @@ public interface PurchaseOrderIbMapper {
 
     PurchaseOrderIb getPurchaseOrderByMaPO(String maPO);
 
+    Boolean checkExistByMaPR(String maPR);
+
 }
