@@ -7,6 +7,6 @@ import java.util.List;
 public interface SupplierService {
     SupplierDto saveSupplier(SupplierDto supplierDto);
     List<SupplierDto> getAllSuppliers();
-    SupplierDto getSupplierById(String maNhaCungCap);
-    Void deleteSupplier(String maNhaCungCap);
+    SupplierDto getSupplierById(Integer maNhaCungCap);
+    Void deleteSupplier(Integer maNhaCungCap);
 }

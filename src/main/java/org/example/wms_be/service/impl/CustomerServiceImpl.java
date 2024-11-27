@@ -27,16 +27,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDto> getAllCustomer() {
-        return customerMapper.getAllCustomer()
-                .stream().map(customerConverter::toCustomerDto)
-                .toList();
+        return customerMapper.getAllCustomer().stream().map(customerConverter::toCustomerDto).toList();
     }
 
     @Override
     public CustomerDto saveCustomer(CustomerDto customerDto) {
-        if (!supplierMapper.checkSupplierExits(customerDto.getSysIdNhaCungCap())) {
-            throw new ResourceNotFoundException("Supplier", "maNhaCungCap", customerDto.getSysIdNhaCungCap());
-        }
         Customer customer = customerConverter.toCustomer(customerDto);
         try {
             if (customerMapper.checkCustomerExits(customerDto.getSysIdKhachHang())) {

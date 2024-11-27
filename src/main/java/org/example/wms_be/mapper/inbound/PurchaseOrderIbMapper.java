@@ -15,4 +15,6 @@ public interface PurchaseOrderIbMapper {
 
     PurchaseOrderIb getPurchaseOrderById(Integer sysIdPO);
 
+    PurchaseOrderIb getPurchaseOrderByMaPO(String maPO);
+
 }

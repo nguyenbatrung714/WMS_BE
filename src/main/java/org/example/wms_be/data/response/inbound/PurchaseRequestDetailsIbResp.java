@@ -21,4 +21,6 @@ public class PurchaseRequestDetailsIbResp {
     private String  ngayNhapDuKien;
     private Integer sysIdKhachHang;
     private Integer sysIdSanPham;
+    private Integer sysIdNhaCungCap;
+    private String  tenNhaCungCap;
 }
