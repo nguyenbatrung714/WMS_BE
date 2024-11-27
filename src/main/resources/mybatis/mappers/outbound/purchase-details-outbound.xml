@@ -40,9 +40,18 @@
             ngay_xuat_du_kien = #{ngayXuatDuKien}
         WHERE sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang};
     </update>
+    <update id="updateDetailsObFromPO" parameterType="map">
+        UPDATE chi_tiet_xuat_hang
+        SET ma_outbound = #{maOB}
+        WHERE ma_po = #{maPO}
+          AND sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang}
+          AND ma_outbound IS NULL
+    </update>
+
+
     <select id="layDanhSachXuatHangTheoMaPR" resultMap="PurchaseDetailsDtoMap">
         SELECT ct.sys_id_chi_tiet_xuat_hang,
-               ct.sys_id_outbound,
+               ct.ma_outbound,
                ct.ma_pr,
                ct.ma_po,
                kh.sys_id_khach_hang,
@@ -65,9 +74,29 @@
                       FROM chi_tiet_xuat_hang
                       WHERE sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang});
     </select>
+    <select id="layDanhSachXuatHangTheoMaOutbound"
+            resultMap="PurchaseDetailsDtoMap">
+        SELECT ct.sys_id_chi_tiet_xuat_hang,
+               ct.ma_outbound,
+               ct.ma_pr,
+               ct.ma_po,
+               ct.sys_id_khach_hang,
+               ct.sys_id_san_pham,
+               ct.so_luong,
+               ct.gia,
+               ct.tong_chi_phi,
+               ct.ngay_xuat_du_kien,
+               kh.ten_khach_hang,
+               sp.ten_san_pham
+        FROM chi_tiet_xuat_hang ct
+                 join khach_hang kh on kh.sys_id_khach_hang = ct.sys_id_khach_hang
+                 join san_pham sp on sp.sys_id_san_pham = ct.sys_id_san_pham
+        WHERE ma_outbound = #{maOB};
+
+    </select>
 
     <insert id="insertPurchaseRequestDetailsOb" parameterType="purchaseRequestDetailsOb">
-        INSERT INTO chi_tiet_xuat_hang (sys_id_outbound,
+        INSERT INTO chi_tiet_xuat_hang (ma_outbound,
                                         ma_pr,
                                         ma_po,
                                         sys_id_khach_hang,
@@ -86,4 +115,41 @@
                 #{tongChiPhi},
                 #{ngayXuatDuKien});
     </insert>
+
+    <select id="getPurchaseDetailsObByMaPO" resultMap="PurchaseRequestObMap">
+        SELECT sys_id_chi_tiet_xuat_hang,
+               ma_outbound,
+               ct.ma_pr,
+               po.ma_po,
+               kh.sys_id_khach_hang,
+               kh.ten_khach_hang,
+               sp.sys_id_san_pham,
+               sp.ten_san_pham,
+               so_luong,
+               gia,
+               tong_chi_phi,
+               ngay_xuat_du_kien
+        FROM chi_tiet_xuat_hang ct
+                 JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
+                 JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
+                 JOIN purchase_order po ON ct.ma_po = po.ma_po
+        WHERE po.ma_po = #{maPO};
+    </select>
+    <select id="getSoLuongCanXuat" resultType="java.lang.Double">
+        SELECT so_luong
+        FROM chi_tiet_xuat_hang
+        WHERE sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang}
+          AND sys_id_san_pham = #{sysIdSanPham}
+    </select>
+
+
+    <select id="getSysIdSanPhamByMaPO" resultType="java.lang.Integer">
+        SELECT sys_id_san_pham
+        FROM chi_tiet_xuat_hang WHERE ma_po = #{maPO};
+    </select>
+    <select id="getMaOutbound" resultType="java.lang.Integer">
+        select ma_outbound from chi_tiet_xuat_hang
+        where sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang};
+    </select>
+
 </mapper>
