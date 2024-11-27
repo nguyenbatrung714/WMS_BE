@@ -12,12 +12,12 @@
         <result property="hanSuDung" column="han_su_dung"/>
         <result property="dungTich" column="dung_tich"/>
         <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
-        <result property="sysIdChiTietNhapHang" column="chi_tiet_nhap_hang_id"/>
+        <result property="sysIdChiTietNhapHang" column="sys_id_chi_tiet_nhap_hang"/>
         <result property="tenSanPham" column="ten_san_pham"/>
     </resultMap>
 
     <insert id="insertConsignment">
-        INSERT INTO lo_hang(sys_id_san_pham,so_luong,ngay_san_xuat,han_su_dung,dung_tich,ma_chi_tiet_khu_vuc,chi_tiet_nhap_hang_id)
+        INSERT INTO lo_hang(sys_id_san_pham,so_luong,ngay_san_xuat,han_su_dung,dung_tich,ma_chi_tiet_khu_vuc,sys_id_chi_tiet_nhap_hang)
         VALUES(#{sysIdSanPham},#{soLuong},#{ngaySanXuat},#{hanSuDung},#{dungTich},#{maChiTietKhuVuc},#{sysIdChiTietNhapHang})
     </insert>
 
@@ -29,7 +29,7 @@
             han_su_dung=#{hanSuDung},
             dung_tich=#{dungTich},
             ma_chi_tiet_khu_vuc=#{maChiTietKhuVuc},
-            chi_tiet_nhap_hang_id=#{sysIdChiTietNhapHang}
+            sys_id_chi_tiet_nhap_hang=#{sysIdChiTietNhapHang}
         WHERE ma_lo=#{maLo}
     </update>
 
