@@ -52,7 +52,8 @@ public class FilterChainConfig {
 //
 //                                // Barcode
 //                                .requestMatchers("api/v1/barcodes/**").permitAll()
-
+                                .requestMatchers("/v3/api-docs/**",
+                                        "/swagger-ui/**").permitAll()
                                 .anyRequest().permitAll()
                 )
                 .sessionManagement(session ->
