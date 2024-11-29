@@ -16,6 +16,25 @@
         <result property="tenSanPham" column="ten_san_pham"/>
     </resultMap>
 
+    <resultMap id="LoHangMap" type="org.example.wms_be.data.response.ConsignmentResp">
+        <result property="sysIdChiTietNhapHang" column="sys_id_chi_tiet_nhap_hang"/>
+        <result property="maInbound" column="ma_inbound"/>
+        <result property="maPR" column="ma_pr"/>
+        <result property="gia" column="gia"/>
+        <result property="tongChiPhi" column="tong_chi_phi"/>
+        <result property="maPO" column="ma_po"/>
+        <result property="tenKhachHang" column="ten_khach_hang"/>
+        <result property="tenNhaCungCap" column="ten_nha_cung_cap"/>
+        <result property="tenSanPham" column="ten_san_pham"/>
+        <result property="soLuongTonKho" column="so_luong_ton_kho"/>
+        <result property="ngaySanXuat" column="ngay_san_xuat"/>
+        <result property="hanSuDung" column="han_su_dung"/>
+        <result property="soLuongNhap" column="so_luong_nhap"/>
+        <result property="tenKho" column="ten_kho"/>
+        <result property="ngayNhap" column="ngay_nhap"/>
+        <result property="maLo" column="ma_lo"/>
+    </resultMap>
+
     <insert id="insertConsignment">
         INSERT INTO lo_hang(sys_id_san_pham,so_luong,ngay_san_xuat,han_su_dung,dung_tich,ma_chi_tiet_khu_vuc,sys_id_chi_tiet_nhap_hang)
         VALUES(#{sysIdSanPham},#{soLuong},#{ngaySanXuat},#{hanSuDung},#{dungTich},#{maChiTietKhuVuc},#{sysIdChiTietNhapHang})
@@ -69,5 +88,35 @@
             ON
                 lh.sys_id_san_pham = sp.sys_id_san_pham
         WHERE lh.ma_lo=#{maLo}
+    </select>
+
+
+    <select id="getInfoLoHang" resultMap="LoHangMap" parameterType="string">
+        SELECT ct.sys_id_chi_tiet_nhap_hang,
+               ct.ma_inbound,
+               ct.ma_pr,
+               ct.gia,
+               ct.tong_chi_phi,
+               po.ma_po,
+               kh.ten_khach_hang,
+               ncc.ten_nha_cung_cap,
+               sp.ten_san_pham,
+               tk.so_luong as so_luong_ton_kho,
+               lh.ngay_san_xuat,
+               lh.han_su_dung,
+               lh.so_luong as so_luong_nhap,
+               k.ten_kho,
+               i.ngay_nhap,
+               lh.ma_lo
+        FROM chi_tiet_nhap_hang ct
+                 left JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
+                 left JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
+                 left JOIN purchase_order po ON ct.ma_po = po.ma_po
+                 left JOIN lo_hang lh on ct.sys_id_chi_tiet_nhap_hang = lh.sys_id_chi_tiet_nhap_hang
+                 left JOIN ton_kho tk on lh.ma_lo = tk.ma_lo
+                 left JOIN kho k on tk.ma_kho = k.ma_kho
+                 left JOIN nha_cung_cap ncc on ct.sys_id_nha_cung_cap = ncc.sys_id_nha_cung_cap
+                 left JOIN inbound i on ct.ma_inbound = i.ma_inbound
+        WHERE lh.ma_lo = #{maLo};
     </select>
 </mapper>

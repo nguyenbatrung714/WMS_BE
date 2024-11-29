@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.example.wms_be.converter.inventory.ConsignmentConverter;
 import org.example.wms_be.data.request.ConsignmentReq;
+import org.example.wms_be.data.response.ConsignmentResp;
 import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
 import org.example.wms_be.entity.inventory.Consignment;
 import org.example.wms_be.exception.BadSqlGrammarException;
@@ -18,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -127,6 +128,16 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         }
 
     }
+
+    @Override
+    public ConsignmentResp getInfoLoHang(String maLo) {
+        try {
+            return consignmentMapper.getInfoLoHang(maLo);
+        } catch (Exception e){
+            throw new BadSqlGrammarException("Get info lo hang failed" + e.getMessage());
+        }
+    }
+
     private void ngaySanXuat(Consignment consignment) {
         String ngaySanXuat = consignment.getNgaySanXuat();
 
