@@ -5,6 +5,7 @@ import org.example.wms_be.security.jwt.AuthEntryPointJwt;
 import org.example.wms_be.security.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,16 +24,35 @@ public class FilterChainConfig {
         http
                 .authorizeHttpRequests(registry ->
                         registry
+//                                .requestMatchers("api/v1/categories/**").authenticated()
+//                                .requestMatchers("api/v1/consignment/**").authenticated()
+//                                .requestMatchers("api/v1/customers/**").authenticated()
+//                                .requestMatchers("api/v1/products/**").authenticated()
+//                                .requestMatchers("api/v1/suppliers/**").authenticated()
+//                                .requestMatchers("api/v1/warehouses/**").authenticated()
+//                                .requestMatchers("api/v1/zones/**").authenticated()
+//                                .requestMatchers("api/v1/zone-details/**").authenticated()
+//                                .requestMatchers("api/v1/users/**").authenticated()
+//                                .requestMatchers("api/v1/inventories/**").authenticated()
+//
+//                                // account
 //                                .requestMatchers("/api/v1/auth/**").permitAll()
-//                                .requestMatchers("api/v1/category-product/**").permitAll()
-//                                .requestMatchers("api/v1/products/**").permitAll()
-//                                .requestMatchers("api/v1/warehouses/**").permitAll()
-//                                .requestMatchers("api/v1/product-types/**").permitAll()
-//                                .requestMatchers("api/v1/customer-types/**").permitAll()
-//                                .requestMatchers("api/v1/customers/**").permitAll()
-//                                .requestMatchers("api/v1/warehouse-types/**").permitAll()
-//                                .requestMatchers("api/v1/warehouse-zones/**").permitAll()
-//                                .anyRequest().authenticated()
+//                                .requestMatchers("/api/v1/forgot-password/**").permitAll()
+//
+//                                // ib
+//                                .requestMatchers(HttpMethod.GET, "api/v1/inbounds").authenticated()
+//                                .requestMatchers(HttpMethod.POST, "api/v1/inbounds").hasRole("Manager")
+//                                .requestMatchers("api/v1/purchase-details/**").hasRole("User")
+//                                .requestMatchers("api/v1/purchase-requests/**").hasRole("User")
+//                                .requestMatchers("api/v1/purchase-orders/**").hasRole("Manager")
+//
+//                                // ob
+//                                .requestMatchers("api/v1/purchase-details-outbound/**").hasRole("User")
+//                                .requestMatchers("api/v1/purchase-request-ob/**").hasRole("User")
+//
+//                                // Barcode
+//                                .requestMatchers("api/v1/barcodes/**").permitAll()
+
                                 .anyRequest().permitAll()
                 )
                 .sessionManagement(session ->

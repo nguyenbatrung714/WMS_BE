@@ -34,4 +34,8 @@
         select sys_id_po, ma_po, ma_pr, ngay_tao, sys_id_user from purchase_order where sys_id_po = #{maPO};
     </select>
 
+    <select id="getPurchaseOrderByMaPO" parameterType="string" resultMap="PurchaseOrderIbMap">
+        select sys_id_po, ma_po, ma_pr, ngay_tao, sys_id_user from purchase_order where ma_po = #{maPO};
+    </select>
+
 </mapper>

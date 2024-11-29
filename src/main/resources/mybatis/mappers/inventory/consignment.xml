@@ -12,11 +12,13 @@
         <result property="hanSuDung" column="han_su_dung"/>
         <result property="dungTich" column="dung_tich"/>
         <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
+        <result property="sysIdChiTietNhapHang" column="sys_id_chi_tiet_nhap_hang"/>
+        <result property="tenSanPham" column="ten_san_pham"/>
     </resultMap>
 
     <insert id="insertConsignment">
-        INSERT INTO lo_hang(sys_id_san_pham,so_luong,ngay_san_xuat,han_su_dung,dung_tich,ma_chi_tiet_khu_vuc)
-        VALUES(#{sysIdSanPham},#{soLuong},#{ngaySanXuat},#{hanSuDung},#{dungTich},#{maChiTietKhuVuc})
+        INSERT INTO lo_hang(sys_id_san_pham,so_luong,ngay_san_xuat,han_su_dung,dung_tich,ma_chi_tiet_khu_vuc,sys_id_chi_tiet_nhap_hang)
+        VALUES(#{sysIdSanPham},#{soLuong},#{ngaySanXuat},#{hanSuDung},#{dungTich},#{maChiTietKhuVuc},#{sysIdChiTietNhapHang})
     </insert>
 
     <update id="updateConsignment">
@@ -26,7 +28,8 @@
             ngay_san_xuat=#{ngaySanXuat},
             han_su_dung=#{hanSuDung},
             dung_tich=#{dungTich},
-            ma_chi_tiet_khu_vuc=#{maChiTietKhuVuc}
+            ma_chi_tiet_khu_vuc=#{maChiTietKhuVuc},
+            sys_id_chi_tiet_nhap_hang=#{sysIdChiTietNhapHang}
         WHERE ma_lo=#{maLo}
     </update>
 
@@ -36,15 +39,16 @@
     </delete>
 
     <select id="getAllConsignment" resultMap="ConsignmentMap">
-        select sys_id_lo_hang,
-               ma_lo,
-               sys_id_san_pham,
-               so_luong,
-               ngay_san_xuat,
-               han_su_dung,
-               dung_tich,
-               ma_chi_tiet_khu_vuc
-        from lo_hang
+        SELECT
+            lh.*,
+            sp.ten_san_pham
+        FROM
+            lo_hang lh
+                INNER JOIN
+            san_pham sp
+            ON
+                lh.sys_id_san_pham = sp.sys_id_san_pham;
+
     </select>
 
     <select id="checkConsignmentExists" resultType="boolean">
@@ -55,15 +59,15 @@
     </select>
 
     <select id="getConsignmentByMaLo" resultMap="ConsignmentMap">
-        select sys_id_lo_hang,
-               ma_lo,
-               sys_id_san_pham,
-               so_luong,
-               ngay_san_xuat,
-               han_su_dung,
-               dung_tich,
-               ma_chi_tiet_khu_vuc
-        from lo_hang
-        WHERE ma_lo=#{maLo}
+        SELECT
+            lh.*,
+            sp.ten_san_pham
+        FROM
+            lo_hang lh
+                INNER JOIN
+            san_pham sp
+            ON
+                lh.sys_id_san_pham = sp.sys_id_san_pham
+        WHERE lh.ma_lo=#{maLo}
     </select>
 </mapper>

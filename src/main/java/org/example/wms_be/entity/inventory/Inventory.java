@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Setter
 public class Inventory {
     private Integer sysIdTonKho;
-    private Integer sysysIdSanPham;
+    private Integer sysIdSanPham;
     private String maKho;
     private String maLo;
     private String soLuong;

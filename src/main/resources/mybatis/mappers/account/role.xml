@@ -4,10 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.wms_be.mapper.account.RoleMapper">
 
-    <resultMap id="RoleMap" type="Role">
+    <resultMap id="RoleMap" type="org.example.wms_be.entity.account.Role">
         <id property="sysIdRole" column="sys_id_role"/>
         <result property="roleName" column="role_name"/>
         <result property="moTa" column="mo_ta"/>
     </resultMap>
+    <select id="getAllRoles" resultMap="RoleMap">
+        select sys_id_role,
+               role_name,
+               mo_ta
+        from role
+
+    </select>
 
 </mapper>

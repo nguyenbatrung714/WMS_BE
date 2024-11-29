@@ -1,6 +1,7 @@
 package org.example.wms_be.utils;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -84,5 +85,14 @@ public class TimeConverter {
     public static String toDbFormat(LocalDate date) {
         if (date == null) return null;
         return date.format(dbDateOnlyFormatter);
+    }
+
+    public static String formatTimestamp(Timestamp timestamp) {
+        if (timestamp == null) {
+            return "";
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return sdf.format(timestamp);
     }
 }

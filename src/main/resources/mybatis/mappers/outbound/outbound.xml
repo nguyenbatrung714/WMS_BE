@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.purchase.OutboundMapper">
+    <resultMap id="OutboundMap" type="OutBound" autoMapping="true">
+         <result property="sysIdOutbound" column="sys_id_outbound"/>
+        <result property="maOB" column="ma_outbound"/>
+        <result property="trangThai" column="trang_thai"/>
+        <result property="ngayXuat" column="ngay_xuat"/>
+        <result property="maPO" column="ma_po"/>
+        <result property="nguoiPhuTrach" column="sys_id_user"/>
+    </resultMap>
+
+    <resultMap id="OutboundDtoMap" type="org.example.wms_be.data.response.OutboundResp" autoMapping="true">
+        <result property="sysIdOutbound" column="sys_id_outbound"/>
+        <result property="maOB" column="ma_outbound"/>
+        <result property="trangThai" column="trang_thai"/>
+        <result property="ngayXuat" column="ngay_xuat"/>
+        <result property="maPO" column="ma_po"/>
+        <result property="nguoiPhuTrach" column="full_name"/>
+    </resultMap>
+    <insert id="insertOutbound" useGeneratedKeys="true" keyProperty="sysIdOutbound">
+        insert into outbound(
+            ngay_xuat,
+            ma_po,
+            sys_id_user)
+        values (
+                   DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
+                   #{maPO},
+                   #{nguoiPhuTrach})
+    </insert>
+
+    <select id="getAllOutbound" resultMap="OutboundDtoMap">
+        select
+            sys_id_outbound,
+            ma_outbound,
+            ngay_xuat,
+            trang_thai,
+            ma_po,
+            u.full_name
+        from outbound join user u on outbound.sys_id_user = u.sys_id_user
+    </select>
+    <select id="existById" resultType="java.lang.Boolean">
+        SELECT EXISTS(SELECT 1
+                      FROM outbound
+                      WHERE sys_id_outbound = #{sysIdOutbound})
+
+    </select>
+    <select id="getOutboundBySysId" resultMap="OutboundMap" parameterType="integer">
+        select sys_id_outbound,
+               ma_outbound,
+               trang_thai,
+               ngay_xuat,
+               ma_po,
+               sys_id_user
+        from outbound
+        where sys_id_outbound = #{sysIdOutbound}
+    </select>
+
+    <select id="getMaOBById" resultType="java.lang.String">
+        SELECT ma_outbound FROM outbound WHERE sys_id_outbound = #{sysIdOutbound}
+    </select>
+</mapper>

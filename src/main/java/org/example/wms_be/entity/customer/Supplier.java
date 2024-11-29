@@ -6,7 +6,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Supplier {
-    private String sysIdNhaCungCap;
+    private Integer sysIdNhaCungCap;
     private String tenNhaCungCap;
-    private String moTa;
+    private String tenCongTy;
+    private String soDienThoai;
+    private String diaChi;
 }

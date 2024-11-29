@@ -8,6 +8,7 @@ import lombok.Setter;
 public class PurchaseRequestDetailsObReq {
     private Integer sysIdChiTietXuatHang;
     private String  maPR;
+    private String maOB;
     private Integer  sysIdKhachHang;
     private Integer  sysIdSanPham;
     private Double  soLuong;
