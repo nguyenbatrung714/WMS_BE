@@ -19,4 +19,6 @@ public class PurchaseDetailsIbReq {
     private String  ngayNhapDuKien;
     private String  tenSanPham;
     private String  tenKhachHang;
+    private Integer sysIdNhaCungCap;
+    private String tenNhaCungCap;
 }

@@ -18,4 +18,6 @@ public class PurchaseDetailsIb {
     private String maLoHang;
     private String tenSanPham;
     private String tenKhachHang;
+    private Integer sysIdNhaCungCap;
+    private String tenNhaCungCap;
 }
