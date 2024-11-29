@@ -10,4 +10,6 @@ public interface PurchaseOrderIbService {
     PurchaseOrderIbReq createPurchaseOrder(PurchaseOrderIbReq purchaseOrderIbReq);
 
     List<PurchaseOrderIbReq> getAllPurchaseOrders();
+
+    Boolean checkExistByMaPR(String maPR);
 }
