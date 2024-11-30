@@ -5,6 +5,7 @@ import org.example.wms_be.converter.UserConverter;
 import org.example.wms_be.data.dto.UserDto;
 import org.example.wms_be.data.dto.UserInfoDto;
 import org.example.wms_be.data.dto.UserPasswordDto;
+import org.example.wms_be.data.request.LockAccountReq;
 import org.example.wms_be.entity.account.User;
 import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.mapper.account.UserMapper;
@@ -83,5 +84,15 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User not found with username " + username);
         }
         return userConverter.toUserDto(user);
+    }
+
+    @Override
+    public LockAccountReq lockAccount(LockAccountReq lockAccountReq) {
+        try {
+            userMapper.lockAccount(lockAccountReq);
+            return lockAccountReq;
+        } catch (Exception e){
+            throw new BadSqlGrammarException("Lock account failed: " + e.getMessage());
+        }
     }
 }

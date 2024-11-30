@@ -18,5 +18,6 @@ public class Inbound {
     private TrangThai trangThai;
     private Integer sysIdUser;
     private String fullName;
+    private String tenKho;
     List<PurchaseDetailsIb> chiTietNhapHang;
 }
