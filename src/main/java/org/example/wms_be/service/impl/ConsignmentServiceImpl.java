@@ -2,6 +2,7 @@ package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.example.wms_be.amazons3.service.S3Service;
 import org.example.wms_be.converter.inventory.ConsignmentConverter;
 import org.example.wms_be.data.request.ConsignmentReq;
 import org.example.wms_be.data.response.ConsignmentResp;
@@ -35,6 +36,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     private final ZoneDetailMapper zoneDetailMapper;
     private final ConsignmentConverter consignmentConverter;
     private final PurchaseDetailsIbMapper purchaseDetailsIbMapper;
+    private final S3Service s3Service;
 
     @Override
     public List<ConsignmentReq> getAllConsignment() {
@@ -132,7 +134,9 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     @Override
     public ConsignmentResp getInfoLoHang(String maLo) {
         try {
-            return consignmentMapper.getInfoLoHang(maLo);
+            ConsignmentResp consignment =  consignmentMapper.getInfoLoHang(maLo);
+            consignment.setHinhAnh(s3Service.generatePresignedUrl(consignment.getHinhAnh()));
+            return  consignment;
         } catch (Exception e){
             throw new BadSqlGrammarException("Get info lo hang failed" + e.getMessage());
         }

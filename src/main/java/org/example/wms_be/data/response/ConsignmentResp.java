@@ -17,6 +17,7 @@ public class ConsignmentResp {
     private String tenKhachHang;
     private String tenNhaCungCap;
     private String tenSanPham;
+    private String hinhAnh;
     private Double soLuongTonKho;
     private Timestamp ngaySanXuat;
     private Timestamp hanSuDung;

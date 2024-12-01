@@ -26,6 +26,7 @@
         <result property="tenKhachHang" column="ten_khach_hang"/>
         <result property="tenNhaCungCap" column="ten_nha_cung_cap"/>
         <result property="tenSanPham" column="ten_san_pham"/>
+        <result property="hinhAnh" column="hinh_anh"/>
         <result property="soLuongTonKho" column="so_luong_ton_kho"/>
         <result property="ngaySanXuat" column="ngay_san_xuat"/>
         <result property="hanSuDung" column="han_su_dung"/>
@@ -101,6 +102,7 @@
                kh.ten_khach_hang,
                ncc.ten_nha_cung_cap,
                sp.ten_san_pham,
+               sp.hinh_anh,
                tk.so_luong as so_luong_ton_kho,
                lh.ngay_san_xuat,
                lh.han_su_dung,
