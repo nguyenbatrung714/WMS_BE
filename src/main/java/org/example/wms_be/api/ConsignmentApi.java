@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.data.mgt.ApiResponse;
 import org.example.wms_be.data.request.ConsignmentReq;
+import org.example.wms_be.data.response.ConsignmentResp;
 import org.example.wms_be.service.ConsignmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,17 @@ public class ConsignmentApi {
                 200,
                 "Consignment found successfully ",
                 consignmentService.getAllConsignmentById(maLo)
+        ), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-info-lo-hang/{maLo}")
+    public ResponseEntity<ApiResponse<ConsignmentResp>> getInfoLoHang(@PathVariable String maLo,
+                                                                      HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "Consignment found successfully ",
+                consignmentService.getInfoLoHang(maLo)
         ), HttpStatus.OK);
     }
 }

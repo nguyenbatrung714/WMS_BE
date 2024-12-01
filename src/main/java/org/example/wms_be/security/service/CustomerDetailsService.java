@@ -3,6 +3,7 @@ package org.example.wms_be.security.service;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.entity.account.Role;
 import org.example.wms_be.entity.account.User;
+import org.example.wms_be.exception.AuthenticationException;
 import org.example.wms_be.mapper.account.UserMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +31,10 @@ public class CustomerDetailsService implements UserDetailsService {
         User user = userMapper.findUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
+        }
+
+        if (!user.getActive()) {
+            throw new AuthenticationException("User is not active") ;
         }
 
         return org.springframework.security.core.userdetails.User.builder()
