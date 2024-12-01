@@ -23,9 +23,9 @@ public class  TplEmailPrOb {
     public static String requestInfor(String nguoiTao, String daiDienPo, String chucVu){
         return String.format(
                 "<div style='margin-bottom: 15px; color: black;'>" +
-                        "<p><strong> người tạo yêu cầu :</strong> %s</p>" +
+                        "<p><strong> Người tạo yêu cầu :</strong> %s</p>" +
                         "<h4><strong>Nội dung:</strong></h4>" +
-                        "<p><strong> Yêu cầu đại điện từ phòng Purchase Oder là:</strong> %s</p>" +
+                        "<p><strong> Yêu cầu đại điện từ phòng Quản Lý:</strong> %s</p>" +
                         "<p><strong>Chức Vụ:</strong> %s</p>" +
                         "</div>",
                 nguoiTao, daiDienPo, chucVu);
@@ -59,7 +59,7 @@ public class  TplEmailPrOb {
         return String.format(
                 "<html><body style='color: black; font-family: Arial, sans-serif;'>" +
                         "%s" + //  tiêu đề
-                        "<p><strong>Yêu cầu xuất hàng từ phòng purchase request:</strong></p>" +
+                        "<p><strong>Yêu cầu xuất hàng từ requestion:</strong></p>" +
                         "%s" + //  thông tin yêu cầu mua hàng
                         "<p>Vui lòng kiểm tra và xác nhận yêu cầu xuất hàng.</p>" +
                         "%s" + //  chi tiết đơn hàng

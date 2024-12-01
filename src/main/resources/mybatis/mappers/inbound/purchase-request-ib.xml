@@ -23,11 +23,11 @@
         <result property="lyDo" column="ly_do"/>
     </resultMap>
     <insert id="insertPurchaseRequestIb" useGeneratedKeys="true" keyProperty="sysIdYeuCauNhapHang">
-        INSERT INTO purchase_request(ma_pr,
+        INSERT INTO purchase_request(
                                      ngay_yeu_cau,
                                      sys_id_user,
                                      loai_yeu_cau)
-        VALUES (#{maPR},
+        VALUES (
                 DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
                 #{nguoiYeuCau},
                 #{loaiYeuCau});
