@@ -21,7 +21,6 @@
         <result property="sysIdNhaCungCap" column="sys_id_nha_cung_cap"/>
         <result property="tenNhaCungCap" column="ten_nha_cung_cap"/>
     </resultMap>
-
     <resultMap id="PurchaseDetailsIbDtoMap" type="org.example.wms_be.data.response.inbound.PurchaseRequestDetailsIbResp"
                autoMapping="true">
         <id property="sysIdChiTietNhapHang" column="sys_id_chi_tiet_nhap_hang"/>
@@ -36,24 +35,43 @@
         <result property="ngayNhapDuKien" column="ngay_nhap_du_kien"/>
         <result property="sysIdKhachHang" column="sys_id_khach_hang"/>
         <result property="sysIdSanPham" column="sys_id_san_pham"/>
+        <result property="sysIdNhaCungCap" column="sys_id_nha_cung_cap"/>
+        <result property="tenNhaCungCap" column="ten_nha_cung_cap"/>
     </resultMap>
-
+    <!--    Add sysIdNhaCungCap -->
     <insert id="insertPurchaseDetails" useGeneratedKeys="true" keyProperty="sysIdChiTietNhapHang">
-        INSERT INTO chi_tiet_nhap_hang(ma_inbound, ma_pr, ma_po, sys_id_khach_hang, sys_id_san_pham, so_luong, gia,
-                                      tong_chi_phi, ngay_nhap_du_kien, sys_id_nha_cung_cap)
-        VALUES (#{maInBound}, #{maPR}, #{maPO}, #{sysIdKhachHang}, #{sysIdSanPham}, #{soLuong}, #{gia}, #{tongChiPhi},
+        INSERT INTO chi_tiet_nhap_hang(ma_inbound,
+                                       ma_pr,
+                                       ma_po,
+                                       sys_id_khach_hang,
+                                       sys_id_nha_cung_cap,
+                                       sys_id_san_pham,
+                                       so_luong,
+                                       gia,
+                                       tong_chi_phi,
+                                       ngay_nhap_du_kien)
+        VALUES (#{maInBound},
+                #{maPR},
+                #{maPO},
+                #{sysIdKhachHang},
+                #{sysIdNhaCungCap},
+                #{sysIdSanPham},
+                #{soLuong},
+                #{gia},
+                #{tongChiPhi},
                 #{ngayNhapDuKien});
     </insert>
 
     <update id="updatePurchaseDetails">
         UPDATE chi_tiet_nhap_hang
-        SET ma_pr             = #{maPR},
-            sys_id_khach_hang = #{sysIdKhachHang},
-            sys_id_san_pham   = #{sysIdSanPham},
-            so_luong          = #{soLuong},
-            gia               = #{gia},
-            tong_chi_phi      = #{tongChiPhi},
-            ngay_nhap_du_kien         = #{ngayNhapDuKien}
+        SET ma_pr               = #{maPR},
+            sys_id_khach_hang   = #{sysIdKhachHang},
+            sys_id_san_pham     = #{sysIdSanPham},
+            sys_id_nha_cung_cap = #{sysIdNhaCungCap},
+            so_luong            = #{soLuong},
+            gia                 = #{gia},
+            tong_chi_phi        = #{tongChiPhi},
+            ngay_nhap_du_kien   = #{ngayNhapDuKien}
         WHERE sys_id_chi_tiet_nhap_hang = #{sysIdChiTietNhapHang}
     </update>
 
@@ -64,6 +82,7 @@
                ma_po,
                sys_id_khach_hang,
                sys_id_san_pham,
+               sys_id_nha_cung_cap,
                ten_san_pham,
                so_luong,
                gia,
@@ -84,13 +103,16 @@
                ct.so_luong,
                ct.gia,
                ct.tong_chi_phi,
-               ct.ngay_nhap_du_kien
+               ct.ngay_nhap_du_kien,
+               ncc.ten_nha_cung_cap,
+               ncc.sys_id_nha_cung_cap
         FROM chi_tiet_nhap_hang ct
                  JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
                  JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
+                 JOIN nha_cung_cap ncc on ct.sys_id_nha_cung_cap = ncc.sys_id_nha_cung_cap
                  JOIN purchase_request pr ON ct.ma_pr = pr.ma_pr
         WHERE ct.ma_pr = #{maPR}
-          AND pr.loai_yeu_cau = 'NHAP';
+          AND pr.loai_yeu_cau = 'NHAP'
 
     </select>
 
@@ -110,12 +132,14 @@
                so_luong,
                gia,
                tong_chi_phi,
-               ngay_nhap_du_kien
+               ngay_nhap_du_kien,
+               ncc.ten_nha_cung_cap
         from chi_tiet_nhap_hang ct
                  JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
                  JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
+                 JOIN nha_cung_cap ncc on ct.sys_id_nha_cung_cap = ncc.sys_id_nha_cung_cap
                  JOIN purchase_request pr ON ct.ma_pr = pr.ma_pr
-        where pr.ma_pr = #{maPR}
+        where pr.ma_pr = #{maPR};
     </select>
 
     <update id="updateDetailsIbFromPR">
@@ -162,13 +186,10 @@
                ct.tong_chi_phi,
                ct.ngay_nhap_du_kien,
                kh.ten_khach_hang,
-               sp.ten_san_pham,
-               ct.sys_id_nha_cung_cap,
-               ncc.ten_nha_cung_cap
+               sp.ten_san_pham
         FROM chi_tiet_nhap_hang ct
                  join khach_hang kh on kh.sys_id_khach_hang = ct.sys_id_khach_hang
                  join san_pham sp on sp.sys_id_san_pham = ct.sys_id_san_pham
-                 join nha_cung_cap ncc on ncc.sys_id_nha_cung_cap = ct.sys_id_nha_cung_cap
         WHERE ma_inbound = #{maInBound};
     </select>
 </mapper>
