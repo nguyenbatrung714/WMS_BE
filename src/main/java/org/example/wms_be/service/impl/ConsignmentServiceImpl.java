@@ -1,12 +1,12 @@
 package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.example.wms_be.amazons3.service.S3Service;
 import org.example.wms_be.converter.inventory.ConsignmentConverter;
+import org.example.wms_be.data.request.ConsignmentInbound;
 import org.example.wms_be.data.request.ConsignmentReq;
+import org.example.wms_be.data.request.PurchaseDetailsIbReq;
 import org.example.wms_be.data.response.ConsignmentResp;
-import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
 import org.example.wms_be.entity.inventory.Consignment;
 import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.exception.ResourceNotFoundException;
@@ -19,18 +19,21 @@ import org.example.wms_be.utils.TimeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ConsignmentServiceImpl implements ConsignmentService {
-    private static final Logger logger =  LoggerFactory.getLogger(ConsignmentServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConsignmentServiceImpl.class);
     private final ConsignmentMapper consignmentMapper;
     private final ProductMapper productMapper;
     private final ZoneDetailMapper zoneDetailMapper;
@@ -69,11 +72,9 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     public ConsignmentReq saveConsignment(ConsignmentReq consignmentReq) {
         if (!productMapper.checkProductExists(consignmentReq.getSysIdSanPham())) {
             throw new ResourceNotFoundException("Consignment", "maSanPham", consignmentReq.getSysIdSanPham().toString());
-        }
-        else if(!zoneDetailMapper.checkZoneDetailExists(consignmentReq.getMaChiTietKhuVuc())){
+        } else if (!zoneDetailMapper.checkZoneDetailExists(consignmentReq.getMaChiTietKhuVuc())) {
             throw new ResourceNotFoundException("Consignment", "maChiTietKhuVuc", consignmentReq.getMaChiTietKhuVuc());
-        }
-        else if(!purchaseDetailsIbMapper.existById(consignmentReq.getSysIdChiTietNhapHang())){
+        } else if (!purchaseDetailsIbMapper.existById(consignmentReq.getSysIdChiTietNhapHang())) {
             throw new ResourceNotFoundException("Consignment", "maChiTietNhap", consignmentReq.getSysIdChiTietNhapHang().toString());
         }
         // Kiểm tra và định dạng ngày sản xuất nếu có
@@ -123,9 +124,9 @@ public class ConsignmentServiceImpl implements ConsignmentService {
             throw new ResourceNotFoundException("Consignment", "maLo", maLo);
         }
         try {
-            Consignment consignment= consignmentMapper.getConsignmentByMaLo(maLo);
+            Consignment consignment = consignmentMapper.getConsignmentByMaLo(maLo);
             return consignmentConverter.toConsignmentReq(consignment);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new BadSqlGrammarException("Get Consignment failed");
         }
 
@@ -134,31 +135,76 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     @Override
     public ConsignmentResp getInfoLoHang(String maLo) {
         try {
-            ConsignmentResp consignment =  consignmentMapper.getInfoLoHang(maLo);
+            ConsignmentResp consignment = consignmentMapper.getInfoLoHang(maLo);
             consignment.setHinhAnh(s3Service.generatePresignedUrl(consignment.getHinhAnh()));
-            return  consignment;
-        } catch (Exception e){
+            return consignment;
+        } catch (Exception e) {
             throw new BadSqlGrammarException("Get info lo hang failed" + e.getMessage());
         }
     }
 
+    @Override
+    @Transactional
+    public List<ConsignmentReq> saveConsignmentFromInbound(ConsignmentInbound consignmentInbound) {
+        try {
+            List<Consignment> consignments = new ArrayList<>();
+            List<PurchaseDetailsIbReq> purchaseDetailsIbReqs = consignmentInbound.getChiTietNhapHang();
+
+            purchaseDetailsIbReqs.forEach(purchaseDetailsIbReq -> {
+                double soLuong = purchaseDetailsIbReq.getSoLuong();
+
+                while (soLuong > 0) {
+                    double soLuongMoiLo = Math.min(soLuong, consignmentInbound.getSoLuong());
+
+                    Consignment consignment = convert(consignmentInbound);
+                    consignment.setSoLuong(soLuongMoiLo);
+                    consignment.setSysIdChiTietNhapHang(purchaseDetailsIbReq.getSysIdChiTietNhapHang());
+                    consignment.setSysIdSanPham(purchaseDetailsIbReq.getSysIdSanPham());
+                    consignmentMapper.insertConsignment(consignment);
+
+                    soLuong -= soLuongMoiLo;
+
+                    consignments.add(consignment);
+                }
+            });
+
+            return consignments.stream().map(consignmentConverter::toConsignmentReq).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BadSqlGrammarException("Save consignment failed: " + e.getMessage());
+        }
+    }
+
+
+    private Consignment convert(ConsignmentInbound consignmentInbound) {
+        Consignment consignment = new Consignment();
+        consignment.setMaLo(consignmentInbound.getMaLo());
+        consignment.setSysIdSanPham(consignmentInbound.getSysIdSanPham());
+        consignment.setSoLuong(consignmentInbound.getSoLuong());
+        consignment.setNgaySanXuat(consignmentInbound.getNgaySanXuat());
+        consignment.setHanSuDung(consignmentInbound.getHanSuDung());
+        consignment.setDungTich(consignmentInbound.getDungTich());
+        consignment.setMaChiTietKhuVuc(consignmentInbound.getMaChiTietKhuVuc());
+        return consignment;
+    }
+
+
     private void ngaySanXuat(Consignment consignment) {
         String ngaySanXuat = consignment.getNgaySanXuat();
 
-            if (ngaySanXuat != null && !ngaySanXuat.trim().isEmpty()) {
-                try {
-                    DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    LocalDate.parse(ngaySanXuat, displayFormatter); // Thử parse theo định dạng dd/MM/yyyy
-                    String dbFormatDate = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngaySanXuat));
-                    consignment.setNgaySanXuat(dbFormatDate);
-                    logger.info("Ngày sản xuất sau khi chuyển đổi: {}", consignment.getNgaySanXuat());
-                } catch (DateTimeParseException e) {
-                    logger.error("Không đúng format ngày: {}", ngaySanXuat, e);
-                    throw new IllegalArgumentException("Ngày sản xuất không đúng định dạng dd/MM/yyyy: " + ngaySanXuat);
+        if (ngaySanXuat != null && !ngaySanXuat.trim().isEmpty()) {
+            try {
+                DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate.parse(ngaySanXuat, displayFormatter); // Thử parse theo định dạng dd/MM/yyyy
+                String dbFormatDate = TimeConverter.toDbFormat(TimeConverter.parseDateFromDisplayFormat(ngaySanXuat));
+                consignment.setNgaySanXuat(dbFormatDate);
+                logger.info("Ngày sản xuất sau khi chuyển đổi: {}", consignment.getNgaySanXuat());
+            } catch (DateTimeParseException e) {
+                logger.error("Không đúng format ngày: {}", ngaySanXuat, e);
+                throw new IllegalArgumentException("Ngày sản xuất không đúng định dạng dd/MM/yyyy: " + ngaySanXuat);
 
-                }
             }
         }
+    }
 
 
     private void hanSuDung(Consignment consignment) {
@@ -176,6 +222,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
             }
         }
     }
+
     public String formatDateForClient(String dbDate) {
         if (dbDate != null && !dbDate.trim().isEmpty()) {
             try {

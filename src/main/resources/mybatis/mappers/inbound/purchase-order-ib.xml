@@ -11,6 +11,7 @@
         <result property="ngayTao" column="ngay_tao" javaType="java.sql.Timestamp"/>
         <result property="sysIdUser" column="sys_id_user"/>
         <result property="nguoiTao" column="full_name"/>
+        <result property="isExistIb" column="is_exist_ib"/>
     </resultMap>
 
     <insert id="insertPurchaseOrderIb" useGeneratedKeys="true" keyProperty="sysIdPO">
@@ -25,9 +26,19 @@
     </select>
 
     <select id="getAllPuchaseOrderIb" resultMap="PurchaseOrderIbMap">
-        select sys_id_po, ma_po, ma_pr, ngay_tao, u.sys_id_user, u.full_name
+        select po.sys_id_po,
+               po.ma_po,
+               po.ma_pr,
+               po.ngay_tao,
+               u.sys_id_user,
+               u.full_name,
+               CASE
+                   WHEN i.sys_id_inbound IS NOT NULL THEN true
+                   ELSE false
+                   END AS is_exist_ib
         from purchase_order po
-                 join user u on po.sys_id_user = u.sys_id_user;
+                 join user u on po.sys_id_user = u.sys_id_user
+                 left join inbound i on po.ma_po = i.ma_po;
     </select>
 
     <select id="getPurchaseOrderById" parameterType="int" resultMap="PurchaseOrderIbMap">
@@ -35,7 +46,13 @@
     </select>
 
     <select id="getPurchaseOrderByMaPO" parameterType="string" resultMap="PurchaseOrderIbMap">
-        select sys_id_po, ma_po, ma_pr, ngay_tao, sys_id_user from purchase_order where ma_po = #{maPO};
+        select sys_id_po,
+               ma_po,
+               ma_pr,
+               ngay_tao,
+               sys_id_user
+        from purchase_order
+        where ma_po = #{maPO};
     </select>
 
     <select id="checkExistByMaPR" resultType="boolean" parameterType="string">
