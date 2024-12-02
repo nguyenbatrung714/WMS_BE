@@ -1,6 +1,7 @@
 package org.example.wms_be.mapper.inventory;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.example.wms_be.data.response.ConsignmentResp;
 import org.example.wms_be.entity.inventory.Consignment;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface ConsignmentMapper {
     boolean checkConsignmentExists(String maLo);
 
     Consignment getConsignmentByMaLo(String maLo);
+
+    ConsignmentResp getInfoLoHang(String maLo);
 }

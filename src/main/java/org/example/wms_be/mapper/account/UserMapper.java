@@ -1,6 +1,7 @@
 package org.example.wms_be.mapper.account;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.example.wms_be.data.request.LockAccountReq;
 import org.example.wms_be.entity.account.User;
 
 import java.util.List;
@@ -25,4 +26,6 @@ public interface UserMapper {
 
     User findByEmail(String email);
     int updateForgotPass(String email, String password);
+
+    int lockAccount(LockAccountReq lockAccountReq);
 }

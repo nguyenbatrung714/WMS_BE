@@ -13,6 +13,7 @@
         <result property="trangThai" column="trang_thai" javaType="org.example.wms_be.enums.TrangThai"/>
         <result property="sysIdUser" column="sys_id_user"/>
         <result property="fullName" column="full_name"/>
+        <result property="tenKho" column="ten_kho"/>
     </resultMap>
 
     <insert id="insertInbound" useGeneratedKeys="true" keyProperty="sysIdInBound">
@@ -36,9 +37,11 @@
                ib.ngay_nhap,
                ib.trang_thai,
                ib.sys_id_user,
-               u.full_name
+               u.full_name,
+               k.ten_kho
         from inbound ib
-                 join user u on u.sys_id_user = ib.sys_id_user;
+                 join user u on u.sys_id_user = ib.sys_id_user
+                 join kho k on ib.ma_kho = k.ma_kho;
     </select>
 
     <select id="getInboundBySysId" resultMap="InboundMap" parameterType="integer">

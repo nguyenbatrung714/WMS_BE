@@ -20,6 +20,12 @@
             <result property="moTa" column="mo_ta"/>
         </collection>
     </resultMap>
+    
+    <resultMap id="KhoaTaiKhoanMap" type="org.example.wms_be.data.request.LockAccountReq">
+        <result property="username" column="username"/>
+        <result property="active" column="active"/>
+    </resultMap>
+
     <update id="updateInfo">
         UPDATE user
         SET full_name = #{fullName}, email = #{email}, so_dien_thoai = #{soDienThoai}
@@ -97,4 +103,8 @@
         where u.email = #{email};
     </select>
 
+    <update id="lockAccount">
+        update user set active = #{active}
+        where username = #{username};
+    </update>
 </mapper>
