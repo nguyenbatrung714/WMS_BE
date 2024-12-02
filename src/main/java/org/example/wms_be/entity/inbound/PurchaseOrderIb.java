@@ -16,5 +16,6 @@ public class PurchaseOrderIb {
     private Timestamp ngayTao;
     private Integer sysIdUser;
     private String nguoiTao;
+    private Boolean isExistIb;
     List<PurchaseDetailsIb> chiTietNhapHang;
 }
