@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.wms_be.mapper.inbound.PurchaseRequestIbMapper">
+
     <resultMap id="PurchaseRequestIbMap" type="org.example.wms_be.entity.inbound.PurchaseRequestIb" autoMapping="true">
         <id property="sysIdYeuCauNhapHang" column="sys_id_pr"/>
         <result property="maPR" column="ma_pr"/>
@@ -12,6 +13,7 @@
         <result property="loaiYeuCau" column="loai_yeu_cau"/>
         <result property="lyDo" column="ly_do"/>
     </resultMap>
+
     <resultMap id="PurchaseRequestIbDtoMap" type="org.example.wms_be.data.response.inbound.PurchaseRequestIbResp" autoMapping="true">
         <id property="sysIdYeuCauNhapHang" column="sys_id_pr"/>
         <result property="maPR" column="ma_pr"/>
@@ -21,7 +23,9 @@
         <result property="trangThai" column="trang_thai"/>
         <result property="loaiYeuCau" column="loai_yeu_cau"/>
         <result property="lyDo" column="ly_do"/>
+        <result property="isExistPO" column="is_exist_po"/>
     </resultMap>
+
     <insert id="insertPurchaseRequestIb" useGeneratedKeys="true" keyProperty="sysIdYeuCauNhapHang">
         INSERT INTO purchase_request(
                                      ngay_yeu_cau,
@@ -32,6 +36,7 @@
                 #{nguoiYeuCau},
                 #{loaiYeuCau});
     </insert>
+
     <update id="updatePurchaseRequestIb">
         UPDATE purchase_request
         SET ngay_yeu_cau = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
@@ -43,25 +48,33 @@
                 END
         WHERE sys_id_pr = #{sysIdYeuCauNhapHang}
     </update>
+
     <select id="getAllPurchaseRequestIb" resultMap="PurchaseRequestIbDtoMap">
-        SELECT sys_id_pr,
-               ma_pr,
-               ngay_yeu_cau,
-               trang_thai,
+        SELECT pr.sys_id_pr,
+               pr.ma_pr,
+               pr.ngay_yeu_cau,
+               pr.trang_thai,
                user.sys_id_user,
                user.full_name,
-               loai_yeu_cau,
-               ly_do
-        FROM purchase_request
-                 JOIN user ON purchase_request.sys_id_user = user.sys_id_user
-        WHERE loai_yeu_cau = 'NHAP';
+               pr.loai_yeu_cau,
+               pr.ly_do,
+               CASE
+                   WHEN po.sys_id_po IS NOT NULL THEN true
+                   ELSE false
+                   END AS is_exist_po
+        FROM purchase_request pr
+                 JOIN user ON pr.sys_id_user = user.sys_id_user
+                 LEFT JOIN purchase_order po ON pr.ma_pr = po.ma_pr
+        WHERE pr.loai_yeu_cau = 'NHAP';
     </select>
+
     <select id="existById" resultType="java.lang.Boolean">
         SELECT EXISTS(SELECT 1
                       FROM purchase_request
                       WHERE sys_id_pr = #{sysIdYeuCauNhapHang}
                         AND loai_yeu_cau = 'NHAP');
     </select>
+
     <select id="getAllPurchaseRequestIbByMaPR"
             resultMap="PurchaseRequestIbDtoMap">
         SELECT sys_id_pr,
@@ -75,8 +88,8 @@
         FROM purchase_request
                  JOIN user ON purchase_request.sys_id_user = user.sys_id_user
         WHERE loai_yeu_cau = 'NHAP' AND ma_pr = #{maPR};
-
     </select>
+
     <select id="getMaPrById" resultType="java.lang.String">
         SELECT ma_pr FROM purchase_request WHERE sys_id_pr = #{sysIdYeuCauNhapHang};
     </select>
