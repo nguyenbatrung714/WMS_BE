@@ -27,4 +27,6 @@ public interface PurchaseDetailsIbMapper {
     int updateDetailsIbFromPO(String maPO, String maInBound);
 
     List<PurchaseDetailsIb> getPurchaseDetailsIbByMaIb(String maInBound);
+
+    PurchaseDetailsIb getPurchaseDetailsById(Integer sysIdChiTietNhapHang);
 }

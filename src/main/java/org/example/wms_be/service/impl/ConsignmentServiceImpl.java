@@ -7,6 +7,7 @@ import org.example.wms_be.data.request.ConsignmentInbound;
 import org.example.wms_be.data.request.ConsignmentReq;
 import org.example.wms_be.data.request.PurchaseDetailsIbReq;
 import org.example.wms_be.data.response.ConsignmentResp;
+import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
 import org.example.wms_be.entity.inventory.Consignment;
 import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.exception.ResourceNotFoundException;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.expression.Arrays;
 
 
 import java.time.LocalDate;
@@ -148,27 +150,43 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     public List<ConsignmentReq> saveConsignmentFromInbound(ConsignmentInbound consignmentInbound) {
         try {
             List<Consignment> consignments = new ArrayList<>();
-            List<PurchaseDetailsIbReq> purchaseDetailsIbReqs = consignmentInbound.getChiTietNhapHang();
 
-            purchaseDetailsIbReqs.forEach(purchaseDetailsIbReq -> {
-                double soLuong = purchaseDetailsIbReq.getSoLuong();
+            PurchaseDetailsIb purchaseDetailsIb = purchaseDetailsIbMapper.getPurchaseDetailsById(consignmentInbound.getSysIdChiTietNhapHang());
+            if (purchaseDetailsIb == null) {
+                throw new ResourceNotFoundException("PurchaseDetailsIb", "sysIdChiTietNhapHang", consignmentInbound.getSysIdChiTietNhapHang().toString());
+            }
 
-                while (soLuong > 0) {
-                    double soLuongMoiLo = Math.min(soLuong, consignmentInbound.getSoLuong());
+            double soLuongSanPham = purchaseDetailsIb.getSoLuong();
 
-                    Consignment consignment = convert(consignmentInbound);
-                    consignment.setSoLuong(soLuongMoiLo);
-                    consignment.setSysIdChiTietNhapHang(purchaseDetailsIbReq.getSysIdChiTietNhapHang());
-                    consignment.setSysIdSanPham(purchaseDetailsIbReq.getSysIdSanPham());
-                    consignmentMapper.insertConsignment(consignment);
+            while (soLuongSanPham > 0) {
+                double soLuongMoiLo = Math.min(soLuongSanPham, consignmentInbound.getSoLuong());
 
-                    soLuong -= soLuongMoiLo;
+                Consignment consignment = convert(consignmentInbound);
 
-                    consignments.add(consignment);
+                while (soLuongSanPham < consignmentInbound.getSoLuong()) {
+                    if (soLuongSanPham <= 20) {
+                        consignment.setDungTich(0.05);
+                        break;
+                    } else if (soLuongSanPham <= 40) {
+                        consignment.setDungTich(0.1);
+                        break;
+                    } else {
+                        consignment.setDungTich(0.2);
+                        break;
+                    }
                 }
-            });
 
-            return consignments.stream().map(consignmentConverter::toConsignmentReq).collect(Collectors.toList());
+                consignment.setSoLuong(soLuongMoiLo);
+                consignment.setSysIdChiTietNhapHang(purchaseDetailsIb.getSysIdChiTietNhapHang());
+                consignment.setSysIdSanPham(purchaseDetailsIb.getSysIdSanPham());
+                consignmentMapper.insertConsignment(consignment);
+
+                soLuongSanPham -= soLuongMoiLo;
+
+                consignments.add(consignment);
+            }
+
+            return consignments.stream().map(consignmentConverter::toConsignmentReq).toList();
         } catch (Exception e) {
             throw new BadSqlGrammarException("Save consignment failed: " + e.getMessage());
         }
