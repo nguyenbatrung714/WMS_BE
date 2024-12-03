@@ -3,6 +3,7 @@ package org.example.wms_be.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.converter.ZoneDetailConverter;
 import org.example.wms_be.data.dto.ZoneDetailDto;
+import org.example.wms_be.data.response.WarehouseDetailConsignmentResp;
 import org.example.wms_be.entity.warehouse.ZoneDetail;
 import org.example.wms_be.exception.BadSqlGrammarException;
 import org.example.wms_be.exception.ResourceNotFoundException;
@@ -107,6 +108,15 @@ public class ZoneDetailServiceImpl implements ZoneDetailService {
         } catch (Exception e) {
             logger.error("Error when updating zone detail: {}", e.getMessage());
             throw new BadSqlGrammarException("Error when updating zone detail");
+        }
+    }
+
+    @Override
+    public WarehouseDetailConsignmentResp getWarehouseDetailByProduct(Integer sysIdSanPham) {
+        try {
+            return zoneDetailMapper.getWarehouseDetailByProduct(sysIdSanPham);
+        } catch (Exception e) {
+            throw new BadSqlGrammarException("Get warehouse detail failed");
         }
     }
 }

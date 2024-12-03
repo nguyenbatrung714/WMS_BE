@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.data.dto.ZoneDetailDto;
 import org.example.wms_be.data.mgt.ApiResponse;
+import org.example.wms_be.data.response.WarehouseDetailConsignmentResp;
 import org.example.wms_be.service.ZoneDetailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,17 @@ public class ZoneDetailApi {
                 204,
                 "Zone detail deleted successfully with ID: " + maChiTietKhuVuc,
                 null
+        ), HttpStatus.OK);
+    }
+
+    @GetMapping("/warehouse-detail-by-product/{sysIdSanPham}")
+    public ResponseEntity<ApiResponse<WarehouseDetailConsignmentResp>> getWarehouseDetailByProduct(@PathVariable Integer sysIdSanPham,
+                                                                                                   HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "get successfully",
+                zoneDetailService.getWarehouseDetailByProduct(sysIdSanPham)
         ), HttpStatus.OK);
     }
 
