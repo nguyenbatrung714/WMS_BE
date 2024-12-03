@@ -103,6 +103,7 @@
                u.full_name,
                u.so_dien_thoai,
                u.active,
+               u.hinh_anh,
                r.sys_id_role,
                r.role_name,
                r.mo_ta
@@ -119,6 +120,7 @@
                u.full_name,
                u.so_dien_thoai,
                u.active,
+               u.hinh_anh,
                r.sys_id_role,
                r.role_name,
                r.mo_ta
