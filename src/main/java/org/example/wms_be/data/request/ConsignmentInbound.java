@@ -17,5 +17,4 @@ public class ConsignmentInbound {
     private Double dungTich;
     private String maChiTietKhuVuc;
     private Integer sysIdChiTietNhapHang;
-    private List<PurchaseDetailsIbReq> chiTietNhapHang;
 }
