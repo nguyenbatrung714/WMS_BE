@@ -16,6 +16,13 @@
         <result property="maKhuVuc" column="ma_khu_vuc"/>
     </resultMap>
 
+    <resultMap id="WarehouseDetailsMap" type="org.example.wms_be.data.response.WarehouseDetailConsignmentResp" autoMapping="true">
+        <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
+        <result property="tenChiTietKhuVuc" column="ten_chi_tiet_khu_vuc"/>
+        <result property="sysIdSanPham" column="sys_id_san_pham"/>
+        <result property="tenSanPham" column="ten_san_pham"/>
+    </resultMap>
+
     <!-- Lấy tất cả các chi tiết khu vực -->
     <select id="getAllZoneDetails" resultMap="ZoneDetailMap">
         SELECT sys_id_chi_tiet_khu_vuc,
@@ -78,6 +85,22 @@
                ma_khu_vuc
         FROM chi_tiet_khu_vuc
         WHERE ma_chi_tiet_khu_vuc = #{maChiTietKhuVuc};
+    </select>
+
+    <select id="getWarehouseDetailByProduct" resultMap="WarehouseDetailsMap" parameterType="integer">
+        SELECT
+            ctkv.ma_chi_tiet_khu_vuc,
+            ctkv.ten_chi_tiet_khu_vuc,
+            sp.ten_san_pham
+        FROM
+            danh_muc dm
+                JOIN san_pham sp ON dm.sys_id_danh_muc = sp.sys_id_danh_muc
+                JOIN kho k ON dm.ma_kho = k.ma_kho
+                JOIN khu_vuc kv ON k.ma_kho = kv.ma_kho
+                JOIN chi_tiet_khu_vuc ctkv ON ctkv.ma_khu_vuc = kv.ma_khu_vuc
+        WHERE
+            sp.sys_id_san_pham = #{sysIdSanPham}
+          AND ctkv.ten_chi_tiet_khu_vuc LIKE CONCAT('%', sp.ten_san_pham, '%');
     </select>
 
 </mapper>
