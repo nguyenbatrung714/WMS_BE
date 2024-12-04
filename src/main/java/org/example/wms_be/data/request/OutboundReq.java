@@ -12,7 +12,6 @@ public class OutboundReq {
     private String maOB;
     private String ngayXuat;
     private String trangThai;
-    private String maPO;
     private Integer nguoiPhuTrach;
     List<PurchaseRequestDetailsObReq> chiTietXuatHang;
 }
