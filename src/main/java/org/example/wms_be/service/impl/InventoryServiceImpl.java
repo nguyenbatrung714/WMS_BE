@@ -81,6 +81,7 @@ public class InventoryServiceImpl implements InventoryService {
             double soLuongTru = Math.min(soLuongConThieu, inventoryResp.getSoLuong());
             soLuongConThieu -= soLuongTru;
 
+
             // Ghi lại các lô được sử dụng
             loSuDung.add(new LoSuDung(inventoryResp.getSysIdTonKho(), soLuongTru,inventoryResp.getMaLo()));
 
