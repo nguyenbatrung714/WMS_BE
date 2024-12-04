@@ -43,8 +43,7 @@
     <update id="updateDetailsObFromPO" parameterType="map">
         UPDATE chi_tiet_xuat_hang
         SET ma_outbound = #{maOB}
-        WHERE ma_po = #{maPO}
-          AND sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang}
+        WHERE  sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang}
           AND ma_outbound IS NULL
     </update>
 
