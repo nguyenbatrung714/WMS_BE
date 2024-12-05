@@ -6,7 +6,6 @@
     <resultMap id="PurchaseRequestObMap" type="PurchaseRequestDetailsOb" autoMapping="true">
         <id property="sysIdChiTietXuatHang" column="sys_id_chi_tiet_xuat_hang"/>
         <result property="maPR" column="ma_pr"/>
-        <result property="maPO" column="ma_po"/>
         <result property="maOB" column="ma_outbound"/>
         <result property="sysIdKhachHang" column="sys_id_khach_hang"/>
         <result property="sysIdSanPham" column="sys_id_san_pham"/>
@@ -19,7 +18,6 @@
                autoMapping="true">
         <id property="sysIdChiTietXuatHang" column="sys_id_chi_tiet_xuat_hang"/>
         <result property="maPR" column="ma_pr"/>
-        <result property="maPO" column="ma_po"/>
         <result property="maOB" column="ma_outbound"/>
         <result property="tenKhachHang" column="ten_khach_hang"/>
         <result property="tenSanPham" column="ten_san_pham"/>
@@ -52,7 +50,6 @@
         SELECT ct.sys_id_chi_tiet_xuat_hang,
                ct.ma_outbound,
                ct.ma_pr,
-               ct.ma_po,
                kh.sys_id_khach_hang,
                ten_khach_hang,
                sp.sys_id_san_pham,
@@ -78,7 +75,6 @@
         SELECT ct.sys_id_chi_tiet_xuat_hang,
                ct.ma_outbound,
                ct.ma_pr,
-               ct.ma_po,
                ct.sys_id_khach_hang,
                ct.sys_id_san_pham,
                ct.so_luong,
@@ -97,7 +93,6 @@
     <insert id="insertPurchaseRequestDetailsOb" parameterType="purchaseRequestDetailsOb">
         INSERT INTO chi_tiet_xuat_hang (ma_outbound,
                                         ma_pr,
-                                        ma_po,
                                         sys_id_khach_hang,
                                         sys_id_san_pham,
                                         so_luong,
@@ -106,7 +101,6 @@
                                         ngay_xuat_du_kien)
         VALUES (#{maOB},
                 #{maPR},
-                #{maPO},
                 #{sysIdKhachHang},
                 #{sysIdSanPham},
                 #{soLuong},
@@ -115,25 +109,6 @@
                 #{ngayXuatDuKien});
     </insert>
 
-    <select id="getPurchaseDetailsObByMaPO" resultMap="PurchaseRequestObMap">
-        SELECT sys_id_chi_tiet_xuat_hang,
-               ma_outbound,
-               ct.ma_pr,
-               po.ma_po,
-               kh.sys_id_khach_hang,
-               kh.ten_khach_hang,
-               sp.sys_id_san_pham,
-               sp.ten_san_pham,
-               so_luong,
-               gia,
-               tong_chi_phi,
-               ngay_xuat_du_kien
-        FROM chi_tiet_xuat_hang ct
-                 JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
-                 JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
-                 JOIN purchase_order po ON ct.ma_po = po.ma_po
-        WHERE po.ma_po = #{maPO};
-    </select>
     <select id="getSoLuongCanXuat" resultType="java.lang.Double">
         SELECT so_luong
         FROM chi_tiet_xuat_hang
@@ -141,11 +116,6 @@
           AND sys_id_san_pham = #{sysIdSanPham}
     </select>
 
-
-    <select id="getSysIdSanPhamByMaPO" resultType="java.lang.Integer">
-        SELECT sys_id_san_pham
-        FROM chi_tiet_xuat_hang WHERE ma_po = #{maPO};
-    </select>
     <select id="getMaOutbound" resultType="java.lang.Integer">
         select ma_outbound from chi_tiet_xuat_hang
         where sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang};
