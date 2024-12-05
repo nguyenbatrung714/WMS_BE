@@ -192,4 +192,20 @@
                  join san_pham sp on sp.sys_id_san_pham = ct.sys_id_san_pham
         WHERE ma_inbound = #{maInBound};
     </select>
+
+    <select id="getPurchaseDetailsById" resultMap="PurchaseDetailsIbMap" parameterType="integer">
+        SELECT sys_id_chi_tiet_nhap_hang,
+               ma_inbound,
+               ma_pr,
+               ma_po,
+               sys_id_khach_hang,
+               sys_id_san_pham,
+               sys_id_nha_cung_cap,
+               so_luong,
+               gia,
+               tong_chi_phi,
+               ngay_nhap_du_kien
+        FROM chi_tiet_nhap_hang
+        Where sys_id_chi_tiet_nhap_hang = #{sysIdChiTietNhapHang};
+    </select>
 </mapper>

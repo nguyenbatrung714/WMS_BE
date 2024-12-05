@@ -36,9 +36,23 @@
         <result property="maLo" column="ma_lo"/>
     </resultMap>
 
-    <insert id="insertConsignment">
-        INSERT INTO lo_hang(sys_id_san_pham,so_luong,ngay_san_xuat,han_su_dung,dung_tich,ma_chi_tiet_khu_vuc,sys_id_chi_tiet_nhap_hang)
-        VALUES(#{sysIdSanPham},#{soLuong},#{ngaySanXuat},#{hanSuDung},#{dungTich},#{maChiTietKhuVuc},#{sysIdChiTietNhapHang})
+    <insert id="insertConsignment" useGeneratedKeys="true" keyProperty="sysIdLoHang">
+        INSERT INTO lo_hang(ma_lo,
+                            sys_id_san_pham,
+                            so_luong,
+                            ngay_san_xuat,
+                            han_su_dung,
+                            dung_tich,
+                            ma_chi_tiet_khu_vuc,
+                            sys_id_chi_tiet_nhap_hang)
+        VALUES (#{maLo},
+                #{sysIdSanPham},
+                #{soLuong},
+                #{ngaySanXuat},
+                #{hanSuDung},
+                #{dungTich},
+                #{maChiTietKhuVuc},
+                #{sysIdChiTietNhapHang})
     </insert>
 
     <update id="updateConsignment">
@@ -90,7 +104,6 @@
                 lh.sys_id_san_pham = sp.sys_id_san_pham
         WHERE lh.ma_lo=#{maLo}
     </select>
-
 
     <select id="getInfoLoHang" resultMap="LoHangMap" parameterType="string">
         SELECT ct.sys_id_chi_tiet_nhap_hang,
