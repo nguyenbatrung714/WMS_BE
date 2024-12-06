@@ -1,5 +1,6 @@
 package org.example.wms_be.service;
 
+import org.example.wms_be.data.request.ConsignmentInbound;
 import org.example.wms_be.data.request.ConsignmentReq;
 import org.example.wms_be.data.response.ConsignmentResp;
 
@@ -15,4 +16,6 @@ public interface ConsignmentService {
     ConsignmentReq getAllConsignmentById(String maLo);
 
     ConsignmentResp getInfoLoHang(String maLo);
+
+    List<ConsignmentReq> saveConsignmentFromInbound(ConsignmentInbound consignmentInbound);
 }

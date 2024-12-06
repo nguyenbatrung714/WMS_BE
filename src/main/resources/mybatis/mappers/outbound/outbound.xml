@@ -21,11 +21,9 @@
     <insert id="insertOutbound" useGeneratedKeys="true" keyProperty="sysIdOutbound">
         insert into outbound(
             ngay_xuat,
-            ma_po,
             sys_id_user)
         values (
                    DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'),
-                   #{maPO},
                    #{nguoiPhuTrach})
     </insert>
 
@@ -35,7 +33,6 @@
             ma_outbound,
             ngay_xuat,
             trang_thai,
-            ma_po,
             u.full_name
         from outbound join user u on outbound.sys_id_user = u.sys_id_user
     </select>
@@ -50,7 +47,6 @@
                ma_outbound,
                trang_thai,
                ngay_xuat,
-               ma_po,
                sys_id_user
         from outbound
         where sys_id_outbound = #{sysIdOutbound}

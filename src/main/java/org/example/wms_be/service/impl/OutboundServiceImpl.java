@@ -74,11 +74,11 @@ public class OutboundServiceImpl implements OutboundService {
             details.setMaPR(maOB);
 
 
-            logger.info("Cập nhật chi tiết với sysIdChiTietXuatHang: {}, maPO: {}, maOB: {}",
-                    detailsReq.getSysIdChiTietXuatHang(), outboundReq.getMaPO(), maOB);
+            logger.info("Cập nhật chi tiết với sysIdChiTietXuatHang: {}, maOB: {}",
+                    detailsReq.getSysIdChiTietXuatHang(), maOB);
 
             try {
-                purchaseDetailsObMapper.updateDetailsObFromPO(outboundReq.getMaPO(), maOB, detailsReq.getSysIdChiTietXuatHang());
+                purchaseDetailsObMapper.updateDetailsObFromPO(maOB, detailsReq.getSysIdChiTietXuatHang());
 
             } catch (Exception e) {
                 logger.error("Lỗi khi cập nhật chi tiết xuất hàng: {}", e.getMessage(), e);
@@ -94,14 +94,8 @@ public class OutboundServiceImpl implements OutboundService {
     }
 
     private OutBound saveOutbounds(OutboundReq outboundReq) {
-
-        if (!purchaseOrderIbMapper.purchaseOrderIbExistByMaPO(outboundReq.getMaPO())) {
-            throw new IllegalArgumentException("PO không tồn tại");
-        }
-
-        List<PurchaseRequestDetailsOb> purchaseRequestDetailsObs = purchaseDetailsObMapper.getPurchaseDetailsObByMaPO(outboundReq.getMaPO());
-        if (purchaseRequestDetailsObs == null || purchaseRequestDetailsObs.isEmpty()) {
-            throw new IllegalArgumentException("Chi tiết PO không có dữ liệu");
+        if (outboundReq == null) {
+            throw new IllegalArgumentException("Dữ liệu không thể null");
         }
 
         OutBound outBound = outboundConverter.toOutbound(outboundReq);
