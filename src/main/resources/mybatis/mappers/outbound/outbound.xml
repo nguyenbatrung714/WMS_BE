@@ -8,7 +8,6 @@
         <result property="maOB" column="ma_outbound"/>
         <result property="trangThai" column="trang_thai"/>
         <result property="ngayXuat" column="ngay_xuat"/>
-        <result property="maPO" column="ma_po"/>
         <result property="nguoiPhuTrach" column="sys_id_user"/>
     </resultMap>
 
@@ -17,7 +16,6 @@
         <result property="maOB" column="ma_outbound"/>
         <result property="trangThai" column="trang_thai"/>
         <result property="ngayXuat" column="ngay_xuat"/>
-        <result property="maPO" column="ma_po"/>
         <result property="nguoiPhuTrach" column="full_name"/>
     </resultMap>
     <insert id="insertOutbound" useGeneratedKeys="true" keyProperty="sysIdOutbound">
