@@ -5,14 +5,14 @@ import org.example.wms_be.data.response.thongke.ThongKeGiaoDichSanPhamResp;
 import org.example.wms_be.data.response.thongke.ThongKeGiaoDichSanPhamGanDayResp;
 import org.example.wms_be.mapper.inbound.PurchaseRequestIbMapper;
 import org.example.wms_be.mapper.purchase.PurchaseRequestObMapper;
-import org.example.wms_be.service.ThongKeGiaoDichSanPham;
+import org.example.wms_be.service.ThongKeGiaoDichSanPhamService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ThongKeGiaoDichSanPhamImpl implements ThongKeGiaoDichSanPham {
+public class ThongKeGiaoDichSanPhamImpl implements ThongKeGiaoDichSanPhamService {
     private final PurchaseRequestIbMapper purchaseRequestIbMapper;
     private final PurchaseRequestObMapper purchaseRequestObMapper;
     @Override

@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.example.wms_be.data.mgt.ApiResponse;
 import org.example.wms_be.data.response.thongke.ThongKeGiaoDichSanPhamGanDayResp;
-import org.example.wms_be.service.ThongKeGiaoDichSanPham;
+import org.example.wms_be.service.ThongKeGiaoDichSanPhamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/thongke")
 @CrossOrigin
 public class ThongKeGiaoDichSanPhamApi {
-    private final ThongKeGiaoDichSanPham thongKeGiaoDichSanPham;
+    private final ThongKeGiaoDichSanPhamService thongKeGiaoDichSanPham;
     @GetMapping("/giao-dich-san-pham/nhap")
     public ResponseEntity<ApiResponse<ThongKeGiaoDichSanPhamGanDayResp>> getThongKeGiaoDichSanPham(
             HttpServletRequest request) {
