@@ -27,6 +27,7 @@
         <result property="ngayXuatDuKien" column="ngay_xuat_du_kien"/>
         <result property="sysIdKhachHang" column="sys_id_khach_hang"/>
         <result property="sysIdSanPham" column="sys_id_san_pham"/>
+        <result property="isOutboundNull" column="is_outbound_null"/>
     </resultMap>
     <update id="updatePurchaseRequestDetailsOb" parameterType="PurchaseRequestDetailsOb">
         UPDATE chi_tiet_xuat_hang
@@ -57,7 +58,11 @@
                ct.so_luong,
                ct.gia,
                ct.tong_chi_phi,
-               ct.ngay_xuat_du_kien
+               ct.ngay_xuat_du_kien,
+               CASE
+                   WHEN ct.ma_outbound IS NULL THEN false
+                   ELSE true
+                   END AS is_outbound_null
         FROM chi_tiet_xuat_hang ct
                  JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
                  JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
