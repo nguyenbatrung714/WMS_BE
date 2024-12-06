@@ -12,7 +12,7 @@ public class InventoryResp {
     private Integer sysIdSanPham;
     private String maKho;
     private String maLo;
-    private Double soLuong;
+    private Float soLuong;
     private String ngayCapNhat;
     private String tenSanPham;
 }
