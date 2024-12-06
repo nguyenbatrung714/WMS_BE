@@ -20,4 +20,5 @@ public class PurchaseRequestDetailsObResp {
     private String  ngayXuatDuKien;
     private Integer sysIdKhachHang;
     private Integer sysIdSanPham;
+    private Boolean isOutboundNull;
 }

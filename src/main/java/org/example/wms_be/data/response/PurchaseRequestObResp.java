@@ -18,5 +18,6 @@ public class PurchaseRequestObResp {
     private String  trangThai;
     private String  loaiYeuCau;
     private String  lyDo;
+    private Boolean isExistOutbound;
     List<PurchaseRequestDetailsObResp> chiTietXuatHang;
 }

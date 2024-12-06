@@ -78,6 +78,11 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
                             detail.setNgayXuatDuKien(ngayXuatDuKienFormatted);
                         }
                     });
+
+                    boolean allDetailsValid = chiTietXuatHang.stream()
+                            .allMatch(detail -> Boolean.TRUE.equals(detail.getIsOutboundNull()));
+                    pr.setIsExistOutbound(allDetailsValid);
+
                     pr.setChiTietXuatHang(chiTietXuatHang);
                 });
         return purchaseRequestObResps;
