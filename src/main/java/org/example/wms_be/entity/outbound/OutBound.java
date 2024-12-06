@@ -14,7 +14,6 @@ public class OutBound {
     private String maOB;
     private String ngayXuat;
     private String trangThai;
-    private String maPO;
     private Integer nguoiPhuTrach;
     List<PurchaseRequestDetailsOb> chiTietXuatHang;
 }
