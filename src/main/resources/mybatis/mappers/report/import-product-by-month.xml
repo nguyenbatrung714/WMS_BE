@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.report.ReportMapper">
+
+    <resultMap id="ImportProductByMonthMap" type="org.example.wms_be.data.report.ImportProductByMonth">
+        <result property="tenSanPham" column="ten_san_pham"/>
+        <result property="tongSoLuong" column="tong_so_luong"/>
+        <result property="thang" column="thang"/>
+        <result property="nam" column="nam"/>
+    </resultMap>
+
+    <select id="reportImportProductByMonth" resultMap="ImportProductByMonthMap">
+        SELECT ten_san_pham,
+               SUM(so_luong) AS tong_so_luong,
+            MONTH (ngay_nhap) AS thang,
+            YEAR (ngay_nhap) AS nam
+        FROM inbound
+            JOIN
+            chi_tiet_nhap_hang
+        ON inbound.ma_inbound = chi_tiet_nhap_hang.ma_inbound
+            JOIN san_pham ON san_pham.sys_id_san_pham = chi_tiet_nhap_hang.sys_id_san_pham
+        WHERE chi_tiet_nhap_hang.sys_id_san_pham
+        GROUP BY YEAR (ngay_nhap),
+            MONTH (ngay_nhap)
+        ORDER BY nam, thang;
+    </select>
+
+</mapper>
