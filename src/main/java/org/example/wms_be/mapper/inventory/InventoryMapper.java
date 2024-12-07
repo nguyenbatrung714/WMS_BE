@@ -12,4 +12,6 @@ public interface InventoryMapper {
 
     List<InventoryResp> getAllInventory();
     int updateSoLuongHienCo(Integer sysIdSanPham);
+    Double thongKeTongSoLuongTonKho();
+
 }

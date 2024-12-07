@@ -1,6 +1,8 @@
 package org.example.wms_be.mapper.inbound;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.example.wms_be.data.request.PurchaseDetailsIbReq;
+import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
 import org.example.wms_be.data.response.inbound.PurchaseRequestDetailsIbResp;
 import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
 
@@ -29,4 +31,8 @@ public interface PurchaseDetailsIbMapper {
     List<PurchaseDetailsIb> getPurchaseDetailsIbByMaIb(String maInBound);
 
     PurchaseDetailsIb getPurchaseDetailsById(Integer sysIdChiTietNhapHang);
+    List<PurchaseDetailsIbReq> getMostIbProducts();
+
+    // Thống kê sản phẩm nhập ít nhất
+    List<PurchaseDetailsIbReq> getLeastIbProducts();
 }
