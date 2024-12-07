@@ -52,17 +52,28 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public KiemTraTonKho kiemTraTonKho(Integer sysIdSanPham, Integer sysIdChiTietXuatHang) {
 
+        // Lấy số lượng cần xuất
         double soLuongCanXuat = purchaseDetailsObMapper.getSoLuongCanXuat(sysIdChiTietXuatHang, sysIdSanPham);
-        if ( soLuongCanXuat <= 0) {
-            throw new IllegalArgumentException(InventoryConst.NOT_FOUND_INVENTORY +  sysIdChiTietXuatHang);
+        if (soLuongCanXuat <= 0) {
+            throw new IllegalArgumentException(InventoryConst.NOT_FOUND_INVENTORY + sysIdChiTietXuatHang);
         }
 
+        // Lấy danh sách lô hàng
         List<InventoryResp> inventoryResps = inventoryMapper.layDanhSachLoHangCanXuat(sysIdSanPham);
 
+        // Tính tổng số lượng tồn kho
+        double tongSoLuongTonKho = inventoryResps.stream()
+                .mapToDouble(InventoryResp::getSoLuong)
+                .sum();
 
+        // Kiểm tra tổng số lượng tồn kho có đủ không
+        if (tongSoLuongTonKho < soLuongCanXuat) {
+            throw new IllegalArgumentException(InventoryConst.NOT_ENOUGH_QUANTITY);
+        }
+
+        //  trừ số lượng từ từng lô
         double soLuongConThieu = soLuongCanXuat;
         List<LoSuDung> loSuDung = new ArrayList<>();
-
 
         for (InventoryResp inventoryResp : inventoryResps) {
             if (soLuongConThieu <= 0) break;
@@ -70,21 +81,20 @@ public class InventoryServiceImpl implements InventoryService {
             double soLuongTru = Math.min(soLuongConThieu, inventoryResp.getSoLuong());
             soLuongConThieu -= soLuongTru;
 
+
             // Ghi lại các lô được sử dụng
-            loSuDung.add(new LoSuDung(inventoryResp.getSysIdTonKho(), soLuongTru));
+            loSuDung.add(new LoSuDung(inventoryResp.getSysIdTonKho(), soLuongTru,inventoryResp.getMaLo()));
+
+            // Cập nhật tồn kho từng lô
             inventoryMapper.updateInventory(inventoryResp.getSysIdTonKho(), inventoryResp.getSoLuong() - soLuongTru);
-
         }
+
+        // Cập nhật tổng số lượng tồn kho của sản phẩm
         inventoryMapper.updateSoLuongHienCo(sysIdSanPham);
-
-
-        if (soLuongConThieu > 0) {
-            throw new IllegalArgumentException(InventoryConst.NOT_ENOUGH_QUANTITY);
-        }
-
 
         return new KiemTraTonKho(sysIdSanPham, loSuDung);
     }
+
 
     @Override
     public List<InventoryResp> getInventoryList() {

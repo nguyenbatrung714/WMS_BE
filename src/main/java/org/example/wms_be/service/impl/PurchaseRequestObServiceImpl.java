@@ -216,7 +216,7 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
         }
     }
     public void sendMailForApprove(PurchaseRequestOb purchaseRequestOb) {
-        sendEmail(PurchaseRequestConst.DEFAULT_ADMIN_EMAIL, purchaseRequestOb);
+        sendEmail(PurchaseRequestConst.DEFAULT_PO_EMAIL, purchaseRequestOb);
     }
 
     public void sendMailForConfirm(PurchaseRequestOb purchaseRequestOb) {

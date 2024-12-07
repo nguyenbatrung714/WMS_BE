@@ -17,13 +17,13 @@ public interface PurchaseDetailsObMapper {
     int insertPurchaseRequestDetailsOb(PurchaseRequestDetailsOb purchaseRequestDetailsOb);
     int updatePurchaseRequestDetailsOb(PurchaseRequestDetailsOb purchaseRequestDetailsOb);
     boolean existById(Integer sysIdChiTietXuatHang);
-    void updateDetailsObFromPO(@Param("maPO") String maPO,
+    void updateDetailsObFromPO(
                                @Param("maOB") String maOB,
                                @Param("sysIdChiTietXuatHang") Integer sysIdChiTietXuatHang);
 
-    List<PurchaseRequestDetailsOb> getPurchaseDetailsObByMaPO(String maPO);
+//    List<PurchaseRequestDetailsOb> getPurchaseDetailsObByMaPO(String maPO);
     double getSoLuongCanXuat( Integer sysIdChiTietXuatHang,Integer sysIdSanPham);
-    List<Integer> getSysIdSanPhamByMaPO(String maPO);
+//    List<Integer> getSysIdSanPhamByMaPO(String maPO);
     Integer getMaOutbound(Integer sysIdChiTietXuatHang);
     List<PurchaseRequestDetailsObResp> getMostObProducts();
 
