@@ -68,6 +68,12 @@
         from ton_kho tk
                  join san_pham sp on tk.sys_id_san_pham = sp.sys_id_san_pham
     </select>
+    <select id="thongKeTongSoLuongTonKho">
+
+            SELECT SUM(so_luong) AS tong_so_luong
+            FROM ton_kho
+
+    </select>
 
     <update id="updateSoLuongHienCo">
         UPDATE san_pham

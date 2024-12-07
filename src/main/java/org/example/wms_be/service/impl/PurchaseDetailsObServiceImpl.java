@@ -1,6 +1,7 @@
 package org.example.wms_be.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
+import org.example.wms_be.data.response.inbound.PurchaseRequestIbResp;
 import org.example.wms_be.mapper.purchase.PurchaseDetailsObMapper;
 import org.example.wms_be.service.PurchaseDetailsObService;
 import org.example.wms_be.utils.TimeConverter;
@@ -21,5 +22,29 @@ public class PurchaseDetailsObServiceImpl implements PurchaseDetailsObService {
               }
          });
             return chiTietXuatHang;
+    }
+
+    @Override
+    public List<PurchaseRequestDetailsObResp> getMostObProducts() {
+        try {
+            return purchaseDetailsObMapper.getMostObProducts();
+        } catch (Exception e) {
+            // Log lỗi
+            System.err.println("Error fetching most imported products: " + e.getMessage());
+            // Quăng lại lỗi hoặc trả về giá trị mặc định
+            throw new RuntimeException("Unable to fetch most imported products.", e);
+        }
+    }
+
+    @Override
+    public List<PurchaseRequestDetailsObResp> getLeastObProducts() {
+        try {
+            return purchaseDetailsObMapper.getLeastObProducts();
+        } catch (Exception e) {
+            // Log lỗi
+            System.err.println("Error fetching least imported products: " + e.getMessage());
+            // Quăng lại lỗi hoặc trả về giá trị mặc định
+            throw new RuntimeException("Unable to fetch least imported products.", e);
+        }
     }
 }
