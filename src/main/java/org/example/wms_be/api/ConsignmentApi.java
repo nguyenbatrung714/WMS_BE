@@ -3,6 +3,7 @@ package org.example.wms_be.api;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.data.mgt.ApiResponse;
+import org.example.wms_be.data.request.ConsignmentInbound;
 import org.example.wms_be.data.request.ConsignmentReq;
 import org.example.wms_be.data.response.ConsignmentResp;
 import org.example.wms_be.service.ConsignmentService;
@@ -71,6 +72,17 @@ public class ConsignmentApi {
                 200,
                 "Consignment found successfully ",
                 consignmentService.getInfoLoHang(maLo)
+        ), HttpStatus.OK);
+    }
+
+    @PostMapping("/create-from-inbound")
+    public ResponseEntity<ApiResponse<List<ConsignmentReq>>> saveConsignmentFromInbound(@RequestBody ConsignmentInbound consignmentInbound,
+                                                                                        HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "Consignment success",
+                consignmentService.saveConsignmentFromInbound(consignmentInbound)
         ), HttpStatus.OK);
     }
 }
