@@ -79,27 +79,7 @@
                  JOIN san_pham s ON t.sys_id_san_pham = s.sys_id_san_pham
         WHERE t.sys_id_ton_kho = #{sysIdTonKho}
     </select>
-    <select id="checkHetHan" resultMap="InventoryMap">
-        SELECT
-        tk.sys_id_ton_kho,
-        tk.sys_id_san_pham,
-        tk.ma_kho,
-        tk.ma_lo,
-        tk.so_luong,
-        tk.ngay_cap_nhat,
 
-        CASE
-        WHEN DATEDIFF(tk.ngay_cap_nhat, NOW()) BETWEEN 1 AND 3 THEN 'sắp hết hạn'
-        WHEN DATEDIFF(tk.ngay_cap_nhat, NOW()) <= 0 THEN 'đã hết hạn'
-        ELSE NULL
-        END AS status
-        FROM
-        ton_kho tk
-        WHERE
-        DATEDIFF(tk.ngay_cap_nhat, NOW()) <= 3
-        ORDER BY
-        tk.ngay_cap_nhat ASC;
-    </select>
 
     <update id="updateSoLuongHienCo">
         UPDATE san_pham
