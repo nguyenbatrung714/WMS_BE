@@ -95,4 +95,15 @@ public class InventoryServiceImpl implements InventoryService {
         }
     }
 
+    @Override
+    public List<InventoryResp> checkHetHan() {
+        try {
+            return inventoryMapper.checkHetHan();
+        } catch (Exception e) {
+            // Xử lý ngoại lệ nếu xảy ra
+            throw new BadSqlGrammarException("Failed to get inventory list: " + e.getMessage());
+        }
+
+    }
+
 }

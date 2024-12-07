@@ -5,13 +5,14 @@
 
 <mapper namespace="org.example.wms_be.mapper.inventory.InventoryMapper">
 
-    <resultMap id="InventoryMap" type="Inventory" autoMapping="true">
+    <resultMap id="InventoryMap" type="org.example.wms_be.entity.inventory.Inventory" autoMapping="true">
         <id property="sysIdTonKho" column="sys_id_ton_kho"/>
         <result property="sysIdSanPham" column="sys_id_san_pham"/>
         <result property="maKho" column="ma_kho"/>
         <result property="maLo" column="ma_lo"/>
         <result property="soLuong" column="so_luong"/>
         <result property="ngayCapNhat" column="ngay_cap_nhat"/>
+        <result property="isNearExpiry" column="is_near_expiry"/>
     </resultMap>
 
     <resultMap id="InventoryDtoMap" type="org.example.wms_be.data.response.InventoryResp" autoMapping="true">
@@ -68,6 +69,26 @@
         from ton_kho tk
                  join san_pham sp on tk.sys_id_san_pham = sp.sys_id_san_pham
     </select>
+    <select id="checkHetHan" resultMap="InventoryMap">
+
+            SELECT
+                sys_id_ton_kho,
+                sys_id_san_pham,
+                ma_kho,
+                ma_lo,
+                so_luong,
+                ngay_cap_nhat,
+                CASE
+                    WHEN ngay_cap_nhat BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 3 DAY) THEN true
+                    ELSE false
+                    END AS is_near_expiry
+            FROM ton_kho
+            WHERE ngay_cap_nhat IS NOT NULL;
+
+
+    </select>
+
+
 
     <update id="updateSoLuongHienCo">
         UPDATE san_pham

@@ -15,4 +15,5 @@ public class InventoryResp {
     private Double soLuong;
     private String ngayCapNhat;
     private String tenSanPham;
+    private Boolean isNearExpiry;
 }
