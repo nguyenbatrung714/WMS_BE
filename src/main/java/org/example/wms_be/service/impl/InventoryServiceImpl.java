@@ -2,6 +2,7 @@ package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.constant.InventoryConst;
+import org.example.wms_be.converter.inventory.InventoryConverter;
 import org.example.wms_be.data.response.InventoryResp;
 import org.example.wms_be.entity.inventory.KiemTraTonKho;
 import org.example.wms_be.entity.inventory.LoSuDung;
@@ -26,7 +27,8 @@ import java.util.List;
 public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryMapper inventoryMapper;
-    private final   PurchaseDetailsObMapper purchaseDetailsObMapper;
+    private final InventoryConverter inventoryConverter;
+    private final PurchaseDetailsObMapper purchaseDetailsObMapper;
     private final ProductMapper productMapper;
     private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
 
@@ -53,8 +55,8 @@ public class InventoryServiceImpl implements InventoryService {
     public KiemTraTonKho kiemTraTonKho(Integer sysIdSanPham, Integer sysIdChiTietXuatHang) {
 
         double soLuongCanXuat = purchaseDetailsObMapper.getSoLuongCanXuat(sysIdChiTietXuatHang, sysIdSanPham);
-        if ( soLuongCanXuat <= 0) {
-            throw new IllegalArgumentException(InventoryConst.NOT_FOUND_INVENTORY +  sysIdChiTietXuatHang);
+        if (soLuongCanXuat <= 0) {
+            throw new IllegalArgumentException(InventoryConst.NOT_FOUND_INVENTORY + sysIdChiTietXuatHang);
         }
 
         List<InventoryResp> inventoryResps = inventoryMapper.layDanhSachLoHangCanXuat(sysIdSanPham);
@@ -95,4 +97,13 @@ public class InventoryServiceImpl implements InventoryService {
         }
     }
 
+    @Override
+    public List<InventoryResp> checkHetHan() {
+        try {
+            return inventoryMapper.checkHetHan();
+        } catch (Exception e) {
+            // Xử lý ngoại lệ nếu xảy ra
+            throw new BadSqlGrammarException("Failed to get inventory list: " + e.getMessage());
+        }
+    }
 }

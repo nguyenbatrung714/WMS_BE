@@ -32,5 +32,14 @@ public class InventoryApi {
                 inventoryService.getInventoryList()
         ), HttpStatus.OK);
     }
+    @GetMapping("/check-het-han")
+    public ResponseEntity<ApiResponse<List<InventoryResp>>> checkHetHan(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "Check of Inventories",
+                inventoryService.checkHetHan()
+        ), HttpStatus.OK);
+    }
 
 }

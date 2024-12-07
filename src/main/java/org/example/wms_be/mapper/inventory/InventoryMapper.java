@@ -15,4 +15,5 @@ public interface InventoryMapper {
     int updateSoLuongHienCo(Integer sysIdSanPham);
     Inventory getLohangById(Integer id);
     int deleteLohangById(Integer id);
+    List<InventoryResp> checkHetHan();
 }
