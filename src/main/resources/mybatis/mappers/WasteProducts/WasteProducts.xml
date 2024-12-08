@@ -18,8 +18,8 @@
     <!-- Chèn thông tin vào bảng `phe_pham` -->
 
     <insert id="insertWasteProducts">
-        INSERT INTO phe_pham (ma_kho, ma_lo, ten_san_pham, so_luong, ngay_het_han, ngay_phe_pham)
-        VALUES (#{maKho}, #{maLo}, #{tenSanPham}, #{soLuong}, #{ngayHetHan}, NOW());
+        INSERT INTO phe_pham (ma_lo, so_luong, ngay_phe_pham)
+        VALUES ( #{maLo}, #{soLuong},NOW());
     </insert>
 
     <!-- Lấy danh sách phế phẩm -->

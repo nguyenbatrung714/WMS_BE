@@ -80,6 +80,7 @@
         WHERE t.sys_id_ton_kho = #{sysIdTonKho}
     </select>
 
+
     <update id="updateSoLuongHienCo">
         UPDATE san_pham
         SET so_luong_hien_co = (
