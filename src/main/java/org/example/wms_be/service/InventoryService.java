@@ -9,5 +9,4 @@ public interface InventoryService {
     List<InventoryResp> layDanhSachLoHangCanXuat(Integer sysIdSanPham);
     KiemTraTonKho kiemTraTonKho(Integer sysIdSanPham, Integer sysIdChiTietXuatHang);
     List<InventoryResp> getInventoryList();
-    List<InventoryResp> checkHetHan();
 }
