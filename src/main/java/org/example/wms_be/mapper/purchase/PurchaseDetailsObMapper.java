@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.example.wms_be.data.request.PurchaseRequestDetailsObReq;
 import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
+import org.example.wms_be.data.response.inbound.PurchaseRequestIbResp;
 import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
 import org.example.wms_be.entity.outbound.PurchaseRequestDetailsOb;
 
@@ -24,5 +25,9 @@ public interface PurchaseDetailsObMapper {
     double getSoLuongCanXuat( Integer sysIdChiTietXuatHang,Integer sysIdSanPham);
 //    List<Integer> getSysIdSanPhamByMaPO(String maPO);
     Integer getMaOutbound(Integer sysIdChiTietXuatHang);
+    List<PurchaseRequestDetailsObResp> getMostObProducts();
+
+    // Thống kê sản phẩm nhập ít nhất
+    List<PurchaseRequestDetailsObResp> getLeastObProducts();
 
 }

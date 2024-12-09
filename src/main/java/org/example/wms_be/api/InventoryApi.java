@@ -32,6 +32,15 @@ public class InventoryApi {
                 inventoryService.getInventoryList()
         ), HttpStatus.OK);
     }
+    @GetMapping("/tong-so-luong")
+    public ResponseEntity<ApiResponse<Double>> thongKeTongSoLuongTonKho(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "Thống kê tổng số lượng tồn kho thành công",
+                inventoryService.thongKeTongSoLuongTonKho()
+        ), HttpStatus.OK);
 
 
+    }
 }
