@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.wms_be.mapper.inbound.PurchaseDetailsIbMapper">
 
-    <resultMap id="PurchaseDetailsIbMap" type="PurchaseDetailsIb"
+    <resultMap id="PurchaseDetailsIbMap" type="org.example.wms_be.entity.inbound.PurchaseDetailsIb"
                autoMapping="true">
         <id property="sysIdChiTietNhapHang" column="sys_id_chi_tiet_nhap_hang"/>
         <result property="maInBound" column="ma_inbound"/>
@@ -207,5 +207,61 @@
                ngay_nhap_du_kien
         FROM chi_tiet_nhap_hang
         Where sys_id_chi_tiet_nhap_hang = #{sysIdChiTietNhapHang};
+    </select>
+    <select id="getMostIbProducts" resultMap="PurchaseDetailsIbMap">
+        SELECT
+            ctxh.sys_id_chi_tiet_nhap_hang,
+            ctxh.ma_pr,
+            ctxh.ma_po,
+            ctxh.ma_inbound,
+            kh.sys_id_khach_hang,
+            kh.ten_khach_hang,
+            sp.sys_id_san_pham,
+            sp.ten_san_pham,
+            ctxh.so_luong,
+            ctxh.gia,
+            ctxh.tong_chi_phi,
+            ctxh.ngay_nhap_du_kien,
+            ncc.ten_nha_cung_cap,
+            ncc.sys_id_nha_cung_cap
+        FROM
+            chi_tiet_nhap_hang ctxh
+                LEFT JOIN
+            khach_hang kh ON ctxh.sys_id_khach_hang = kh.sys_id_khach_hang
+                LEFT JOIN
+            san_pham sp ON ctxh.sys_id_san_pham = sp.sys_id_san_pham
+                LEFT JOIN
+            nha_cung_cap ncc ON ctxh.sys_id_nha_cung_cap = ncc.sys_id_nha_cung_cap
+        ORDER BY
+            ctxh.so_luong DESC
+            LIMIT 1;
+    </select>
+    <select id="getLeastIbProducts" resultMap="PurchaseDetailsIbMap">
+        SELECT
+            ctxh.sys_id_chi_tiet_nhap_hang,
+            ctxh.ma_pr,
+            ctxh.ma_po,
+            ctxh.ma_inbound,
+            kh.sys_id_khach_hang,
+            kh.ten_khach_hang,
+            sp.sys_id_san_pham,
+            sp.ten_san_pham,
+            ctxh.so_luong,
+            ctxh.gia,
+            ctxh.tong_chi_phi,
+            ctxh.ngay_nhap_du_kien,
+            ncc.ten_nha_cung_cap,
+            ncc.sys_id_nha_cung_cap
+        FROM
+            chi_tiet_nhap_hang ctxh
+                LEFT JOIN
+            khach_hang kh ON ctxh.sys_id_khach_hang = kh.sys_id_khach_hang
+                LEFT JOIN
+            san_pham sp ON ctxh.sys_id_san_pham = sp.sys_id_san_pham
+                LEFT JOIN
+            nha_cung_cap ncc ON ctxh.sys_id_nha_cung_cap = ncc.sys_id_nha_cung_cap
+        ORDER BY
+            ctxh.so_luong ASC
+            LIMIT 1;
     </select>
 </mapper>

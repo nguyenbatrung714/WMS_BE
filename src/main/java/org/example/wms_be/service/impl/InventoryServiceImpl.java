@@ -107,4 +107,18 @@ public class InventoryServiceImpl implements InventoryService {
         }
     }
 
+
+
+
+    @Override
+    public Double thongKeTongSoLuongTonKho() {
+        try {
+            Double tongSoLuong = inventoryMapper.thongKeTongSoLuongTonKho();
+            return tongSoLuong != null ? tongSoLuong : 0.0;
+        } catch (Exception e) {
+            logger.error("Lỗi khi thống kê tổng số lượng tồn kho", e);
+            return 0.0;
+        }
+    }
+
 }

@@ -15,4 +15,6 @@ public class Inventory {
     private String maLo;
     private Float soLuong;
     private Timestamp ngayCapNhat;
+    private Boolean isNearExpiry;
+    private Timestamp hanSuDung;
 }
