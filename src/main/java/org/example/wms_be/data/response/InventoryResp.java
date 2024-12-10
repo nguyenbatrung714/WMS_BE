@@ -12,8 +12,9 @@ public class InventoryResp {
     private Integer sysIdSanPham;
     private String maKho;
     private String maLo;
-    private Float soLuong;
+    private Double soLuong;
     private String ngayCapNhat;
     private String tenSanPham;
+    private String tenKho;
     private Boolean isNearExpiry;
 }

@@ -12,6 +12,7 @@ public class Inventory {
     private Integer sysIdSanPham;
     private String tenSanPham;
     private String maKho;
+    private String tenKho;
     private String maLo;
     private Float soLuong;
     private Timestamp ngayCapNhat;
