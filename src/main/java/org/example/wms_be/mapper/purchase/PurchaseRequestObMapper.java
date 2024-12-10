@@ -2,6 +2,7 @@ package org.example.wms_be.mapper.purchase;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.example.wms_be.data.response.PurchaseRequestObResp;
+import org.example.wms_be.data.response.thongke.ThongKeGiaoDichSanPhamResp;
 import org.example.wms_be.entity.outbound.PurchaseRequestOb;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface PurchaseRequestObMapper {
     int updatePurchaseRequestOb (PurchaseRequestOb purchaseRequestOb);
     boolean existById(Integer sysIdYeuCauXuatHang);
     String getMaPRById(Integer sysIdYeuCauXuatHang);
+    List<ThongKeGiaoDichSanPhamResp> getThongKeGiaoDichSanPhamXuat();
+    Integer giaoDichXuatGanDay();
 }

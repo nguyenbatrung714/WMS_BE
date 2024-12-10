@@ -45,7 +45,7 @@ public class UserApi {
 
 
     @PostMapping("/update-info")
-    public ResponseEntity<ApiResponse<UserInfoDto>> updateInfo(@RequestBody UserInfoDto userDto,
+    public ResponseEntity<ApiResponse<UserInfoDto>> updateInfo(@ModelAttribute UserInfoDto userDto,
                                                                HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),

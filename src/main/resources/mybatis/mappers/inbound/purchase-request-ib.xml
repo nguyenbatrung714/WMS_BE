@@ -26,6 +26,13 @@
         <result property="isExistPO" column="is_exist_po"/>
     </resultMap>
 
+    <resultMap id="ThongKeGiaoDichSanPhamNhap" type="org.example.wms_be.data.response.thongke.ThongKeGiaoDichSanPhamResp">
+        <id property="tenSanPham" column="ten_san_pham"/>
+        <result property="soLuongGiaoDich" column="so_luong_giao_dich"/>
+        <result property="tongSoLuong" column="tong_so_luong"/>
+        <result property="loaiGiaoDich" column="loai_giao_dich"/>
+    </resultMap>
+
     <insert id="insertPurchaseRequestIb" useGeneratedKeys="true" keyProperty="sysIdYeuCauNhapHang">
         INSERT INTO purchase_request(
                                      ngay_yeu_cau,
@@ -92,6 +99,42 @@
 
     <select id="getMaPrById" resultType="java.lang.String">
         SELECT ma_pr FROM purchase_request WHERE sys_id_pr = #{sysIdYeuCauNhapHang};
+    </select>
+    <select id="getThongKeGiaoDichSanPham"
+            resultMap="ThongKeGiaoDichSanPhamNhap">
+        SELECT
+            sp.ten_san_pham AS ten_san_pham,
+            pr.loai_yeu_cau AS loai_giao_dich,
+            COUNT(pr.ma_pr) AS so_luong_giao_dich,
+            SUM(ct.so_luong) AS tong_so_luong
+        FROM
+            purchase_request pr
+                JOIN
+            chi_tiet_nhap_hang ct ON pr.ma_pr = ct.ma_pr
+                JOIN
+            san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
+        WHERE
+            pr.ngay_yeu_cau >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY
+            sp.ten_san_pham, pr.loai_yeu_cau;
+    </select>
+    <select id="giaoDichGanDay" resultType="java.lang.Integer">
+        SELECT
+            SUM(giao_dich_gan_day) AS giao_dich_gan_day
+        FROM (
+                 SELECT
+                     COUNT(pr.ma_pr) AS giao_dich_gan_day
+                 FROM
+                     purchase_request pr
+                         JOIN
+                     chi_tiet_nhap_hang ct ON pr.ma_pr = ct.ma_pr
+                         JOIN
+                     san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
+                 WHERE
+                     pr.ngay_yeu_cau >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                 GROUP BY
+                     sp.ten_san_pham, pr.loai_yeu_cau
+             ) AS giao_dich;
     </select>
 
 </mapper>
