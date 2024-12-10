@@ -82,6 +82,16 @@
         FROM san_pham
         WHERE sys_id_san_pham = #{sysIdSanPham}
     </select>
+    <select id="getProductByTenSanPham" resultMap="productMap">
+        SELECT sys_id_san_pham,
+               ten_san_pham,
+               so_luong_hien_co,
+               sys_id_danh_muc,
+               mo_ta,
+               hinh_anh
+        FROM san_pham
+        WHERE  ten_san_pham = #{tenSanPham}
+    </select>
     <select id="getThongKeSanPhamKhuVuc"
             resultMap="ThongKeSanPhamKhuVuc">
 

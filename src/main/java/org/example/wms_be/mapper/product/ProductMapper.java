@@ -20,6 +20,7 @@ public interface ProductMapper {
     boolean checkProductExists(Integer maSanPham);
 
     Optional<Product> getProductByMaSanPham(Integer maSanPham);
+    Product getProductByTenSanPham(String  tenSanPham);
 
     String getImgProductByMaSanPham(Integer maSanPham);
 
