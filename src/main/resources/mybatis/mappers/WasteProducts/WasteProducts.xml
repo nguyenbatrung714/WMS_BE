@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.WasteProductsMapper">
+
+    <!-- Kết quả ánh xạ từ bảng `phe_pham` -->
+    <resultMap id="PhePhamResultMap" type="org.example.wms_be.entity.WasteProducts">
+        <id property="id" column="id" />
+        <result property="maKho" column="ma_kho" />
+        <result property="maLo" column="ma_lo" />
+        <result property="tenSanPham" column="ten_san_pham" />
+        <result property="soLuong" column="so_luong" />
+        <result property="ngayHetHan" column="ngay_het_han" />
+        <result property="ngayPhePham" column="ngay_phe_pham" />
+    </resultMap>
+
+    <!-- Chèn thông tin vào bảng `phe_pham` -->
+
+    <insert id="insertWasteProducts">
+        INSERT INTO phe_pham (ma_lo, so_luong, ngay_phe_pham)
+        VALUES ( #{maLo}, #{soLuong},NOW());
+    </insert>
+
+    <!-- Lấy danh sách phế phẩm -->
+<!--    <select id="getAllPhePham" resultMap="PhePhamResultMap">-->
+<!--        SELECT * FROM phe_pham;-->
+<!--    </select>-->
+</mapper>

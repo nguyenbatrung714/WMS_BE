@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.wms_be.mapper.purchase.PurchaseDetailsObMapper">
-    <resultMap id="PurchaseRequestObMap" type="PurchaseRequestDetailsOb" autoMapping="true">
+    <resultMap id="PurchaseRequestObMap" type="org.example.wms_be.entity.outbound.PurchaseRequestDetailsOb" autoMapping="true">
         <id property="sysIdChiTietXuatHang" column="sys_id_chi_tiet_xuat_hang"/>
         <result property="maPR" column="ma_pr"/>
         <result property="maOB" column="ma_outbound"/>
@@ -27,6 +27,7 @@
         <result property="ngayXuatDuKien" column="ngay_xuat_du_kien"/>
         <result property="sysIdKhachHang" column="sys_id_khach_hang"/>
         <result property="sysIdSanPham" column="sys_id_san_pham"/>
+        <result property="isOutboundNull" column="is_outbound_null"/>
     </resultMap>
     <update id="updatePurchaseRequestDetailsOb" parameterType="PurchaseRequestDetailsOb">
         UPDATE chi_tiet_xuat_hang
@@ -57,7 +58,11 @@
                ct.so_luong,
                ct.gia,
                ct.tong_chi_phi,
-               ct.ngay_xuat_du_kien
+               ct.ngay_xuat_du_kien,
+               CASE
+                   WHEN ct.ma_outbound IS NULL THEN false
+                   ELSE true
+                   END AS is_outbound_null
         FROM chi_tiet_xuat_hang ct
                  JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
                  JOIN khach_hang kh ON ct.sys_id_khach_hang = kh.sys_id_khach_hang
@@ -119,6 +124,63 @@
     <select id="getMaOutbound" resultType="java.lang.Integer">
         select ma_outbound from chi_tiet_xuat_hang
         where sys_id_chi_tiet_xuat_hang = #{sysIdChiTietXuatHang};
+    </select>
+    <select id="getMostObProducts" resultMap="PurchaseRequestObMap" >
+        SELECT
+            ctxh.sys_id_chi_tiet_xuat_hang,
+            ctxh.ma_pr,
+            ctxh.ma_po,
+            ctxh.ma_outbound,
+            ctxh.sys_id_khach_hang,
+            sp.sys_id_san_pham,
+            SUM(ctxh.so_luong) AS so_luong,
+            SUM(ctxh.gia) AS gia,
+            SUM(ctxh.tong_chi_phi) AS tong_chi_phi,
+            MAX(ctxh.ngay_xuat_du_kien) AS ngay_xuat
+        FROM
+            chi_tiet_xuat_hang ctxh
+                LEFT JOIN
+            san_pham sp ON ctxh.sys_id_san_pham = sp.sys_id_san_pham
+        GROUP BY
+            ctxh.sys_id_chi_tiet_xuat_hang,
+            ctxh.ma_pr,
+            ctxh.ma_po,
+            ctxh.ma_outbound,
+            ctxh.sys_id_khach_hang,
+            sp.sys_id_san_pham
+        ORDER BY
+            so_luong DESC
+            LIMIT 1;
+    </select>
+    <select id="getLeastObProducts" resultMap="PurchaseRequestObMap">
+        SELECT
+            ctxh.sys_id_chi_tiet_xuat_hang AS sys_id_chi_tiet_xuat_hang,
+            ctxh.ma_pr AS ma_pr,
+            ctxh.ma_po AS ma_po,
+            ctxh.ma_outbound AS ma_outbound,
+            ctxh.sys_id_khach_hang AS sys_id_khach_hang,
+            sp.sys_id_san_pham AS sys_id_san_pham,
+            sp.ten_san_pham AS ten_san_pham, -- Thêm cột tên sản phẩm
+            SUM(ctxh.so_luong) AS so_luong,
+            SUM(ctxh.gia) AS gia,
+            SUM(ctxh.tong_chi_phi) AS tong_chi_phi,
+            MAX(ctxh.ngay_xuat_du_kien) AS ngay_xuat
+        FROM
+            chi_tiet_xuat_hang ctxh
+                INNER JOIN san_pham sp
+                           ON ctxh.sys_id_san_pham = sp.sys_id_san_pham
+        GROUP BY
+            ctxh.sys_id_chi_tiet_xuat_hang,
+            ctxh.ma_pr,
+            ctxh.ma_po,
+            ctxh.ma_outbound,
+            ctxh.sys_id_khach_hang,
+            sp.sys_id_san_pham,
+            sp.ten_san_pham
+        ORDER BY
+            so_luong ASC
+            LIMIT 1;
+
     </select>
 
 </mapper>

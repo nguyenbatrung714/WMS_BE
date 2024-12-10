@@ -2,6 +2,7 @@ package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.constant.InventoryConst;
+import org.example.wms_be.converter.inventory.InventoryConverter;
 import org.example.wms_be.data.response.InventoryResp;
 import org.example.wms_be.entity.inventory.KiemTraTonKho;
 import org.example.wms_be.entity.inventory.LoSuDung;
@@ -26,7 +27,8 @@ import java.util.List;
 public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryMapper inventoryMapper;
-    private final   PurchaseDetailsObMapper purchaseDetailsObMapper;
+    private final InventoryConverter inventoryConverter;
+    private final PurchaseDetailsObMapper purchaseDetailsObMapper;
     private final ProductMapper productMapper;
     private static final Logger logger = LoggerFactory.getLogger(InventoryServiceImpl.class);
 
@@ -102,6 +104,20 @@ public class InventoryServiceImpl implements InventoryService {
             return inventoryMapper.getAllInventory();
         } catch (Exception e) {
             throw new BadSqlGrammarException("Failed to get inventory list" + e.getMessage());
+        }
+    }
+
+
+
+
+    @Override
+    public Double thongKeTongSoLuongTonKho() {
+        try {
+            Double tongSoLuong = inventoryMapper.thongKeTongSoLuongTonKho();
+            return tongSoLuong != null ? tongSoLuong : 0.0;
+        } catch (Exception e) {
+            logger.error("Lỗi khi thống kê tổng số lượng tồn kho", e);
+            return 0.0;
         }
     }
 

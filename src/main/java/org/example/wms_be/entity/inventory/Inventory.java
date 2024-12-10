@@ -10,8 +10,12 @@ import java.sql.Timestamp;
 public class Inventory {
     private Integer sysIdTonKho;
     private Integer sysIdSanPham;
+    private String tenSanPham;
     private String maKho;
+    private String tenKho;
     private String maLo;
-    private String soLuong;
+    private Float soLuong;
     private Timestamp ngayCapNhat;
+    private Boolean isNearExpiry;
+    private Timestamp hanSuDung;
 }
