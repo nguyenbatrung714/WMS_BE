@@ -16,14 +16,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/waste-products")
 public class WasteProductsApi {
     private final WasteProductsService wasteProductsService;
-    @PostMapping("/{sysIdTonKho}")
+    @PostMapping("/{sysIdTonKho}/{lyDo}")
     public ResponseEntity<ApiResponse<WasteProductsDto>> moveToWaste(@PathVariable int sysIdTonKho,
+                                                                     @PathVariable String lyDo,
                                                                      HttpServletRequest request) {
         return new ResponseEntity<>(new ApiResponse<>(
                 request.getRequestURI(),
                 200,
                 "WasteProducts saved successfully",
-                wasteProductsService.insertWaste(sysIdTonKho)
+                wasteProductsService.insertWaste(sysIdTonKho,lyDo)
         ), HttpStatus.CREATED);
     }
 }

@@ -13,13 +13,14 @@
         <result property="soLuong" column="so_luong" />
         <result property="ngayHetHan" column="ngay_het_han" />
         <result property="ngayPhePham" column="ngay_phe_pham" />
+        <result property="lyDo" column="ly_do" />
     </resultMap>
 
     <!-- Chèn thông tin vào bảng `phe_pham` -->
 
     <insert id="insertWasteProducts">
-        INSERT INTO phe_pham (ma_lo, so_luong, ngay_phe_pham)
-        VALUES ( #{maLo}, #{soLuong},NOW());
+        INSERT INTO phe_pham (ma_lo, so_luong, ngay_phe_pham,ly_do)
+        VALUES ( #{maLo}, #{soLuong},NOW(),#{lyDo});
     </insert>
 
     <!-- Lấy danh sách phế phẩm -->

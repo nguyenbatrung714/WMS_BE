@@ -25,7 +25,7 @@ public class WasteProductsServiceImpl implements WasteProductsService {
 
 
     @Override
-    public WasteProductsDto insertWaste(Integer sysIdTonKho) {
+    public WasteProductsDto insertWaste(Integer sysIdTonKho, String lyDo) {
         Inventory inventory =  inventoryMapper.getLohangById(sysIdTonKho);
         if (inventory == null) {
             throw new RuntimeException("Không tìm thấy tồn kho với ID: " + sysIdTonKho);
@@ -37,7 +37,8 @@ public class WasteProductsServiceImpl implements WasteProductsService {
         phePham.setTenSanPham(inventory.getTenSanPham()); // hoặc bạn có thể lấy tên sản phẩm từ bảng khác nếu có
         phePham.setSoLuong(inventory.getSoLuong()); // Chuyển từ String sang Integer
         phePham.setNgayHetHan(inventory.getNgayCapNhat()); // Sử dụng ngayCapNhat làm ngày hết hạn (nếu thích hợp)
-        phePham.setNgayPhePham(new Date()); // Ngày hiện tại
+        phePham.setNgayPhePham(new Date());// Ngày hiện tại
+        phePham.setLyDo(lyDo);
         wasteProductsMapper.insertWasteProducts(phePham);
         wasteProductsMapper.insertWasteProducts(phePham);
         Product product = productMapper.getProductByTenSanPham(inventory.getTenSanPham());
