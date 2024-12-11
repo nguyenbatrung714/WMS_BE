@@ -40,7 +40,6 @@ public class WasteProductsServiceImpl implements WasteProductsService {
         phePham.setNgayPhePham(new Date());// Ngày hiện tại
         phePham.setLyDo(lyDo);
         wasteProductsMapper.insertWasteProducts(phePham);
-        wasteProductsMapper.insertWasteProducts(phePham);
         Product product = productMapper.getProductByTenSanPham(inventory.getTenSanPham());
         if (product.equals("")) {
             throw new RuntimeException("Không tìm thấy sản phẩm với tên: " + inventory.getTenSanPham());
