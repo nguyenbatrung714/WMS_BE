@@ -210,20 +210,10 @@
     </select>
     <select id="getMostIbProducts" resultMap="PurchaseDetailsIbMap">
         SELECT
-            ctxh.sys_id_chi_tiet_nhap_hang,
-            ctxh.ma_pr,
-            ctxh.ma_po,
-            ctxh.ma_inbound,
-            kh.sys_id_khach_hang,
-            kh.ten_khach_hang,
-            sp.sys_id_san_pham,
+
             sp.ten_san_pham,
-            ctxh.so_luong,
-            ctxh.gia,
-            ctxh.tong_chi_phi,
-            ctxh.ngay_nhap_du_kien,
-            ncc.ten_nha_cung_cap,
-            ncc.sys_id_nha_cung_cap
+            ctxh.so_luong
+
         FROM
             chi_tiet_nhap_hang ctxh
                 LEFT JOIN
@@ -238,20 +228,8 @@
     </select>
     <select id="getLeastIbProducts" resultMap="PurchaseDetailsIbMap">
         SELECT
-            ctxh.sys_id_chi_tiet_nhap_hang,
-            ctxh.ma_pr,
-            ctxh.ma_po,
-            ctxh.ma_inbound,
-            kh.sys_id_khach_hang,
-            kh.ten_khach_hang,
-            sp.sys_id_san_pham,
             sp.ten_san_pham,
-            ctxh.so_luong,
-            ctxh.gia,
-            ctxh.tong_chi_phi,
-            ctxh.ngay_nhap_du_kien,
-            ncc.ten_nha_cung_cap,
-            ncc.sys_id_nha_cung_cap
+            ctxh.so_luong
         FROM
             chi_tiet_nhap_hang ctxh
                 LEFT JOIN
