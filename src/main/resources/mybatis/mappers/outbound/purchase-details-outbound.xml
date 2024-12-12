@@ -127,56 +127,27 @@
     </select>
     <select id="getMostObProducts" resultMap="PurchaseRequestObMap" >
         SELECT
-            ctxh.sys_id_chi_tiet_xuat_hang,
-            ctxh.ma_pr,
-            ctxh.ma_po,
-            ctxh.ma_outbound,
-            ctxh.sys_id_khach_hang,
             sp.sys_id_san_pham,
-            SUM(ctxh.so_luong) AS so_luong,
-            SUM(ctxh.gia) AS gia,
-            SUM(ctxh.tong_chi_phi) AS tong_chi_phi,
-            MAX(ctxh.ngay_xuat_du_kien) AS ngay_xuat
+            ctxh.so_luong AS so_luong,
+            sp.ten_san_pham
         FROM
             chi_tiet_xuat_hang ctxh
                 LEFT JOIN
             san_pham sp ON ctxh.sys_id_san_pham = sp.sys_id_san_pham
-        GROUP BY
-            ctxh.sys_id_chi_tiet_xuat_hang,
-            ctxh.ma_pr,
-            ctxh.ma_po,
-            ctxh.ma_outbound,
-            ctxh.sys_id_khach_hang,
-            sp.sys_id_san_pham
         ORDER BY
             so_luong DESC
             LIMIT 1;
     </select>
     <select id="getLeastObProducts" resultMap="PurchaseRequestObMap">
         SELECT
-            ctxh.sys_id_chi_tiet_xuat_hang AS sys_id_chi_tiet_xuat_hang,
-            ctxh.ma_pr AS ma_pr,
-            ctxh.ma_po AS ma_po,
-            ctxh.ma_outbound AS ma_outbound,
-            ctxh.sys_id_khach_hang AS sys_id_khach_hang,
+
             sp.sys_id_san_pham AS sys_id_san_pham,
             sp.ten_san_pham AS ten_san_pham, -- Thêm cột tên sản phẩm
-            SUM(ctxh.so_luong) AS so_luong,
-            SUM(ctxh.gia) AS gia,
-            SUM(ctxh.tong_chi_phi) AS tong_chi_phi,
-            MAX(ctxh.ngay_xuat_du_kien) AS ngay_xuat
+            ctxh.so_luong AS so_luong
         FROM
             chi_tiet_xuat_hang ctxh
                 INNER JOIN san_pham sp
                            ON ctxh.sys_id_san_pham = sp.sys_id_san_pham
-        GROUP BY
-            ctxh.sys_id_chi_tiet_xuat_hang,
-            ctxh.ma_pr,
-            ctxh.ma_po,
-            ctxh.ma_outbound,
-            ctxh.sys_id_khach_hang,
-            sp.sys_id_san_pham,
-            sp.ten_san_pham
         ORDER BY
             so_luong ASC
             LIMIT 1;
