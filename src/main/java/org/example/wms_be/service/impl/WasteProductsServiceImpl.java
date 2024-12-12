@@ -40,6 +40,7 @@ public class WasteProductsServiceImpl implements WasteProductsService {
         phePham.setNgayHetHan(inventory.getNgayCapNhat()); // Sử dụng ngayCapNhat làm ngày hết hạn (nếu thích hợp)
         phePham.setNgayPhePham(new Date());// Ngày hiện tại
         phePham.setLyDo(lyDo);
+        phePham.setSysIdSanPham(inventory.getSysIdSanPham());
         wasteProductsMapper.insertWasteProducts(phePham);
         Product product = productMapper.getProductByTenSanPham(inventory.getTenSanPham());
         if (product.equals("")) {
@@ -62,5 +63,10 @@ public class WasteProductsServiceImpl implements WasteProductsService {
         return wasteProductsMapper.getAllWasteProducts()
                 .stream().map(wasteProductsConverter ::toWasteProductsDto)
                 .toList();
+    }
+
+    @Override
+    public List<WasteProductsDto> getSoLuongTrongTuan() {
+        return wasteProductsMapper.getSoLuongTrongTuan();
     }
 }
