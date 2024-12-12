@@ -21,4 +21,5 @@ public interface ConsignmentMapper {
     Consignment getConsignmentByMaLo(String maLo);
 
     ConsignmentResp getInfoLoHang(String maLo);
+    Double thongKeTongGiaTriKhoHang();
 }

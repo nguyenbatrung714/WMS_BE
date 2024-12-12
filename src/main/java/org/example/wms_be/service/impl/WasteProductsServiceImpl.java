@@ -13,6 +13,7 @@ import org.example.wms_be.service.WasteProductsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,5 +55,12 @@ public class WasteProductsServiceImpl implements WasteProductsService {
         inventoryMapper.deleteLohangById(sysIdTonKho);
         // Bước 4: Trả về DTO chứa thông tin phế phẩm
         return wasteProductsConverter.toWasteProductsDto(phePham);
+    }
+
+    @Override
+    public List<WasteProductsDto> getAllPhePham() {
+        return wasteProductsMapper.getAllWasteProducts()
+                .stream().map(wasteProductsConverter ::toWasteProductsDto)
+                .toList();
     }
 }

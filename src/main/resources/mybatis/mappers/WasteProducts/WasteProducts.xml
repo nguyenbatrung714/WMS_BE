@@ -22,6 +22,10 @@
         INSERT INTO phe_pham (ma_lo, so_luong, ngay_phe_pham,ly_do)
         VALUES ( #{maLo}, #{soLuong},NOW(),#{lyDo});
     </insert>
+    <select id="getAllWasteProducts" resultMap="PhePhamResultMap">
+        SELECT id,ma_lo,so_luong,ngay_phe_pham,ly_do
+        FROM phe_pham
+    </select>
 
     <!-- Lấy danh sách phế phẩm -->
 <!--    <select id="getAllPhePham" resultMap="PhePhamResultMap">-->

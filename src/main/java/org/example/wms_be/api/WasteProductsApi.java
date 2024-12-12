@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
@@ -26,5 +28,14 @@ public class WasteProductsApi {
                 "WasteProducts saved successfully",
                 wasteProductsService.insertWaste(sysIdTonKho,lyDo)
         ), HttpStatus.CREATED);
+    }
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<WasteProductsDto>>> getAllWasteProducts(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                " List of WasteProducts",
+                wasteProductsService.getAllPhePham()
+        ), HttpStatus.OK);
     }
 }
