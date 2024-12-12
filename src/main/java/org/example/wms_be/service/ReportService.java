@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ReportService {
     List<ImportProductByMonth> reportImportProductByMonth();
+
+    List<ImportProductByMonth> reportExportProductByMonth();
 }
