@@ -264,4 +264,21 @@
             ctxh.so_luong ASC
             LIMIT 1;
     </select>
+    <select id="tongSoLuongNhap">
+        SELECT
+            SUM(ctnh.so_luong) AS tong_so_luong
+        FROM
+            chi_tiet_nhap_hang ctnh
+                INNER JOIN
+            inbound ib
+            ON
+                ctnh.ma_inbound = ib.ma_inbound
+                INNER JOIN
+            purchase_request pr
+            ON
+                ctnh.ma_pr = pr.ma_pr
+        WHERE
+            ib.trang_thai = 'confirm'
+          AND pr.loai_yeu_cau = 'NHAP';
+    </select>
 </mapper>

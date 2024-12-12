@@ -59,4 +59,15 @@ public class PurchaseDetailsImpl implements PurchaseDetailsService {
             return List.of(); // Trả về danh sách rỗng nếu gặp lỗi
         }
     }
+
+    @Override
+    public Double tongSoLuongNhap() {
+        try {
+            return purchaseDetailsIbMapper.tongSoLuongNhap();
+        } catch (Exception e) {
+            logger.error("Error fetching least imported products", e);
+        }
+        return 0.0;
+    }
+
 }

@@ -47,4 +47,13 @@ public class PurchaseDetailsApi {
                 purchaseDetailsService.getLeastIbProducts()
         ), HttpStatus.OK);
     }
+    @GetMapping("/thong-ke-nhap")
+    public ResponseEntity<ApiResponse<Double>> getTongSoLuongNhap(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "List purchase ib",
+                purchaseDetailsService.tongSoLuongNhap()
+        ), HttpStatus.OK);
+    }
 }

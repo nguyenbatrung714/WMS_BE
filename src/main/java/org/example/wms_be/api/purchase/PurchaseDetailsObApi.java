@@ -47,4 +47,13 @@ public class PurchaseDetailsObApi {
                 purchaseDetailsService.getLeastObProducts()
         ), HttpStatus.OK);
     }
+    @GetMapping("/thong-ke-xuat")
+    public ResponseEntity<ApiResponse<Double>> getTongSoLuongXuat(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "List of purchase ob",
+                purchaseDetailsService.tongSoLuongXuat()
+        ), HttpStatus.OK);
+    }
 }

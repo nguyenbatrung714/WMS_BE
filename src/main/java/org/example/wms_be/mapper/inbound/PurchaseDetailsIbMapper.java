@@ -35,4 +35,5 @@ public interface PurchaseDetailsIbMapper {
 
     // Thống kê sản phẩm nhập ít nhất
     List<PurchaseDetailsIbReq> getLeastIbProducts();
+    Double tongSoLuongNhap();
 }

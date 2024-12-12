@@ -182,5 +182,22 @@
             LIMIT 1;
 
     </select>
+    <select id="tongSoLuongXuat">
+        SELECT
+            SUM(ctxh.so_luong) AS tong_so_luong
+        FROM
+            chi_tiet_xuat_hang ctxh
+                INNER JOIN
+            outbound ob
+            ON
+                ctxh.ma_outbound = ob.ma_outbound
+                INNER JOIN
+            purchase_request pr
+            ON
+                ctxh.ma_pr = pr.ma_pr
+        WHERE
+            ob.trang_thai = 'confirm'
+          AND pr.loai_yeu_cau = 'XUAT';
+    </select>
 
 </mapper>
