@@ -38,4 +38,13 @@ public class WasteProductsApi {
                 wasteProductsService.getAllPhePham()
         ), HttpStatus.OK);
     }
+    @GetMapping("/tong-so-luong")
+    public ResponseEntity<ApiResponse<List<WasteProductsDto>>> getTongSoLuongTheoTuan(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                " List of WasteProducts",
+                wasteProductsService.getSoLuongTrongTuan()
+        ), HttpStatus.OK);
+    }
 }

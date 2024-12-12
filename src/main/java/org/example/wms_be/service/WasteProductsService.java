@@ -7,4 +7,5 @@ import java.util.List;
 public interface WasteProductsService {
     WasteProductsDto insertWaste(Integer sysIdTonKho,String lyDo);
     List<WasteProductsDto> getAllPhePham();
+    List<WasteProductsDto>  getSoLuongTrongTuan();
 }
