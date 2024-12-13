@@ -26,7 +26,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<ImportProductByMonth> reportExportProductByMonth() {
         try {
-            return reportMapper.reportImportProductByMonth();
+            return reportMapper.reportExportProductByMonth();
         } catch (Exception e) {
             throw new BadSqlGrammarException("Failed to get report import product by month" + e.getMessage());
         }
