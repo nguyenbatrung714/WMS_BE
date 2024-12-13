@@ -85,4 +85,13 @@ public class ConsignmentApi {
                 consignmentService.saveConsignmentFromInbound(consignmentInbound)
         ), HttpStatus.OK);
     }
+    @GetMapping("/thong-ke-tong-gia-tri")
+    public ResponseEntity<ApiResponse<Double>> getTongGiaTri(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "List of Consignment",
+                consignmentService.thongKeTongGiaTriKhoHang()
+        ), HttpStatus.OK);
+    }
 }

@@ -192,6 +192,16 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         }
     }
 
+    @Override
+    public Double thongKeTongGiaTriKhoHang() {
+        try {
+            return consignmentMapper.thongKeTongGiaTriKhoHang();
+        } catch (Exception e) {
+            logger.error("Lỗi khi thống kê tổng số lượng tồn kho", e);
+        }
+        return 0.0;
+    }
+
 
     private Consignment convert(ConsignmentInbound consignmentInbound) {
         Consignment consignment = new Consignment();

@@ -31,4 +31,15 @@ public class Report {
         ), HttpStatus.OK);
 
     }
+
+    @GetMapping("/export-product-by-months")
+    public ResponseEntity<ApiResponse<List<ImportProductByMonth>>> reportExportProductByMonth(HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiResponse<>(
+                request.getRequestURI(),
+                200,
+                "report import product by months",
+                reportService.reportExportProductByMonth()
+        ), HttpStatus.OK);
+
+    }
 }

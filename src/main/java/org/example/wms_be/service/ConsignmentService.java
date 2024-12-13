@@ -18,4 +18,5 @@ public interface ConsignmentService {
     ConsignmentResp getInfoLoHang(String maLo);
 
     List<ConsignmentReq> saveConsignmentFromInbound(ConsignmentInbound consignmentInbound);
+    Double thongKeTongGiaTriKhoHang();
 }

@@ -14,6 +14,7 @@
         <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
         <result property="sysIdChiTietNhapHang" column="sys_id_chi_tiet_nhap_hang"/>
         <result property="tenSanPham" column="ten_san_pham"/>
+        <result property="tenChiTietKhuVuc" column="ten_chi_tiet_khu_vuc"/>
     </resultMap>
 
     <resultMap id="LoHangMap" type="org.example.wms_be.data.response.ConsignmentResp">
@@ -75,13 +76,19 @@
     <select id="getAllConsignment" resultMap="ConsignmentMap">
         SELECT
             lh.*,
-            sp.ten_san_pham
+            sp.ten_san_pham,
+            kv.ten_chi_tiet_khu_vuc
         FROM
             lo_hang lh
                 INNER JOIN
             san_pham sp
             ON
-                lh.sys_id_san_pham = sp.sys_id_san_pham;
+                lh.sys_id_san_pham = sp.sys_id_san_pham
+                INNER JOIN
+            chi_tiet_khu_vuc kv
+            ON
+                lh.ma_chi_tiet_khu_vuc = kv.ma_chi_tiet_khu_vuc;
+
 
     </select>
 
@@ -95,13 +102,18 @@
     <select id="getConsignmentByMaLo" resultMap="ConsignmentMap">
         SELECT
             lh.*,
-            sp.ten_san_pham
+            sp.ten_san_pham,
+            kv.ten_chi_tiet_khu_vuc
         FROM
             lo_hang lh
                 INNER JOIN
             san_pham sp
             ON
                 lh.sys_id_san_pham = sp.sys_id_san_pham
+                INNER JOIN
+            chi_tiet_khu_vuc kv
+            ON
+                lh.ma_chi_tiet_khu_vuc = kv.ma_chi_tiet_khu_vuc;
         WHERE lh.ma_lo=#{maLo}
     </select>
 
@@ -133,5 +145,16 @@
                  left JOIN nha_cung_cap ncc on ct.sys_id_nha_cung_cap = ncc.sys_id_nha_cung_cap
                  left JOIN inbound i on ct.ma_inbound = i.ma_inbound
         WHERE lh.ma_lo = #{maLo};
+    </select>
+    <select id="thongKeTongGiaTriKhoHang">
+        SELECT
+            SUM(lh.so_luong * ctnh.gia)AS tong_gia_tri
+        FROM
+            lo_hang lh
+                JOIN
+            chi_tiet_nhap_hang ctnh
+            ON
+            lh.sys_id_chi_tiet_nhap_hang = ctnh.sys_id_chi_tiet_nhap_hang;
+
     </select>
 </mapper>

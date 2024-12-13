@@ -29,5 +29,6 @@ public interface PurchaseDetailsObMapper {
 
     // Thống kê sản phẩm nhập ít nhất
     List<PurchaseRequestDetailsObResp> getLeastObProducts();
+    Double tongSoLuongXuat();
 
 }

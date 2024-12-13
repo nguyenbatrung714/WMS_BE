@@ -25,4 +25,5 @@ public class ConsignmentResp {
     private String tenKho;
     private Timestamp ngayNhap;
     private String maLo;
+    private String tenChiTietKhuVuc;
 }

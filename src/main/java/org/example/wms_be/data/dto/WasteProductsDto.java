@@ -16,4 +16,5 @@ public class WasteProductsDto {
     private Float soLuong;
     private Timestamp ngayHetHan;
     private Date ngayPhePham;
+    private String lyDo;
 }

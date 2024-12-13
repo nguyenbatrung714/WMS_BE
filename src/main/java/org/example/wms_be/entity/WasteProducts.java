@@ -16,4 +16,6 @@ public class WasteProducts {
     private Float soLuong;
     private Timestamp ngayHetHan;
     private Date ngayPhePham;
+    private String lyDo;
+    private Integer sysIdSanPham;
 }

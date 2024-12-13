@@ -6,7 +6,7 @@
 <mapper namespace="org.example.wms_be.mapper.warehouse.ZoneDetailMapper">
 
     <!-- Kết quả ánh xạ cho ZoneDetail -->
-    <resultMap id="ZoneDetailMap" type="ZoneDetail" autoMapping="true">
+    <resultMap id="ZoneDetailMap" type="org.example.wms_be.entity.warehouse.ZoneDetail" autoMapping="true">
         <id property="sysIdChiTietKhuVuc" column="sys_id_chi_tiet_khu_vuc"/>
         <result property="maChiTietKhuVuc" column="ma_chi_tiet_khu_vuc"/>
         <result property="tenChiTietKhuVuc" column="ten_chi_tiet_khu_vuc"/>
@@ -14,6 +14,7 @@
         <result property="theTichLuuTru" column="the_tich_luu_tru"/>
         <result property="theTichKhaDung" column="the_tich_kha_dung"/>
         <result property="maKhuVuc" column="ma_khu_vuc"/>
+        <result property="tenKhuVuc" column="ten_khu_vuc"/>
     </resultMap>
 
     <resultMap id="WarehouseDetailsMap" type="org.example.wms_be.data.response.WarehouseDetailConsignmentResp" autoMapping="true">
@@ -25,14 +26,21 @@
 
     <!-- Lấy tất cả các chi tiết khu vực -->
     <select id="getAllZoneDetails" resultMap="ZoneDetailMap">
-        SELECT sys_id_chi_tiet_khu_vuc,
-               ma_chi_tiet_khu_vuc,
-               ten_chi_tiet_khu_vuc,
-               mo_ta,
-               the_tich_luu_tru,
-               the_tich_kha_dung,
-               ma_khu_vuc
-        FROM chi_tiet_khu_vuc
+        SELECT
+            ctkv.sys_id_chi_tiet_khu_vuc,
+            ctkv.ma_chi_tiet_khu_vuc,
+            ctkv.ten_chi_tiet_khu_vuc,
+            ctkv.mo_ta,
+            ctkv.the_tich_luu_tru,
+            ctkv.the_tich_kha_dung,
+            ctkv.ma_khu_vuc,
+            kv.ten_khu_vuc
+        FROM
+            chi_tiet_khu_vuc ctkv
+                INNER JOIN
+            khu_vuc kv
+            ON
+                ctkv.ma_khu_vuc = kv.ma_khu_vuc;
     </select>
 
     <!-- Thêm chi tiết khu vực mới -->
