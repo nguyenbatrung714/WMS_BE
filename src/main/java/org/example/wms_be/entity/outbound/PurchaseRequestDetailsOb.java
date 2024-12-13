@@ -13,6 +13,7 @@ public class PurchaseRequestDetailsOb {
     private String  maPO;
     private Integer  sysIdKhachHang;
     private Integer  sysIdSanPham;
+    private String tenSanPham;
     private Double  soLuong;
     private Double  gia;
     private Double  tongChiPhi;
