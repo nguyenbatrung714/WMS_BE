@@ -22,4 +22,13 @@ public class ReportServiceImpl implements ReportService {
             throw new BadSqlGrammarException("Failed to get report import product by month" + e.getMessage());
         }
     }
+
+    @Override
+    public List<ImportProductByMonth> reportExportProductByMonth() {
+        try {
+            return reportMapper.reportExportProductByMonth();
+        } catch (Exception e) {
+            throw new BadSqlGrammarException("Failed to get report import product by month" + e.getMessage());
+        }
+    }
 }

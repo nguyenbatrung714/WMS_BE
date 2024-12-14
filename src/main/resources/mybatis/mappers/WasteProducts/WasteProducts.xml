@@ -32,14 +32,17 @@
                ton_kho.sys_id_san_pham,
                san_pham.ten_san_pham
         FROM phe_pham p
-                 JOIN
-             ton_kho
-             ON
-                 p.sys_id_san_pham = ton_kho.sys_id_san_pham
-                 JOIN
-             san_pham
-             ON
-                 ton_kho.sys_id_san_pham = san_pham.sys_id_san_pham;
+                 JOIN ton_kho
+                      ON p.sys_id_san_pham = ton_kho.sys_id_san_pham
+                 JOIN san_pham
+                      ON ton_kho.sys_id_san_pham = san_pham.sys_id_san_pham
+        GROUP BY p.ma_lo,
+                 p.so_luong,
+                 p.ngay_phe_pham,
+                 p.id,
+                 p.ly_do,
+                 ton_kho.sys_id_san_pham,
+                 san_pham.ten_san_pham;
     </select>
     <select id="getSoLuongTrongTuan" resultMap="PhePhamResultMap">
         SELECT

@@ -27,4 +27,20 @@
         ORDER BY nam, thang;
     </select>
 
+    <select id="reportExportProductByMonth" resultMap="ImportProductByMonthMap">
+        SELECT ten_san_pham,
+               SUM(so_luong) AS tong_so_luong,
+            MONTH (ngay_xuat) AS thang,
+            YEAR (ngay_xuat) AS nam
+        FROM outbound
+            JOIN
+            chi_tiet_xuat_hang
+        ON outbound.ma_outbound = chi_tiet_xuat_hang.ma_outbound
+            JOIN san_pham ON san_pham.sys_id_san_pham = chi_tiet_xuat_hang.sys_id_san_pham
+        WHERE chi_tiet_xuat_hang.sys_id_san_pham
+        GROUP BY YEAR (ngay_xuat),
+            MONTH (ngay_xuat)
+        ORDER BY nam, thang;
+    </select>
+
 </mapper>

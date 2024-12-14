@@ -8,4 +8,6 @@ import java.util.List;
 @Mapper
 public interface ReportMapper {
     List<ImportProductByMonth> reportImportProductByMonth();
+
+    List<ImportProductByMonth> reportExportProductByMonth();
 }
