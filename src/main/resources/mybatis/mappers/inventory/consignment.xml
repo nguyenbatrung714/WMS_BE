@@ -148,13 +148,14 @@
     </select>
     <select id="thongKeTongGiaTriKhoHang">
         SELECT
-            SUM(lh.so_luong * ctnh.gia)AS tong_gia_tri
+            SUM(tk.so_luong * ctnh.gia)AS tong_gia_tri
         FROM
-            lo_hang lh
+            ton_kho tk
                 JOIN
-            chi_tiet_nhap_hang ctnh
+            lo_hang lh
             ON
-            lh.sys_id_chi_tiet_nhap_hang = ctnh.sys_id_chi_tiet_nhap_hang;
+                lh.ma_lo = tk.ma_lo
+                join chi_tiet_nhap_hang ctnh on lh.sys_id_chi_tiet_nhap_hang= ctnh.sys_id_chi_tiet_nhap_hang
 
     </select>
 </mapper>
