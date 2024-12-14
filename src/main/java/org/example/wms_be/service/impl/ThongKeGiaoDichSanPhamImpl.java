@@ -21,20 +21,21 @@ public class ThongKeGiaoDichSanPhamImpl implements ThongKeGiaoDichSanPhamService
             List<ThongKeGiaoDichSanPhamResp> giaoDichSanPhams;
             Integer giaoDichGanDay;
 
-            if (isNhap){
-                    giaoDichSanPhams = purchaseRequestIbMapper.getThongKeGiaoDichSanPham();
-            }else{
+            if (isNhap) {
+                giaoDichSanPhams = purchaseRequestIbMapper.getThongKeGiaoDichSanPham();
+                giaoDichGanDay = purchaseRequestIbMapper.giaoDichGanDay();
+            } else {
                 giaoDichSanPhams = purchaseRequestObMapper.getThongKeGiaoDichSanPhamXuat();
+                giaoDichGanDay = purchaseRequestObMapper.giaoDichXuatGanDay();
             }
 
-            giaoDichGanDay   = purchaseRequestObMapper.giaoDichXuatGanDay();
             ThongKeGiaoDichSanPhamGanDayResp results = new ThongKeGiaoDichSanPhamGanDayResp();
             results.setThongKeGiaoDichSanPhamResp(giaoDichSanPhams);
             results.setGiaoDichGanDay(giaoDichGanDay);
 
             return results;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ThongKeGiaoDichSanPhamGanDayResp();
         }
     }

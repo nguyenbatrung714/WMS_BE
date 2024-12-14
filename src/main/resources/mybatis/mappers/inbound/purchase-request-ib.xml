@@ -108,30 +108,29 @@
             COUNT(pr.ma_pr) AS so_luong_giao_dich,
             SUM(ct.so_luong) AS tong_so_luong
         FROM
-            purchase_request pr
+            chi_tiet_nhap_hang ct
+                JOIN inbound ib ON ct.ma_inbound = ib.ma_inbound
                 JOIN
-            chi_tiet_nhap_hang ct ON pr.ma_pr = ct.ma_pr
+            purchase_request pr
                 JOIN
             san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
         WHERE
-            pr.ngay_yeu_cau >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            pr.ngay_yeu_cau >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) and pr.loai_yeu_cau = 'NHAP'
         GROUP BY
             sp.ten_san_pham, pr.loai_yeu_cau;
     </select>
     <select id="giaoDichGanDay" resultType="java.lang.Integer">
         SELECT
-            SUM(giao_dich_gan_day) AS giao_dich_gan_day
+            IFNULL(SUM(giao_dich_gan_day), 0) AS giao_dich_gan_day
         FROM (
                  SELECT
-                     COUNT(pr.ma_pr) AS giao_dich_gan_day
+                     COUNT(*) AS giao_dich_gan_day
                  FROM
-                     purchase_request pr
-                         JOIN
-                     chi_tiet_nhap_hang ct ON pr.ma_pr = ct.ma_pr
-                         JOIN
-                     san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
+                     chi_tiet_nhap_hang ct
+                         LEFT JOIN purchase_request pr ON pr.ma_pr = ct.ma_pr
+                         LEFT JOIN san_pham sp ON ct.sys_id_san_pham = sp.sys_id_san_pham
                  WHERE
-                     pr.ngay_yeu_cau >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                     (pr.ngay_yeu_cau >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) OR pr.ngay_yeu_cau IS NULL)
                  GROUP BY
                      sp.ten_san_pham, pr.loai_yeu_cau
              ) AS giao_dich;

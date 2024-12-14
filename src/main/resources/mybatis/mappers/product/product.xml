@@ -100,7 +100,7 @@
             ten_kho,
             ten_khu_vuc,
             ten_chi_tiet_khu_vuc,
-            COALESCE(SUM(DISTINCT tk.so_luong), 0) AS tong_so_luong_ton_kho
+            COALESCE(SUM( tk.so_luong), 0) AS tong_so_luong_ton_kho
         FROM san_pham sp
                  JOIN ton_kho tk ON sp.sys_id_san_pham = tk.sys_id_san_pham
                  JOIN lo_hang lh ON tk.ma_lo = lh.ma_lo
