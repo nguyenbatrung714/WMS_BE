@@ -9,15 +9,15 @@ RUN mvn install -DskipTests=true
 ## run stage ##
 FROM openjdk:17-jdk-alpine
 
-RUN adduser -D vanguard
+RUN adduser -D techtribe
 
 WORKDIR /run
-COPY --from=build /app/target/vanguard-0.0.1-SNAPSHOT.jar /run/vanguard-0.0.1-SNAPSHOT.jar
+COPY --from=build /app/target/WMS_BE-0.0.1-SNAPSHOT.jar /run/WMS_BE-0.0.1-SNAPSHOT.jar
 
-RUN chown -r vanguard:vanguard /run
+RUN chown -r techtribe:techtribe /run
 
-USER vanguard
+USER techtribe
 
 EXPOSE 8080
 
-ENTRYPOINT java -jar /run/vanguard-0.0.1-SNAPSHOT.jar
+ENTRYPOINT java -jar /run/WMS_BE-0.0.1-SNAPSHOT.jar
