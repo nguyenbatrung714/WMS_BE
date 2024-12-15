@@ -13,16 +13,15 @@
 
     <select id="reportImportProductByMonth" resultMap="ImportProductByMonthMap">
         SELECT ten_san_pham,
-               SUM(so_luong) AS tong_so_luong,
-            MONTH (ngay_nhap) AS thang,
-            YEAR (ngay_nhap) AS nam
+               SUM(so_luong) AS tong_so_luong, MONTH (ngay_nhap) AS thang, YEAR (ngay_nhap) AS nam
         FROM inbound
             JOIN
             chi_tiet_nhap_hang
         ON inbound.ma_inbound = chi_tiet_nhap_hang.ma_inbound
             JOIN san_pham ON san_pham.sys_id_san_pham = chi_tiet_nhap_hang.sys_id_san_pham
         WHERE chi_tiet_nhap_hang.sys_id_san_pham
-        GROUP BY YEAR (ngay_nhap),
+        GROUP BY ten_san_pham,
+            YEAR (ngay_nhap),
             MONTH (ngay_nhap)
         ORDER BY nam, thang;
     </select>
@@ -38,7 +37,8 @@
         ON outbound.ma_outbound = chi_tiet_xuat_hang.ma_outbound
             JOIN san_pham ON san_pham.sys_id_san_pham = chi_tiet_xuat_hang.sys_id_san_pham
         WHERE chi_tiet_xuat_hang.sys_id_san_pham
-        GROUP BY YEAR (ngay_xuat),
+        GROUP BY ten_san_pham,
+            YEAR (ngay_xuat),
             MONTH (ngay_xuat)
         ORDER BY nam, thang;
     </select>
