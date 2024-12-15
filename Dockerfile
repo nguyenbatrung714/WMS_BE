@@ -1,19 +1,23 @@
-# Build stage
+## build stage ##
 FROM maven:3.9.9-eclipse-temurin-17-alpine AS build
+
 WORKDIR /app
 COPY . .
-COPY application.properties /app/config/application.properties
-RUN mvn clean package
 
-# Run stage
+RUN mvn install -DskipTests=true
+
+## run stage ##
 FROM openjdk:17-jdk-alpine
-WORKDIR /app
-COPY --from=build /app/target/techtribe-0.0.1-SNAPSHOT.jar /app/techtribe-0.0.1-SNAPSHOT.jar
 
-# Ensure the application properties file is accessible
-COPY --from=build /app/config/application.properties /app/config/application.properties
+RUN adduser -D vanguard
 
-# Run the application with the config location specified
-CMD ["java", "-jar", "/app/techtribe-0.0.1-SNAPSHOT.jar", "--spring.config.location=file:/app/config/application.properties"]
+WORKDIR /run
+COPY --from=build /app/target/vanguard-0.0.1-SNAPSHOT.jar /run/vanguard-0.0.1-SNAPSHOT.jar
+
+RUN chown -r vanguard:vanguard /run
+
+USER vanguard
 
 EXPOSE 8080
+
+ENTRYPOINT java -jar /run/vanguard-0.0.1-SNAPSHOT.jar
