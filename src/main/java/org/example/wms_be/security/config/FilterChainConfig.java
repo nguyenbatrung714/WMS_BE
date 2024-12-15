@@ -67,8 +67,6 @@ public class FilterChainConfig {
 
         http.csrf(AbstractHttpConfigurer::disable);
 
-        http.cors(AbstractHttpConfigurer::disable);
-
         return http.build();
     }
 

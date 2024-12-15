@@ -78,6 +78,11 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
                             detail.setNgayXuatDuKien(ngayXuatDuKienFormatted);
                         }
                     });
+
+                    boolean allDetailsValid = chiTietXuatHang.stream()
+                            .allMatch(detail -> Boolean.TRUE.equals(detail.getIsOutboundNull()));
+                    pr.setIsExistOutbound(allDetailsValid);
+
                     pr.setChiTietXuatHang(chiTietXuatHang);
                 });
         return purchaseRequestObResps;
@@ -216,7 +221,7 @@ public class PurchaseRequestObServiceImpl implements PurchaseRequestObService {
         }
     }
     public void sendMailForApprove(PurchaseRequestOb purchaseRequestOb) {
-        sendEmail(PurchaseRequestConst.DEFAULT_ADMIN_EMAIL, purchaseRequestOb);
+        sendEmail(PurchaseRequestConst.DEFAULT_PO_EMAIL, purchaseRequestOb);
     }
 
     public void sendMailForConfirm(PurchaseRequestOb purchaseRequestOb) {

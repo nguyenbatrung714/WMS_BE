@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.wms_be.mapper.WasteProductsMapper">
+
+    <!-- Kết quả ánh xạ từ bảng `phe_pham` -->
+    <resultMap id="PhePhamResultMap" type="org.example.wms_be.entity.WasteProducts">
+        <id property="id" column="id" />
+        <result property="maKho" column="ma_kho" />
+        <result property="maLo" column="ma_lo" />
+        <result property="tenSanPham" column="ten_san_pham" />
+        <result property="soLuong" column="so_luong" />
+        <result property="ngayHetHan" column="ngay_het_han" />
+        <result property="ngayPhePham" column="ngay_phe_pham" />
+        <result property="lyDo" column="ly_do" />
+        <result property="sysIdSanPham" column="sys_id_san_pham" />
+    </resultMap>
+
+    <!-- Chèn thông tin vào bảng `phe_pham` -->
+
+    <insert id="insertWasteProducts">
+        INSERT INTO phe_pham (ma_lo, so_luong, ngay_phe_pham,ly_do,sys_id_san_pham)
+        VALUES ( #{maLo}, #{soLuong},NOW(),#{lyDo},#{sysIdSanPham});
+    </insert>
+    <select id="getAllWasteProducts" resultMap="PhePhamResultMap">
+        SELECT p.ma_lo,
+               p.so_luong,
+               p.ngay_phe_pham,
+               p.id,
+               p.ly_do,
+               ton_kho.sys_id_san_pham,
+               san_pham.ten_san_pham
+        FROM phe_pham p
+                 JOIN ton_kho
+                      ON p.sys_id_san_pham = ton_kho.sys_id_san_pham
+                 JOIN san_pham
+                      ON ton_kho.sys_id_san_pham = san_pham.sys_id_san_pham
+        GROUP BY p.ma_lo,
+                 p.so_luong,
+                 p.ngay_phe_pham,
+                 p.id,
+                 p.ly_do,
+                 ton_kho.sys_id_san_pham,
+                 san_pham.ten_san_pham;
+    </select>
+    <select id="getSoLuongTrongTuan" resultMap="PhePhamResultMap">
+        SELECT
+            p.ngay_phe_pham,
+            sp.ten_san_pham,
+            SUM(IFNULL(p.so_luong, 0)) AS so_luong,
+            p.ma_lo
+        FROM
+            phe_pham p
+                INNER JOIN
+            san_pham sp ON p.sys_id_san_pham = sp.sys_id_san_pham
+        WHERE
+            WEEK(p.ngay_phe_pham) = WEEK(CURRENT_DATE)
+                AND YEAR(p.ngay_phe_pham) = YEAR(CURRENT_DATE)
+        GROUP BY
+            p.ngay_phe_pham, sp.ten_san_pham, p.ma_lo
+        ORDER BY
+            p.ngay_phe_pham;
+
+    </select>
+
+    <!-- Lấy danh sách phế phẩm -->
+<!--    <select id="getAllPhePham" resultMap="PhePhamResultMap">-->
+<!--        SELECT * FROM phe_pham;-->
+<!--    </select>-->
+</mapper>

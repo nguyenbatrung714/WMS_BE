@@ -18,4 +18,5 @@ public class Consignment {
     private String maChiTietKhuVuc;
     private Integer sysIdChiTietNhapHang;
     private String tenSanPham;
+    private String tenChiTietKhuVuc;
 }

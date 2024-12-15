@@ -13,4 +13,5 @@ public class ZoneDetail {
     private Double theTichLuuTru;
     private Double theTichKhaDung;
     private String maKhuVuc;
+    private String tenKhuVuc;
 }

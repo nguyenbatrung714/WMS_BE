@@ -39,17 +39,15 @@ public class BarCodeServiceImpl implements BarCodeService {
     }
 
     @Override
-    public ResponseEntity<byte[]> generateQRCode(@RequestParam String maPO) {
+    public ResponseEntity<byte[]> generateQRCode(@RequestParam String maLo) {
         try {
-            String url = "http://localhost:8080/api/v1/barcodes/" + maPO;
-
             // Config
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             Map<EncodeHintType, Object> hints = new HashMap<>();
             hints.put(EncodeHintType.MARGIN, 1);
 
             // Tạo BitMatrix
-            BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, 200, 200, hints);
+            BitMatrix bitMatrix = qrCodeWriter.encode(maLo, BarcodeFormat.QR_CODE, 200, 200, hints);
 
             // Chuyển thành ảnh
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

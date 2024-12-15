@@ -32,9 +32,9 @@ public class BarCode {
 
 
     @GetMapping(value = "/generate", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> generateQRCode(@RequestParam String maPO) {
+    public ResponseEntity<byte[]> generateQRCode(@RequestParam String maLo) {
         try {
-            return barCodeService.generateQRCode(maPO);
+            return barCodeService.generateQRCode(maLo);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }
