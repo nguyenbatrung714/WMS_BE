@@ -20,4 +20,4 @@ USER techtribe
 
 EXPOSE 8080
 
-ENTRYPOINT java -jar /run/WMS_BE-0.0.1-SNAPSHOT.jar
+ENTRYPOINT [ "java", "-jar",  "/run/WMS_BE-0.0.1-SNAPSHOT.jar", "--spring.config.location=file:///app/config/application.properties" ]
