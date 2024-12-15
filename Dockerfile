@@ -1,10 +1,10 @@
 ## build stage ##
-FROM maven:3.8.6-openjdk-17-slim AS build
+FROM maven:3.8.6-openjdk-17 AS build
 
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
-RUN mvn install -DskipTests
+RUN mvn clean install -DskipTests=true
 
 ## run stage ##
 FROM openjdk:17-jdk-alpine
