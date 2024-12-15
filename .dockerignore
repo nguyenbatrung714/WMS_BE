@@ -1,0 +1,29 @@
+# Ignore Maven and Gradle build files
+target/
+build/
+
+# Ignore IDE configuration files
+.idea/
+.vscode/
+*.iml
+
+# Ignore local configuration files
+*.log
+*.tmp
+*.bak
+
+# Ignore Dockerfile itself (if you don't want to include it in the image)
+Dockerfile
+
+# Ignore JARs and other build artifacts (since we're building during the image build process)
+*.jar
+*.war
+*.ear
+
+# Ignore source code and resources if not needed for building
+src/
+*.java
+
+# Ignore system files
+.DS_Store
+Thumbs.db
