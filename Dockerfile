@@ -14,7 +14,7 @@ RUN adduser -D techtribe
 WORKDIR /run
 COPY --from=build /app/target/WMS_BE-0.0.1-SNAPSHOT.jar /run/WMS_BE-0.0.1-SNAPSHOT.jar
 
-RUN chown -r techtribe:techtribe /run
+RUN chown -R techtribe:techtribe /run
 
 USER techtribe
 
