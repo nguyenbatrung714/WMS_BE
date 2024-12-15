@@ -14,7 +14,7 @@ env:
   IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/techtribe-wms-backend"
 
 jobs:
-  dockerize:
+  build_and_push:
     runs-on: ubuntu-latest
     outputs:
       short_sha: ${{ steps.vars.outputs.short_sha }}
