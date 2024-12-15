@@ -1,8 +1,9 @@
 ## build stage ##
-FROM maven:3.6.3-eclipse-temurin-17-alpine AS build
+FROM maven:3.8.6-openjdk-17-slim AS build
 
 WORKDIR /app
-COPY . .
+COPY pom.xml .
+COPY src ./src
 RUN mvn install -DskipTests
 
 ## run stage ##
