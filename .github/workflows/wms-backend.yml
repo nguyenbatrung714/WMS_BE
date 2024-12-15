@@ -85,6 +85,7 @@ jobs:
                 --name $TECHTRIBE_APP_NAME \
                 --cpus=1 \
                 --memory="512m" \
+                -v /home/techtribe/config/application.properties:/app/config/application.properties \
                 $DOCKER_IMAGE:sha-$IMAGE_TAG
 
               docker logout
