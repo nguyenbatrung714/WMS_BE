@@ -18,5 +18,6 @@ public class InboundReq {
     private TrangThai trangThai = TrangThai.confirm;
     private Integer sysIdUser;
     private String fullName;
+    private String tenKho;
     List<PurchaseDetailsIbReq> chiTietNhapHang;
 }

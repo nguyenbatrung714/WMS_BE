@@ -1,15 +1,19 @@
 package org.example.wms_be.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.data.response.PurchaseRequestDetailsObResp;
+import org.example.wms_be.data.response.inbound.PurchaseRequestIbResp;
 import org.example.wms_be.mapper.purchase.PurchaseDetailsObMapper;
 import org.example.wms_be.service.PurchaseDetailsObService;
 import org.example.wms_be.utils.TimeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PurchaseDetailsObServiceImpl implements PurchaseDetailsObService {
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseDetailsObServiceImpl.class);
     private final PurchaseDetailsObMapper purchaseDetailsObMapper;
     @Override
     public List<PurchaseRequestDetailsObResp> getChiTietDonHangByMaPR(String maPR) {
@@ -21,5 +25,39 @@ public class PurchaseDetailsObServiceImpl implements PurchaseDetailsObService {
               }
          });
             return chiTietXuatHang;
+    }
+
+    @Override
+    public List<PurchaseRequestDetailsObResp> getMostObProducts() {
+        try {
+            return purchaseDetailsObMapper.getMostObProducts();
+        } catch (Exception e) {
+            // Log lỗi
+            System.err.println("Error fetching most imported products: " + e.getMessage());
+            // Quăng lại lỗi hoặc trả về giá trị mặc định
+            throw new RuntimeException("Unable to fetch most imported products.", e);
+        }
+    }
+
+    @Override
+    public List<PurchaseRequestDetailsObResp> getLeastObProducts() {
+        try {
+            return purchaseDetailsObMapper.getLeastObProducts();
+        } catch (Exception e) {
+            // Log lỗi
+            System.err.println("Error fetching least imported products: " + e.getMessage());
+            // Quăng lại lỗi hoặc trả về giá trị mặc định
+            throw new RuntimeException("Unable to fetch least imported products.", e);
+        }
+    }
+
+    @Override
+    public Double tongSoLuongXuat() {
+        try {
+            return purchaseDetailsObMapper.tongSoLuongXuat();
+        }catch (Exception e) {
+            logger.error("Error fetching least imported products", e);
+        }
+        return 0.0;
     }
 }

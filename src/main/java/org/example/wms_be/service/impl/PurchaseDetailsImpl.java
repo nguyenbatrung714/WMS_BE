@@ -3,6 +3,7 @@ package org.example.wms_be.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.wms_be.converter.inbound.PurchaseDetailsIbConverter;
 import org.example.wms_be.data.request.PurchaseDetailsIbReq;
+import org.example.wms_be.entity.inbound.PurchaseDetailsIb;
 import org.example.wms_be.mapper.inbound.PurchaseDetailsIbMapper;
 import org.example.wms_be.service.PurchaseDetailsService;
 import org.slf4j.Logger;
@@ -35,4 +36,38 @@ public class PurchaseDetailsImpl implements PurchaseDetailsService {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public List<PurchaseDetailsIbReq> getMostIbProducts() {
+        try {
+            // Thêm logic gọi database hoặc service layer nếu cần
+            logger.info("Fetching most imported products...");
+            return purchaseDetailsIbMapper.getMostIbProducts(); // Gọi mapper hoặc service
+        } catch (Exception e) {
+            logger.error("Error fetching most imported products", e);
+            return List.of(); // Trả về danh sách rỗng nếu gặp lỗi
+        }
+    }
+
+    @Override
+    public List<PurchaseDetailsIbReq> getLeastIbProducts() {
+        try {
+            logger.info("Fetching least imported products...");
+            return purchaseDetailsIbMapper.getLeastIbProducts(); // Gọi mapper hoặc service layer
+        } catch (Exception e) {
+            logger.error("Error fetching least imported products", e);
+            return List.of(); // Trả về danh sách rỗng nếu gặp lỗi
+        }
+    }
+
+    @Override
+    public Double tongSoLuongNhap() {
+        try {
+            return purchaseDetailsIbMapper.tongSoLuongNhap();
+        } catch (Exception e) {
+            logger.error("Error fetching least imported products", e);
+        }
+        return 0.0;
+    }
+
 }

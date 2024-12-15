@@ -8,4 +8,5 @@ import lombok.Data;
 public class LoSuDung {
     private Integer sysIdTonKho;
     private Double soLuongXuat;
+    private String maLo;
 }

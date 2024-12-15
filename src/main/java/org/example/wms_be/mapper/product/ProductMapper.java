@@ -1,6 +1,7 @@
 package org.example.wms_be.mapper.product;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.example.wms_be.data.response.thongke.ThongKeSanPhamKhuVucResp;
 import org.example.wms_be.entity.product.Product;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public interface ProductMapper {
     boolean checkProductExists(Integer maSanPham);
 
     Optional<Product> getProductByMaSanPham(Integer maSanPham);
+    Product getProductByTenSanPham(String  tenSanPham);
 
     String getImgProductByMaSanPham(Integer maSanPham);
+
+    List<ThongKeSanPhamKhuVucResp> getThongKeSanPhamKhuVuc();
 }

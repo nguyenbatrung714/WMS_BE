@@ -13,6 +13,14 @@
         <result property="sysIdDanhMuc" column="sys_id_danh_muc"/>
     </resultMap>
 
+    <resultMap id="ThongKeSanPhamKhuVuc" type="org.example.wms_be.data.response.thongke.ThongKeSanPhamKhuVucResp">
+        <result property="tenSanPham" column="ten_san_pham"/>
+        <result property="tenKho" column="ten_kho"/>
+        <result property="tenKhuVuc" column="ten_khu_vuc"/>
+        <result property="tenChiTietKhuVuc" column="ten_chi_tiet_khu_vuc"/>
+        <result property="tongSoLuongTonKho" column="tong_so_luong_ton_kho"/>
+    </resultMap>
+
     <insert id="insertProduct" useGeneratedKeys="true" keyProperty="sysIdSanPham">
         INSERT INTO san_pham(ten_san_pham,
                              so_luong_hien_co,
@@ -73,6 +81,35 @@
         SELECT hinh_anh
         FROM san_pham
         WHERE sys_id_san_pham = #{sysIdSanPham}
+    </select>
+    <select id="getProductByTenSanPham" resultMap="productMap">
+        SELECT sys_id_san_pham,
+               ten_san_pham,
+               so_luong_hien_co,
+               sys_id_danh_muc,
+               mo_ta,
+               hinh_anh
+        FROM san_pham
+        WHERE  ten_san_pham = #{tenSanPham}
+    </select>
+    <select id="getThongKeSanPhamKhuVuc"
+            resultMap="ThongKeSanPhamKhuVuc">
+
+        SELECT
+            sp.ten_san_pham,
+            ten_kho,
+            ten_khu_vuc,
+            ten_chi_tiet_khu_vuc,
+            COALESCE(SUM(DISTINCT tk.so_luong), 0) AS tong_so_luong_ton_kho
+        FROM san_pham sp
+                 JOIN ton_kho tk ON sp.sys_id_san_pham = tk.sys_id_san_pham
+                 JOIN lo_hang lh ON tk.ma_lo = lh.ma_lo
+                 JOIN chi_tiet_khu_vuc ctkv ON lh.ma_chi_tiet_khu_vuc = ctkv.ma_chi_tiet_khu_vuc
+                 JOIN khu_vuc kv ON ctkv.ma_khu_vuc = kv.ma_khu_vuc
+                 JOIN kho k ON kv.ma_kho = k.ma_kho
+        GROUP BY sp.ten_san_pham
+        ORDER BY sp.ten_san_pham;
+
     </select>
 
 </mapper>

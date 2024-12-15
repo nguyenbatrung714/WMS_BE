@@ -1,19 +1,27 @@
 package org.example.wms_be.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.wms_be.amazons3.service.S3Service;
 import org.example.wms_be.converter.UserConverter;
 import org.example.wms_be.data.dto.UserDto;
 import org.example.wms_be.data.dto.UserInfoDto;
 import org.example.wms_be.data.dto.UserPasswordDto;
+import org.example.wms_be.data.request.LockAccountReq;
 import org.example.wms_be.entity.account.User;
 import org.example.wms_be.exception.BadSqlGrammarException;
+import org.example.wms_be.exception.FileStorageException;
 import org.example.wms_be.mapper.account.UserMapper;
 import org.example.wms_be.service.UserService;
+import org.example.wms_be.utils.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 @Service
@@ -23,13 +31,15 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
 
     @Override
     public List<UserDto> getAllUser() {
-        return userMapper.findAll()
-                .stream()
-                .map(userConverter::toUserDto)
-                .toList();
+        return userMapper.findAll().stream()
+                .map(user -> {
+                    user.setHinhAnh(s3Service.generatePresignedUrl(user.getHinhAnh()));
+                    return userConverter.toUserDto(user);
+                }).toList();
     }
 
     @Override
@@ -37,16 +47,26 @@ public class UserServiceImpl implements UserService {
         User user = userConverter.toUserInfo(userDto);
         try {
             if (userMapper.checkUserExitsByUserName(userDto.getUsername())) {
+                String imagePath = null;
+                if (userDto.getHinhAnh() != null && !userDto.getHinhAnh().isEmpty()) {
+                    try {
+                        imagePath = uploadImage(userDto.getHinhAnh());
+                        user.setHinhAnh(imagePath);
+                    } catch (FileStorageException e) {
+                        throw new FileStorageException("Error occurred while uploading the file: " + e.getMessage());
+                    }
+                }
+                // Gọi mapper với dữ liệu đã xử lý
                 userMapper.updateInfo(user);
                 user = userMapper.findUserByUsername(userDto.getUsername());
             }
+            return userConverter.toUserInfoDto(user);
         } catch (Exception e) {
             logger.error("Update info failed: {}", e.getMessage());
             throw new BadSqlGrammarException("Update info failed");
         }
-
-        return userConverter.toUserInfoDto(user);
     }
+
 
     @Override
     public UserPasswordDto updatePassword(UserPasswordDto userDto) {
@@ -79,9 +99,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findUserByUsername(String username) {
         User user = userMapper.findUserByUsername(username);
+        user.setHinhAnh(s3Service.generatePresignedUrl(user.getHinhAnh()));
         if (user == null) {
             throw new IllegalArgumentException("User not found with username " + username);
         }
         return userConverter.toUserDto(user);
+    }
+
+    @Override
+    public LockAccountReq lockAccount(LockAccountReq lockAccountReq) {
+        try {
+            userMapper.lockAccount(lockAccountReq);
+            return lockAccountReq;
+        } catch (Exception e) {
+            throw new BadSqlGrammarException("Lock account failed: " + e.getMessage());
+        }
+    }
+
+    private String uploadImage(MultipartFile multipartFile) {
+        try {
+            File fileConvert = FileUtil.convertMultipartFileToFile(multipartFile);
+            String imagePath = s3Service.uploadFileToS3(fileConvert);
+            Files.deleteIfExists(fileConvert.toPath());
+            return imagePath;
+        } catch (IOException e) {
+            throw new FileStorageException("Error when uploading file: " + e.getMessage());
+        }
+    }
+
+    private String generateImageUrl(String imagePath) {
+        return s3Service.generatePresignedUrl(imagePath);
     }
 }

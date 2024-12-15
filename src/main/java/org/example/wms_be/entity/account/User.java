@@ -12,7 +12,10 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private String mailQuanTri;
     private String fullName;
     private String soDienThoai;
+    private Boolean active;
+    private String hinhAnh;
     private Set<Role> roles;
 }

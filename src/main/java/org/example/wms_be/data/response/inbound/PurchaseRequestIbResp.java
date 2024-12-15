@@ -17,5 +17,6 @@ public class PurchaseRequestIbResp {
     private String trangThai;
     private String loaiYeuCau;
     private String lyDo;
+    private Boolean isExistPO;
     List<PurchaseRequestDetailsIbResp> chiTietNhapHang;
 }
