@@ -45,6 +45,7 @@
                  san_pham.ten_san_pham;
     </select>
     <select id="getSoLuongTrongTuan" resultMap="PhePhamResultMap">
+
         SELECT
             DATE(p.ngay_phe_pham) AS ngay_phe_pham,
             sp.ten_san_pham,
@@ -56,6 +57,7 @@
             join san_pham sp on sp.sys_id_san_pham = p.sys_id_san_pham
         WHERE
             ngay_phe_pham >= CURDATE() - INTERVAL 7 DAY;
+     
 
     </select>
 
