@@ -46,21 +46,16 @@
     </select>
     <select id="getSoLuongTrongTuan" resultMap="PhePhamResultMap">
         SELECT
-            p.ngay_phe_pham,
+            DATE(p.ngay_phe_pham) AS ngay_phe_pham,
             sp.ten_san_pham,
-            SUM(IFNULL(p.so_luong, 0)) AS so_luong,
+            p.so_luong,
             p.ma_lo
         FROM
             phe_pham p
-                INNER JOIN
-            san_pham sp ON p.sys_id_san_pham = sp.sys_id_san_pham
+            join lo_hang lh on lh.ma_lo = p.ma_lo
+            join san_pham sp on sp.sys_id_san_pham = p.sys_id_san_pham
         WHERE
-            WEEK(p.ngay_phe_pham) = WEEK(CURRENT_DATE)
-                AND YEAR(p.ngay_phe_pham) = YEAR(CURRENT_DATE)
-        GROUP BY
-            p.ngay_phe_pham, sp.ten_san_pham, p.ma_lo
-        ORDER BY
-            p.ngay_phe_pham;
+            ngay_phe_pham >= CURDATE() - INTERVAL 7 DAY;
 
     </select>
 
